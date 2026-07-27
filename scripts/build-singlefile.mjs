@@ -57,14 +57,31 @@ let js = readFileSync(join(assetsDir, jsName), 'utf8');
 const css = readFileSync(join(assetsDir, cssName), 'utf8');
 let html = readFileSync(join(DIST, 'index.html'), 'utf8');
 
-// Public assets appear as plain string literals in the bundle and as
-// attributes in the HTML shell. Longest path first so no prefix collides.
+// Longest path first so no prefix collides.
 const paths = [...publicMap.keys()].sort((a, b) => b.length - a.length);
-for (const p of paths) {
-  const uri = publicMap.get(p);
-  js = js.split(p).join(uri);
-  html = html.split(p).join(uri);
-}
+
+/*
+ * In the bundle each asset is a quoted string literal, and the same file is
+ * often referenced from several places. Substituting the data URI at every
+ * occurrence duplicates megabytes of base64, so each asset is hoisted into one
+ * const and the literals become references to it.
+ */
+const decls = [];
+paths.forEach((p, i) => {
+  const ident = `__ASSET_${i}`;
+  const before = js.length;
+  for (const quote of ['"', "'", '`']) {
+    js = js.split(`${quote}${p}${quote}`).join(ident);
+  }
+  if (js.length !== before) decls.push(`const ${ident}=${JSON.stringify(publicMap.get(p))};`);
+});
+js = `${decls.join('\n')}\n${js}`;
+
+// Any literal the quoting pass missed still has to resolve.
+for (const p of paths) js = js.split(p).join(publicMap.get(p));
+
+// The HTML shell references assets in attributes, which need the URI inline.
+for (const p of paths) html = html.split(p).join(publicMap.get(p));
 
 // Drop the built <script>/<link> tags; their contents get re-emitted inline.
 html = html
