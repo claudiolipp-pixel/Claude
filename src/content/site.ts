@@ -55,8 +55,11 @@ export interface SiteContent {
     eyebrow: string;
     title: string;
     body: string;
+    firstName: string;
+    lastName: string;
     placeholder: string;
     cta: string;
+    errorName: string;
     note: string;
     successTitle: string;
     successBody: string;
@@ -156,8 +159,11 @@ const en: SiteContent = {
     eyebrow: 'Limited first run · Summer 2026',
     title: 'Join the waitlist',
     body: 'The first AIRBALLERS ship this summer. Get on the list and be first on the court.',
+    firstName: 'First name',
+    lastName: 'Last name',
     placeholder: 'your@email.com',
     cta: 'Join',
+    errorName: 'Enter your first and last name',
     note: "No spam. One mail when it's your turn.",
     successTitle: "You're on the list",
     successBody: "Welcome, Airballer. We'll be in touch before the first units drop.",
@@ -250,8 +256,11 @@ const de: SiteContent = {
     eyebrow: 'Limitierte erste Auflage · Sommer 2026',
     title: 'Auf die Warteliste',
     body: 'Die ersten AIRBALLERS kommen diesen Sommer. Trag dich ein und steh als Erster am Court.',
+    firstName: 'Vorname',
+    lastName: 'Nachname',
     placeholder: 'deine@email.com',
     cta: 'Eintragen',
+    errorName: 'Bitte Vor- und Nachname eingeben',
     note: 'Kein Spam. Eine Mail, wenn du dran bist.',
     successTitle: 'Du bist auf der Liste',
     successBody: 'Willkommen, Airballer. Wir melden uns, bevor die ersten Einheiten rausgehen.',

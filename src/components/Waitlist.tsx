@@ -14,6 +14,8 @@ export default function Waitlist() {
   const headRef = useMaskReveal<HTMLDivElement>();
   const formRef = useFadeUp<HTMLDivElement>(0.08);
 
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -24,13 +26,22 @@ export default function Waitlist() {
     e.preventDefault();
     setError(null);
 
+    if (!firstName.trim() || !lastName.trim()) {
+      setError(t.errorName);
+      return;
+    }
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError(t.errorInvalid);
       return;
     }
 
     setStatus('submitting');
-    const result = await submitWaitlist(email);
+    const result = await submitWaitlist({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+    });
 
     if (result.ok) {
       setStatus('success');
@@ -75,29 +86,64 @@ export default function Waitlist() {
           </div>
         ) : (
           <>
-            <form onSubmit={onSubmit} className="mt-8 flex max-w-[560px] flex-wrap" data-reveal-item noValidate>
-              <label htmlFor="wl-email" className="sr-only">
-                {t.placeholder}
-              </label>
-              <input
-                id="wl-email"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t.placeholder}
-                aria-invalid={Boolean(error)}
-                aria-describedby={error ? 'wl-error' : undefined}
-                className="flex-[1_1_250px] border border-court bg-cream px-4 py-4 font-mono text-[13px] tracking-[0.05em] outline-none focus:shadow-[inset_0_0_0_1px_theme(colors.court)]"
-              />
-              <button
-                type="submit"
-                disabled={status === 'submitting'}
-                className="label border border-court bg-court px-6 py-4 font-medium text-butter transition-colors hover:bg-cream hover:text-court disabled:opacity-60"
-              >
-                {t.cta}
-              </button>
+            <form onSubmit={onSubmit} className="mt-8 max-w-[560px]" data-reveal-item noValidate>
+              {/* Name row sits above the email so the fields read in the order
+                  they would be spoken. */}
+              <div className="grid grid-cols-1 sm:grid-cols-2">
+                <label htmlFor="wl-first" className="sr-only">
+                  {t.firstName}
+                </label>
+                <input
+                  id="wl-first"
+                  type="text"
+                  autoComplete="given-name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder={t.firstName}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={error ? 'wl-error' : undefined}
+                  className="border border-court bg-cream px-4 py-4 font-mono text-[13px] tracking-[0.05em] outline-none focus:shadow-[inset_0_0_0_1px_theme(colors.court)] sm:border-r-0"
+                />
+                <label htmlFor="wl-last" className="sr-only">
+                  {t.lastName}
+                </label>
+                <input
+                  id="wl-last"
+                  type="text"
+                  autoComplete="family-name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder={t.lastName}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={error ? 'wl-error' : undefined}
+                  className="border border-court bg-cream px-4 py-4 font-mono text-[13px] tracking-[0.05em] outline-none focus:shadow-[inset_0_0_0_1px_theme(colors.court)] max-sm:border-t-0"
+                />
+              </div>
+
+              <div className="flex flex-wrap">
+                <label htmlFor="wl-email" className="sr-only">
+                  {t.placeholder}
+                </label>
+                <input
+                  id="wl-email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t.placeholder}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={error ? 'wl-error' : undefined}
+                  className="flex-[1_1_250px] border border-t-0 border-court bg-cream px-4 py-4 font-mono text-[13px] tracking-[0.05em] outline-none focus:shadow-[inset_0_0_0_1px_theme(colors.court)]"
+                />
+                <button
+                  type="submit"
+                  disabled={status === 'submitting'}
+                  className="label border border-t-0 border-court bg-court px-6 py-4 font-medium text-butter transition-colors hover:bg-cream hover:text-court disabled:opacity-60"
+                >
+                  {t.cta}
+                </button>
+              </div>
             </form>
 
             {error && (

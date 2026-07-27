@@ -102,13 +102,18 @@ export default function Nav({ lenis }: NavProps) {
           lenis.current ? lenis.current.scrollTo(0) : window.scrollTo({ top: 0 });
         }}
       >
-        <span
-          className={`grid h-7 w-7 place-items-center transition-colors duration-500 ${
-            onLight ? 'bg-court' : 'bg-chalk'
+        {/*
+          The mark carries its own alpha, so it needs no plate behind it. It
+          ships white; over a light surface it is inverted to ink rather than
+          swapped for a second file.
+        */}
+        <img
+          src="/brand/mark-a.png"
+          alt=""
+          className={`h-7 w-7 object-contain transition-[filter] duration-500 ${
+            onLight ? 'invert' : ''
           }`}
-        >
-          <img src="/brand/mark-a.jpg" alt="" className="h-full w-full object-cover" />
-        </span>
+        />
         <span className="font-display text-xl font-black uppercase tracking-wordmark">
           Airball
         </span>

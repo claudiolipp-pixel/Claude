@@ -20,7 +20,7 @@ interface StackCardProps {
 }
 
 export default function StackCard({ work, index, onOpen, openLabel }: StackCardProps) {
-  const cardRef = useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const cursorProps = useCursorTarget(work.tag);
@@ -68,8 +68,13 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
   const eager = index === 0;
 
   return (
+    /*
+     * The runway is taller than the card, so each card holds at the top for
+     * roughly 1.8 screens of scrolling before the next one covers it. Scroll
+     * distance per card is the runway height, not the card height.
+     */
+    <div ref={cardRef} className="relative h-[180svh]">
     <section
-      ref={cardRef}
       id={work.id}
       className="sticky top-0 h-[100svh] overflow-hidden bg-court"
       aria-label={work.title}
@@ -119,41 +124,42 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
         </span>
       </button>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end gap-4 px-5 pb-10 text-chalk md:px-10 md:pb-14">
-        <span className="label shrink-0 pb-1 text-chalk/60 tabular-nums">
-          <span className="block overflow-hidden">
+      {/*
+        Headline first, flush to the page margin; number and labels sit on the
+        line beneath it sharing that same left edge.
+      */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-5 pb-10 text-chalk md:px-10 md:pb-14">
+        <h2 className="display text-[clamp(38px,8.5vw,96px)]">
+          <span className="block overflow-hidden py-[0.14em] [margin-block:-0.14em]">
+            <span className="block" data-card-line>
+              {work.title}
+            </span>
+          </span>
+        </h2>
+
+        <div className="label mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-chalk/70">
+          <span className="block overflow-hidden tabular-nums text-chalk/60">
             <span className="block" data-card-line>
               {work.num}
             </span>
           </span>
-        </span>
-
-        <div className="min-w-0">
-          <h2 className="display text-[clamp(38px,8.5vw,96px)]">
-            <span className="block overflow-hidden">
+          {work.meta.map((m) => (
+            <span key={m} className="block overflow-hidden">
               <span className="block" data-card-line>
-                {work.title}
+                {m}
               </span>
             </span>
-          </h2>
-          <div className="label mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-chalk/70">
-            {work.meta.map((m) => (
-              <span key={m} className="block overflow-hidden">
-                <span className="block" data-card-line>
-                  {m}
-                </span>
-              </span>
-            ))}
-            {/* Touch devices never see the cursor label, so the card states
-                what it does. */}
-            <span className="block overflow-hidden">
-              <span className="block bg-butter px-2 py-1 text-court" data-card-line>
-                {openLabel}
-              </span>
+          ))}
+          {/* Touch devices never see the cursor label, so the card states
+              what it does. */}
+          <span className="block overflow-hidden">
+            <span className="block bg-butter px-2 py-1 text-court" data-card-line>
+              {openLabel}
             </span>
-          </div>
+          </span>
         </div>
       </div>
     </section>
+    </div>
   );
 }
