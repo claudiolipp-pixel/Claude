@@ -112,9 +112,16 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
      * this and the hold stops reading as a pause and starts reading as a stall.
      */
     <div ref={cardRef} className="relative h-[140svh]">
+    {/*
+      The card floats inside a gutter rather than running edge to edge. The
+      gutter is what makes the lift legible: without a fixed frame around it
+      there is no reference edge to see the card move against, and full bleed
+      sliding over full bleed reads as a cut instead of a movement.
+      Sticky offset matches the gutter so the card keeps it on all four sides.
+    */}
     <section
       id={work.id}
-      className="sticky top-0 h-[100svh] overflow-hidden bg-court"
+      className="sticky top-2 h-[calc(100svh-1rem)] overflow-hidden rounded-xl bg-court md:top-3 md:h-[calc(100svh-1.5rem)] md:rounded-2xl"
       aria-label={work.title}
     >
       {/* Taller than the card and offset upward, so the lift has room to

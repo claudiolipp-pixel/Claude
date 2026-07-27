@@ -55,7 +55,7 @@ export default function App() {
           The card stack. Each card is sticky, so the next scrolls over the last;
           the wrapper just has to be tall enough to give them all room.
         */}
-        <div className="relative">
+        <div className="relative px-2 pt-2 md:px-3 md:pt-3">
           {content.works.map((work, i) => (
             <StackCard
               key={`${lang}-${work.id}`}
