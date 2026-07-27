@@ -12,7 +12,14 @@ import { useCursorTarget } from '@/components/Cursor';
  * The card being covered dims and settles back a little, so the stack reads as
  * depth instead of a flat wipe.
  */
-export default function StackCard({ work, index }: { work: Work; index: number }) {
+interface StackCardProps {
+  work: Work;
+  index: number;
+  onOpen: (work: Work) => void;
+  openLabel: string;
+}
+
+export default function StackCard({ work, index, onOpen, openLabel }: StackCardProps) {
   const cardRef = useRef<HTMLElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -97,7 +104,22 @@ export default function StackCard({ work, index }: { work: Work; index: number }
         />
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 flex items-end gap-4 px-5 pb-10 text-chalk md:px-10 md:pb-14">
+      {/*
+        The whole card is the control. A button can't legally contain the
+        heading, so it sits over the media as an overlay with its own
+        accessible name, leaving the visible type as real headings underneath.
+      */}
+      <button
+        type="button"
+        onClick={() => onOpen(work)}
+        className="absolute inset-0 z-10 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-butter"
+      >
+        <span className="sr-only">
+          {work.title} — {openLabel}
+        </span>
+      </button>
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end gap-4 px-5 pb-10 text-chalk md:px-10 md:pb-14">
         <span className="label shrink-0 pb-1 text-chalk/60 tabular-nums">
           <span className="block overflow-hidden">
             <span className="block" data-card-line>
@@ -114,7 +136,7 @@ export default function StackCard({ work, index }: { work: Work; index: number }
               </span>
             </span>
           </h2>
-          <div className="label mt-2 flex flex-wrap gap-x-5 gap-y-1 text-chalk/70">
+          <div className="label mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-chalk/70">
             {work.meta.map((m) => (
               <span key={m} className="block overflow-hidden">
                 <span className="block" data-card-line>
@@ -122,6 +144,13 @@ export default function StackCard({ work, index }: { work: Work; index: number }
                 </span>
               </span>
             ))}
+            {/* Touch devices never see the cursor label, so the card states
+                what it does. */}
+            <span className="block overflow-hidden">
+              <span className="block bg-butter px-2 py-1 text-court" data-card-line>
+                {openLabel}
+              </span>
+            </span>
           </div>
         </div>
       </div>

@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ScrollTrigger } from '@/lib/gsap';
 import { useSmoothScroll } from '@/hooks/useSmoothScroll';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import type { Work } from '@/content/site';
 import { CursorProvider } from '@/components/Cursor';
 import Loader from '@/components/Loader';
 import Nav from '@/components/Nav';
 import StackCard from '@/components/StackCard';
-import Details from '@/components/Details';
+import DetailPanel from '@/components/DetailPanel';
 import Ticker from '@/components/Ticker';
 import Waitlist from '@/components/Waitlist';
 import Footer from '@/components/Footer';
@@ -15,6 +16,7 @@ export default function App() {
   const lenis = useSmoothScroll();
   const { content, lang } = useLanguage();
   const [loaded, setLoaded] = useState(false);
+  const [openWork, setOpenWork] = useState<Work | null>(null);
 
   /**
    * German copy is longer than English, so trigger positions shift when the
@@ -34,6 +36,15 @@ export default function App() {
     };
   }, [loaded]);
 
+  /** Lenis keeps running behind a modal and steals its wheel events. */
+  useEffect(() => {
+    if (!lenis.current) return;
+    if (openWork) lenis.current.stop();
+    else lenis.current.start();
+  }, [openWork, lenis]);
+
+  const closeDetail = useCallback(() => setOpenWork(null), []);
+
   return (
     <CursorProvider>
       <Loader onDone={() => setLoaded(true)} />
@@ -46,16 +57,25 @@ export default function App() {
         */}
         <div className="relative">
           {content.works.map((work, i) => (
-            <StackCard key={`${lang}-${work.id}`} work={work} index={i} />
+            <StackCard
+              key={`${lang}-${work.id}`}
+              work={work}
+              index={i}
+              onOpen={setOpenWork}
+              openLabel={content.detail.open}
+            />
           ))}
         </div>
 
-        <Details />
         <Ticker />
         <Waitlist />
       </main>
 
       <Footer />
+
+      {openWork && (
+        <DetailPanel key={openWork.id} work={openWork} onClose={closeDetail} />
+      )}
     </CursorProvider>
   );
 }

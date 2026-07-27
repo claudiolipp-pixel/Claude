@@ -18,16 +18,25 @@ export interface WorkSpec {
   value: string;
 }
 
+/** The panel that opens when a card is clicked. */
+export interface WorkDetail {
+  /** Display headline inside the panel. Never ends with a period. */
+  title: string;
+  lead: string;
+  body: string[];
+  specs?: WorkSpec[];
+}
+
 export interface Work {
   id: string;
   num: string;
   /** Media lives in /public — swap the file, keep the path. */
   media: { type: 'video' | 'image'; src: string; poster?: string; alt: string };
+  /** Cursor label over the media, and the verb on the open control. */
   tag: string;
   title: string;
   meta: [string, string];
-  body: string;
-  specs?: WorkSpec[];
+  detail: WorkDetail;
 }
 
 export interface SiteContent {
@@ -38,9 +47,8 @@ export interface SiteContent {
    * actually been set up, so the claim is evidence rather than a slogan.
    */
   loader: { places: string[]; resolve: string };
-  /** Short display line above the detail passage. Never ends with a period. */
-  detailsTitle: string;
-  intro: string;
+  /** UI strings for the detail panel that opens from a card. */
+  detail: { open: string; close: string; specsLabel: string };
   works: Work[];
   ticker: string[];
   waitlist: {
@@ -77,9 +85,7 @@ const en: SiteContent = {
     places: ['A park', 'A rooftop', 'A beach', 'A courtyard', 'A car park', 'A gym floor'],
     resolve: 'Anywhere',
   },
-  detailsTitle: 'One court, one backpack',
-  intro:
-    'The portable rebound sport. Real sport that still fits in a backpack. Born in Graz, for the world.',
+  detail: { open: 'Details', close: 'Close', specsLabel: 'Specs' },
   works: [
     {
       id: 'airballer',
@@ -88,21 +94,40 @@ const en: SiteContent = {
       tag: 'Watch',
       title: 'The Airballer',
       meta: ['Product', '2026'],
-      body: 'An inflatable rebound court that packs into a backpack. Inflate it in minutes and almost any place becomes your arena — grass, sand or indoor.',
-      specs: [
-        { label: 'Court', value: 'Ø 100 cm, inflatable' },
-        { label: 'Carry', value: 'Fits in a backpack' },
-        { label: 'Setup', value: 'Minutes, not hours' },
-      ],
+      detail: {
+        title: 'One court, one backpack',
+        lead: 'The portable rebound sport. Real sport that still fits in a backpack. Born in Graz, for the world.',
+        body: [
+          'An inflatable rebound court that packs into a backpack. Inflate it in minutes and almost any place becomes your arena — grass, sand or indoor.',
+          'The AIRBALLER is the product. The game, the league and the people are built around it.',
+        ],
+        specs: [
+          { label: 'Court', value: 'Ø 100 cm, inflatable' },
+          { label: 'Carry', value: 'Fits in a backpack' },
+          { label: 'Setup', value: 'Minutes, not hours' },
+        ],
+      },
     },
     {
       id: 'game',
       num: '02',
       media: { type: 'image', src: MEDIA.rally, alt: 'An AIRBALL rally in a Graz park' },
       tag: 'The rules',
-      title: 'Three Contacts',
-      meta: ['The Game', '1v1 / 2v2'],
-      body: 'Strike the ball onto the AIRBALLER — the other team has up to three contacts to play it back. Feet only, or full body. Ball hits the ground, point over. Easy to learn. Hard to put down.',
+      title: 'The Game',
+      meta: ['Three Contacts', '1v1 / 2v2'],
+      detail: {
+        title: 'Three contacts to answer',
+        lead: '1v1 or 2v2. Feet only, or full body.',
+        body: [
+          'Strike the ball onto the AIRBALLER — the other team has up to three contacts to play it back. Ball hits the ground, point over.',
+          'Easy to learn. Hard to put down.',
+        ],
+        specs: [
+          { label: 'Format', value: '1v1 or 2v2' },
+          { label: 'Contacts', value: 'Up to three' },
+          { label: 'Touch', value: 'Feet or full body' },
+        ],
+      },
     },
     {
       id: 'movement',
@@ -110,8 +135,20 @@ const en: SiteContent = {
       media: { type: 'image', src: MEDIA.movement, alt: 'An AIRBALLER after a point' },
       tag: 'Join us',
       title: 'From Ballers For Ballers',
-      meta: ['The Movement', 'Graz, AT'],
-      body: 'Built by footballers from Graz who wanted real competition without a stadium. We are the first AIRBALLERS. You are next.',
+      meta: ['The Team', 'Graz, AT'],
+      detail: {
+        title: 'We are the first Airballers',
+        lead: 'Built by footballers from Graz who wanted real competition without a stadium.',
+        body: [
+          'AIRBALL is the brand and the movement. AIRBALLERS are the people — the community, and the league that carries their name.',
+          'We build the product around its people, never an audience around the product.',
+        ],
+        specs: [
+          { label: 'Home', value: 'Graz, Austria' },
+          { label: 'Started', value: '2026' },
+          { label: 'Next', value: 'You' },
+        ],
+      },
     },
   ],
   ticker: ['Play. Compete. Connect.', 'Anywhere Is An Arena'],
@@ -142,9 +179,7 @@ const de: SiteContent = {
     places: ['Ein Park', 'Ein Dach', 'Ein Strand', 'Ein Hof', 'Ein Parkdeck', 'Eine Halle'],
     resolve: 'Überall',
   },
-  detailsTitle: 'Ein Court, ein Rucksack',
-  intro:
-    'Der tragbare Rebound-Sport. Echter Sport, der in einen Rucksack passt. Entstanden in Graz, gebaut für überall.',
+  detail: { open: 'Details', close: 'Schließen', specsLabel: 'Daten' },
   works: [
     {
       id: 'airballer',
@@ -153,21 +188,40 @@ const de: SiteContent = {
       tag: 'Ansehen',
       title: 'Der Airballer',
       meta: ['Produkt', '2026'],
-      body: 'Ein aufblasbarer Rebound-Court, der in den Rucksack passt. In Minuten aufgepumpt — und fast jeder Ort wird zur Arena: Wiese, Sand oder Halle.',
-      specs: [
-        { label: 'Court', value: 'Ø 100 cm, aufblasbar' },
-        { label: 'Transport', value: 'Passt in den Rucksack' },
-        { label: 'Aufbau', value: 'Minuten, keine Stunden' },
-      ],
+      detail: {
+        title: 'Ein Court, ein Rucksack',
+        lead: 'Der tragbare Rebound-Sport. Echter Sport, der in einen Rucksack passt. Entstanden in Graz, gebaut für überall.',
+        body: [
+          'Ein aufblasbarer Rebound-Court, der in den Rucksack passt. In Minuten aufgepumpt — und fast jeder Ort wird zur Arena: Wiese, Sand oder Halle.',
+          'Der AIRBALLER ist das Produkt. Das Spiel, die Liga und die Leute bauen darauf auf.',
+        ],
+        specs: [
+          { label: 'Court', value: 'Ø 100 cm, aufblasbar' },
+          { label: 'Transport', value: 'Passt in den Rucksack' },
+          { label: 'Aufbau', value: 'Minuten, keine Stunden' },
+        ],
+      },
     },
     {
       id: 'game',
       num: '02',
       media: { type: 'image', src: MEDIA.rally, alt: 'Ein AIRBALL-Ballwechsel in einem Grazer Park' },
       tag: 'Die Regeln',
-      title: 'Drei Kontakte',
-      meta: ['Das Spiel', '1v1 / 2v2'],
-      body: 'Spiel den Ball auf den AIRBALLER — das andere Team hat bis zu drei Kontakte zum Zurückspielen. Nur Füße, oder ganzer Körper. Ball am Boden, Punkt vorbei. Schnell gelernt. Schwer wieder wegzulegen.',
+      title: 'Das Spiel',
+      meta: ['Drei Kontakte', '1v1 / 2v2'],
+      detail: {
+        title: 'Drei Kontakte zum Antworten',
+        lead: '1v1 oder 2v2. Nur Füße, oder ganzer Körper.',
+        body: [
+          'Spiel den Ball auf den AIRBALLER — das andere Team hat bis zu drei Kontakte zum Zurückspielen. Ball am Boden, Punkt vorbei.',
+          'Schnell gelernt. Schwer wieder wegzulegen.',
+        ],
+        specs: [
+          { label: 'Format', value: '1v1 oder 2v2' },
+          { label: 'Kontakte', value: 'Bis zu drei' },
+          { label: 'Berührung', value: 'Füße oder ganzer Körper' },
+        ],
+      },
     },
     {
       id: 'movement',
@@ -175,8 +229,20 @@ const de: SiteContent = {
       media: { type: 'image', src: MEDIA.movement, alt: 'Ein AIRBALLER nach dem Punkt' },
       tag: 'Mach mit',
       title: 'From Ballers For Ballers',
-      meta: ['Die Bewegung', 'Graz, AT'],
-      body: 'Gebaut von Fußballern aus Graz, die echten Wettkampf ohne Stadion wollten. Wir sind die ersten AIRBALLERS. Du bist der Nächste.',
+      meta: ['Das Team', 'Graz, AT'],
+      detail: {
+        title: 'Wir sind die ersten Airballers',
+        lead: 'Gebaut von Fußballern aus Graz, die echten Wettkampf ohne Stadion wollten.',
+        body: [
+          'AIRBALL ist die Marke und die Bewegung. AIRBALLERS sind die Leute — die Community und die Liga, die ihren Namen trägt.',
+          'Wir bauen das Produkt um seine Leute herum, nie ein Publikum um das Produkt.',
+        ],
+        specs: [
+          { label: 'Zuhause', value: 'Graz, Österreich' },
+          { label: 'Gestartet', value: '2026' },
+          { label: 'Als Nächstes', value: 'Du' },
+        ],
+      },
     },
   ],
   ticker: ['Play. Compete. Connect.', 'Anywhere Is An Arena'],
