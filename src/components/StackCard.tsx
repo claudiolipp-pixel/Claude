@@ -53,21 +53,28 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
           media,
           { scale: 1 },
           {
-            scale: 1.08,
+            scale: 1.06,
             ease: 'none',
             scrollTrigger: { trigger: card, start: 'top top', end: 'bottom top', scrub: true },
           },
         );
 
-        // Dim while the next card covers this one.
+        /*
+         * Once the hold is over, the card lifts away as the next one arrives,
+         * rather than sitting still while it is covered. Being scrubbed makes
+         * it bidirectional for free: scroll back up and the card is pushed
+         * down again. The scrub lag is what gives the lift its slight delay
+         * behind the finger instead of tracking it exactly.
+         */
         gsap.to(media, {
+          yPercent: -7,
           filter: 'brightness(0.4)',
           ease: 'none',
           scrollTrigger: {
             trigger: card,
             start: 'bottom bottom',
             end: 'bottom top',
-            scrub: true,
+            scrub: 0.8,
           },
         });
       });
@@ -92,7 +99,9 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
       className="sticky top-0 h-[100svh] overflow-hidden bg-court"
       aria-label={work.title}
     >
-      <div ref={mediaRef} {...cursorProps} className="absolute inset-0">
+      {/* Taller than the card and offset upward, so the lift has room to
+          travel without ever pulling an edge into view. */}
+      <div ref={mediaRef} {...cursorProps} className="absolute inset-x-0 -top-[10%] h-[120%]">
         {work.media.type === 'video' ? (
           <video
             ref={videoRef}
