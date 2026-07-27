@@ -78,7 +78,7 @@ const MEDIA = {
 } as const;
 
 export const SOCIAL = {
-  instagram: 'https://instagram.com/airball.at',
+  instagram: 'https://www.instagram.com/airball.at/',
   handle: '@airball.at',
 } as const;
 

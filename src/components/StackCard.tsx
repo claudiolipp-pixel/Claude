@@ -60,21 +60,39 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
         );
 
         /*
-         * Once the hold is over, the card lifts away as the next one arrives,
-         * rather than sitting still while it is covered. Being scrubbed makes
-         * it bidirectional for free: scroll back up and the card is pushed
-         * down again. The scrub lag is what gives the lift its slight delay
-         * behind the finger instead of tracking it exactly.
+         * Once the hold is over, the card slides away as the next one
+         * arrives. Being scrubbed makes it bidirectional for free: scroll
+         * back up and the card is pushed down again.
+         *
+         * Only transform and opacity are animated here. Dimming used to run
+         * through filter: brightness() on the media itself, which repaints a
+         * full-screen video every frame; the dim is now an overlay's opacity,
+         * which the compositor handles without touching the image.
+         *
+         * The scrub lag is deliberately short. Lenis already smooths the
+         * scroll, so a long lag on top of it smooths twice and the movement
+         * turns rubbery rather than fluid.
          */
         gsap.to(media, {
-          yPercent: -7,
-          filter: 'brightness(0.4)',
+          yPercent: -9,
           ease: 'none',
           scrollTrigger: {
             trigger: card,
             start: 'bottom bottom',
             end: 'bottom top',
-            scrub: 0.8,
+            scrub: 0.25,
+          },
+        });
+
+        // The dim layer rides inside the media, so it only needs its opacity.
+        gsap.to(card.querySelector('[data-card-dim]'), {
+          opacity: 0.62,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: card,
+            start: 'bottom bottom',
+            end: 'bottom top',
+            scrub: 0.25,
           },
         });
       });
@@ -100,8 +118,13 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
       aria-label={work.title}
     >
       {/* Taller than the card and offset upward, so the lift has room to
-          travel without ever pulling an edge into view. */}
-      <div ref={mediaRef} {...cursorProps} className="absolute inset-x-0 -top-[10%] h-[120%]">
+          travel without ever pulling an edge into view. At -9% travel the
+          bottom edge still sits ~2.5% below the card. */}
+      <div
+        ref={mediaRef}
+        {...cursorProps}
+        className="absolute inset-x-0 -top-[14%] h-[128%] will-change-transform"
+      >
         {work.media.type === 'video' ? (
           <video
             ref={videoRef}
@@ -129,6 +152,10 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
           aria-hidden="true"
           className="absolute inset-0 bg-gradient-to-t from-court/85 via-court/10 to-court/30"
         />
+        {/* Dims the card as the next one covers it. A separate layer rather
+            than a filter on the media, so the compositor can fade it without
+            repainting the footage. */}
+        <div data-card-dim aria-hidden="true" className="absolute inset-0 bg-court opacity-0" />
       </div>
 
       {/*
