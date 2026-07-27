@@ -44,10 +44,22 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
         });
 
         /*
-         * Dim — but never scale — while the next card covers this one. A
-         * scaled card stops filling the viewport and shows its own edges
-         * through the gap, which reads as a broken layer rather than depth.
+         * A slow push in across the whole runway. Two of the three cards are
+         * stills, so without this the card is motionless for its entire hold
+         * and reads as stuck rather than held. Scaling up only — scaling down
+         * would pull the media inside the frame and expose its edges.
          */
+        gsap.fromTo(
+          media,
+          { scale: 1 },
+          {
+            scale: 1.08,
+            ease: 'none',
+            scrollTrigger: { trigger: card, start: 'top top', end: 'bottom top', scrub: true },
+          },
+        );
+
+        // Dim while the next card covers this one.
         gsap.to(media, {
           filter: 'brightness(0.4)',
           ease: 'none',
@@ -70,10 +82,11 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
   return (
     /*
      * The runway is taller than the card, so each card holds at the top for
-     * roughly 1.8 screens of scrolling before the next one covers it. Scroll
-     * distance per card is the runway height, not the card height.
+     * roughly 1.4 screens of scrolling before the next covers it. Scroll
+     * distance per card is the runway height, not the card height. Longer than
+     * this and the hold stops reading as a pause and starts reading as a stall.
      */
-    <div ref={cardRef} className="relative h-[180svh]">
+    <div ref={cardRef} className="relative h-[140svh]">
     <section
       id={work.id}
       className="sticky top-0 h-[100svh] overflow-hidden bg-court"

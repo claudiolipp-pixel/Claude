@@ -4,6 +4,7 @@ import { gsap, Observer, EASE } from '@/lib/gsap';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { SOCIAL } from '@/content/site';
 import { scrollToAnchor } from '@/hooks/useSmoothScroll';
+import Wordmark from '@/components/Wordmark';
 
 interface NavProps {
   lenis: React.MutableRefObject<Lenis | null>;
@@ -102,21 +103,7 @@ export default function Nav({ lenis }: NavProps) {
           lenis.current ? lenis.current.scrollTo(0) : window.scrollTo({ top: 0 });
         }}
       >
-        {/*
-          The mark carries its own alpha, so it needs no plate behind it. It
-          ships white; over a light surface it is inverted to ink rather than
-          swapped for a second file.
-        */}
-        <img
-          src="/brand/mark-a.png"
-          alt=""
-          className={`h-7 w-7 object-contain transition-[filter] duration-500 ${
-            onLight ? 'invert' : ''
-          }`}
-        />
-        <span className="font-display text-xl font-black uppercase tracking-wordmark">
-          Airball
-        </span>
+        <Wordmark className="text-xl" invert={onLight} />
       </a>
 
       <div className="flex items-center gap-4 md:gap-5">

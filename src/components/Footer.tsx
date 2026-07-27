@@ -1,5 +1,6 @@
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { SOCIAL } from '@/content/site';
+import Wordmark from '@/components/Wordmark';
 
 export default function Footer() {
   const { content } = useLanguage();
@@ -7,7 +8,7 @@ export default function Footer() {
 
   return (
     <footer className="relative z-10 flex flex-wrap items-center justify-between gap-5 bg-court px-5 py-11 text-chalk md:px-10 md:py-14">
-      <div className="font-display text-2xl font-black uppercase tracking-[0.12em]">Airball</div>
+      <Wordmark className="text-2xl" />
 
       <div className="label flex flex-wrap items-center gap-x-3 gap-y-2 text-chalk/55">
         <a
