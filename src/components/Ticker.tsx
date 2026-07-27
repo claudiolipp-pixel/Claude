@@ -66,7 +66,7 @@ export default function Ticker() {
   return (
     <div
       aria-hidden="true"
-      className="mt-13 overflow-hidden border-y border-court bg-butter py-2.5 text-court"
+      className="relative z-10 overflow-hidden border-y border-court bg-butter py-2.5 text-court"
     >
       <div ref={trackRef} className="flex w-max will-change-transform">
         {[...phrases, ...phrases].map((phrase, i) => (

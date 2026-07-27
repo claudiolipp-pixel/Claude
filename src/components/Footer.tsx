@@ -6,10 +6,10 @@ export default function Footer() {
   const t = content.footer;
 
   return (
-    <footer className="flex flex-wrap items-center justify-between gap-5 px-5 py-11 md:px-10 md:py-14">
+    <footer className="relative z-10 flex flex-wrap items-center justify-between gap-5 bg-court px-5 py-11 text-chalk md:px-10 md:py-14">
       <div className="font-display text-2xl font-black uppercase tracking-[0.12em]">Airball</div>
 
-      <div className="label flex flex-wrap items-center gap-x-3 gap-y-2 text-dim">
+      <div className="label flex flex-wrap items-center gap-x-3 gap-y-2 text-chalk/55">
         <a
           href={SOCIAL.instagram}
           target="_blank"

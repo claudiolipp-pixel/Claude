@@ -41,7 +41,11 @@ export default function Waitlist() {
   }
 
   return (
-    <section id="waitlist" className="bg-butter px-5 pb-24 pt-20 text-court md:px-10 md:pb-32 md:pt-28">
+    <section
+      id="waitlist"
+      data-surface="light"
+      className="relative z-10 bg-butter px-5 pb-24 pt-20 text-court md:px-10 md:pb-32 md:pt-28"
+    >
       <div ref={headRef}>
         <span className="label block text-court/55">
           <span className="reveal-mask">

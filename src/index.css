@@ -12,8 +12,9 @@
     scroll-behavior: auto;
   }
 
+  /* Court Black is the stage (Brand Guide 03); light surfaces sit on top of it. */
   body {
-    @apply bg-cream text-court font-mono text-sm leading-relaxed antialiased;
+    @apply bg-court text-chalk font-mono text-sm leading-relaxed antialiased;
   }
 
   ::selection {
@@ -52,9 +53,15 @@
   /**
    * The clipping frame for a mask reveal. Children marked
    * [data-reveal-line] start pushed below it and slide into view.
+   *
+   * The padding matters: display type is set at line-height 0.9, so the text
+   * box is shorter than the glyphs and a bare overflow:hidden slices the
+   * ascenders. The negative margin gives the clip room without adding space.
    */
   .reveal-mask {
     @apply block overflow-hidden;
+    padding-block: 0.14em;
+    margin-block: -0.14em;
   }
 
   .reveal-line {

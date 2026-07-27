@@ -32,6 +32,14 @@ export interface Work {
 
 export interface SiteContent {
   nav: { waitlist: string; instagram: string; menuLabel: string };
+  /**
+   * The load sequence cycles these places, then settles on the master line.
+   * "Anywhere Is An Arena" made literal — each one is somewhere a court has
+   * actually been set up, so the claim is evidence rather than a slogan.
+   */
+  loader: { places: string[]; resolve: string };
+  /** Short display line above the detail passage. Never ends with a period. */
+  detailsTitle: string;
   intro: string;
   works: Work[];
   ticker: string[];
@@ -65,6 +73,11 @@ export const SOCIAL = {
 
 const en: SiteContent = {
   nav: { waitlist: 'Waitlist', instagram: 'Instagram', menuLabel: 'Menu' },
+  loader: {
+    places: ['A park', 'A rooftop', 'A beach', 'A courtyard', 'A car park', 'A gym floor'],
+    resolve: 'Anywhere',
+  },
+  detailsTitle: 'One court, one backpack',
   intro:
     'The portable rebound sport. Real sport that still fits in a backpack. Born in Graz, for the world.',
   works: [
@@ -125,6 +138,11 @@ const en: SiteContent = {
 
 const de: SiteContent = {
   nav: { waitlist: 'Warteliste', instagram: 'Instagram', menuLabel: 'Menü' },
+  loader: {
+    places: ['Ein Park', 'Ein Dach', 'Ein Strand', 'Ein Hof', 'Ein Parkdeck', 'Eine Halle'],
+    resolve: 'Überall',
+  },
+  detailsTitle: 'Ein Court, ein Rucksack',
   intro:
     'Der tragbare Rebound-Sport. Echter Sport, der in einen Rucksack passt. Entstanden in Graz, gebaut für überall.',
   works: [

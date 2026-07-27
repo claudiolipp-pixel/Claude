@@ -12,12 +12,11 @@ interface NavProps {
 export default function Nav({ lenis }: NavProps) {
   const { content, lang, toggle } = useLanguage();
   const navRef = useRef<HTMLElement>(null);
-  const [solid, setSolid] = useState(false);
+  const [onLight, setOnLight] = useState(false);
 
   /**
-   * Two behaviours share one Observer: past ~40px the bar gains its surface,
-   * and scrolling down hides it while scrolling up brings it back. Hiding on
-   * the way down is what keeps oversized headlines unobstructed.
+   * Scrolling down hides the bar, scrolling up brings it back, so the
+   * full-bleed cards are never permanently obstructed.
    */
   useEffect(() => {
     const el = navRef.current;
@@ -49,27 +48,50 @@ export default function Nav({ lenis }: NavProps) {
       });
     }, navRef);
 
-    const onScroll = () => setSolid(window.scrollY > 40);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => {
-      ctx.revert();
-      window.removeEventListener('scroll', onScroll);
-    };
+    return () => ctx.revert();
   }, []);
+
+  /**
+   * The bar rides over dark cards and light sections alike, so it takes its
+   * ink from whichever surface is currently behind it. Sections opt in by
+   * carrying `data-surface="light"`.
+   */
+  useEffect(() => {
+    const lights = document.querySelectorAll('[data-surface="light"]');
+    if (!lights.length) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          // The bar's own band across the top of the viewport.
+          if (entry.isIntersecting) setOnLight(true);
+          else if ([...lights].every((l) => !isUnderNav(l))) setOnLight(false);
+        }
+      },
+      { rootMargin: '0px 0px -92% 0px', threshold: 0 },
+    );
+
+    const isUnderNav = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return r.top <= 72 && r.bottom >= 0;
+    };
+
+    lights.forEach((l) => io.observe(l));
+    return () => io.disconnect();
+  }, [lang]);
+
+  /*
+   * Over the dark cards a gradient scrim is enough. Over a light section the
+   * bar needs its own surface, or headlines scroll straight through it.
+   */
+  const surface = onLight
+    ? 'text-court bg-cream/95 backdrop-blur-sm border-court/10'
+    : 'text-chalk bg-gradient-to-b from-court/70 to-transparent border-transparent';
 
   return (
     <nav
       ref={navRef}
-      className={[
-        'fixed inset-x-0 top-0 z-50 flex items-center justify-between',
-        'px-5 py-4 md:px-10 md:py-5',
-        'border-b transition-[background-color,border-color] duration-300',
-        solid
-          ? 'border-court/15 bg-cream/[0.97] backdrop-blur-sm'
-          : 'border-transparent bg-gradient-to-b from-cream/95 to-transparent',
-      ].join(' ')}
+      className={`fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b px-5 py-4 transition-colors duration-500 md:px-10 md:py-5 ${surface}`}
     >
       <a
         href="#top"
@@ -80,7 +102,11 @@ export default function Nav({ lenis }: NavProps) {
           lenis.current ? lenis.current.scrollTo(0) : window.scrollTo({ top: 0 });
         }}
       >
-        <span className="grid h-7 w-7 place-items-center bg-court">
+        <span
+          className={`grid h-7 w-7 place-items-center transition-colors duration-500 ${
+            onLight ? 'bg-court' : 'bg-chalk'
+          }`}
+        >
           <img src="/brand/mark-a.jpg" alt="" className="h-full w-full object-cover" />
         </span>
         <span className="font-display text-xl font-black uppercase tracking-wordmark">
@@ -113,7 +139,7 @@ export default function Nav({ lenis }: NavProps) {
             e.preventDefault();
             scrollToAnchor(lenis.current, '#waitlist');
           }}
-          className="label bg-butter px-3.5 py-2.5 transition-colors hover:bg-court hover:text-cream"
+          className="label bg-butter px-3.5 py-2.5 text-court transition-colors hover:bg-chalk"
         >
           {content.nav.waitlist}
         </a>
