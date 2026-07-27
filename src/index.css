@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    /* Lenis drives scrolling; leaving native smooth scroll on fights it. */
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-cream text-court font-mono text-sm leading-relaxed antialiased;
+  }
+
+  ::selection {
+    @apply bg-butter text-court;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-court;
+    outline-style: solid;
+  }
+
+  img,
+  video {
+    @apply block max-w-full;
+  }
+}
+
+@layer components {
+  /**
+   * Brand Guide 04: Big Shoulders 900, all caps, tight leading (0.9).
+   * Headlines never end with a period.
+   */
+  .display {
+    @apply font-display font-black uppercase;
+    line-height: 0.9;
+    letter-spacing: 0.01em;
+  }
+
+  /** Small letterspaced caps label — Plex Mono Medium. */
+  .label {
+    @apply font-mono font-medium uppercase;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+  }
+
+  /**
+   * The clipping frame for a mask reveal. Children marked
+   * [data-reveal-line] start pushed below it and slide into view.
+   */
+  .reveal-mask {
+    @apply block overflow-hidden;
+  }
+
+  .reveal-line {
+    @apply block will-change-transform;
+  }
+
+  /**
+   * Yellow highlight that wipes across a link on hover — the one place
+   * yellow is allowed outside conversion blocks (Brand Guide 07).
+   */
+  .highlight-sweep {
+    background-image: linear-gradient(theme('colors.butter'), theme('colors.butter'));
+    background-repeat: no-repeat;
+    background-size: 0% 38%;
+    background-position: 0 78%;
+    transition: background-size 0.45s theme('transitionTimingFunction.editorial');
+  }
+
+  .highlight-sweep:hover,
+  a:hover > .highlight-sweep {
+    background-size: 100% 38%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
