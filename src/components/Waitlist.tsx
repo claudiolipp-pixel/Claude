@@ -65,7 +65,7 @@ export default function Waitlist() {
             </span>
           </span>
         </span>
-        <h2 className="display mt-2 text-[clamp(54px,12vw,140px)]">
+        <h2 className="display mt-2 text-[clamp(40px,min(12vw,18svh),140px)]">
           <span className="reveal-mask">
             <span className="reveal-line" data-reveal-line>
               {t.title}

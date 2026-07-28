@@ -190,7 +190,7 @@ export default function Loader({ onDone }: { onDone: () => void }) {
 
       <p
         data-loader-word
-        className="display relative z-10 text-center text-[clamp(40px,11vw,110px)] drop-shadow-[0_2px_40px_rgba(10,10,10,0.9)]"
+        className="display relative z-10 text-center text-[clamp(32px,min(11vw,15svh),110px)] drop-shadow-[0_2px_40px_rgba(10,10,10,0.9)]"
       >
         <span className="block overflow-hidden py-[0.14em] [margin-block:-0.14em]">
           <span ref={slotRef} className="block will-change-transform">

@@ -36,7 +36,9 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
       mm.add(
         {
           motionOk: '(prefers-reduced-motion: no-preference)',
-          isNarrow: '(max-width: 767px)',
+          // Mirrors the `roomy` screen: anything short counts as tight, even
+          // when it is wide.
+          isNarrow: 'not all and (min-width: 768px) and (min-height: 600px)',
         },
         (context) => {
         const { motionOk, isNarrow } = context.conditions as Record<string, boolean>;
@@ -154,7 +156,7 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
              * and letterboxed against Court Black instead; from md up there is
              * enough width for cover to fill without losing anything.
              */
-            className="h-full w-full object-contain md:object-cover"
+            className="h-full w-full object-contain roomy:object-cover"
             autoPlay
             muted
             loop
@@ -205,7 +207,9 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
         line beneath it sharing that same left edge.
       */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-5 pb-10 text-chalk md:px-10 md:pb-14">
-        <h2 className="display text-[clamp(38px,8.5vw,96px)]">
+        {/* Sized against the shorter axis too: on a sideways phone 8.5vw is
+            71px inside a 366px card, which swallows the whole frame. */}
+        <h2 className="display text-[clamp(36px,min(8.5vw,12svh),96px)]">
           <span className="block overflow-hidden py-[0.14em] [margin-block:-0.14em]">
             <span className="block" data-card-line>
               {work.title}
