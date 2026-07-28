@@ -131,24 +131,36 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
         )}
 
         {work.detail.gallery && (
-          <div className="mt-12 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3" data-panel-item>
-            {work.detail.gallery.map((image, i) => (
-              <figure
-                key={image.src}
-                className={`overflow-hidden rounded-lg bg-court md:rounded-xl ${
-                  // Three portraits into two columns leaves an orphan; the
-                  // first spans both so the row stays whole on small screens.
-                  i === 0 ? 'col-span-2 md:col-span-1' : ''
-                }`}
-              >
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  loading="lazy"
-                  className={`w-full object-cover ${i === 0 ? 'aspect-[4/3] md:aspect-[2/3]' : 'aspect-[2/3]'}`}
-                />
-              </figure>
-            ))}
+          /* The column count follows the number of photos, so a pair fills the
+             row instead of leaving a hole where a third would go. */
+          <div
+            className={`mt-12 grid grid-cols-2 gap-2 md:gap-3 ${
+              work.detail.gallery.length >= 3 ? 'md:grid-cols-3' : 'md:grid-cols-2'
+            }`}
+            data-panel-item
+          >
+            {work.detail.gallery.map((image, i) => {
+              // Three portraits into two columns leaves an orphan on small
+              // screens; the first spans both so the row stays whole.
+              const spansOnMobile = work.detail.gallery!.length % 2 === 1 && i === 0;
+              return (
+                <figure
+                  key={image.src}
+                  className={`overflow-hidden rounded-lg bg-court md:rounded-xl ${
+                    spansOnMobile ? 'col-span-2 md:col-span-1' : ''
+                  }`}
+                >
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    loading="lazy"
+                    className={`w-full object-cover ${
+                      spansOnMobile ? 'aspect-[4/3] md:aspect-[2/3]' : 'aspect-[2/3]'
+                    }`}
+                  />
+                </figure>
+              );
+            })}
           </div>
         )}
 

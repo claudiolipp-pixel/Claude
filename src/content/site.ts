@@ -156,16 +156,39 @@ const en: SiteContent = {
       title: 'The Game',
       meta: ['Three Contacts', '1v1 / 2v2'],
       detail: {
-        title: 'Three contacts to answer',
-        lead: '1v1 or 2v2. Feet only, or full body.',
-        body: [
-          'Strike the ball onto the AIRBALLER — the other team has up to three contacts to play it back. Ball hits the ground, point over.',
-          'Easy to learn. Hard to put down.',
+        title: 'This is how we play',
+        lead: 'Easy to learn. Hard to put down. Pick a mode, pick a side, and run it back.',
+        sections: [
+          {
+            heading: 'Pick Your Side',
+            body: '1v1 or 2v2. Two players or two teams face off around the Airballer. Rock-paper-scissors decides who serves first. That is tradition.',
+          },
+          {
+            heading: 'Strike The Ball Onto The Airballer',
+            body: 'Serve or attack by playing the ball onto the rebound surface. The bounce sends it flying. Where it goes next is your opponent’s problem.',
+          },
+          {
+            heading: 'Up To Three Contacts',
+            body: 'The receiving team has up to three contacts to control the ball and play it back onto the Airballer. Use all three, or smash it back first-touch.',
+          },
+          {
+            heading: 'The Game Mode',
+            body: 'Choose your mode before the match. Football rules — feet, chest and head only. Padel rules — played 1v1, two touches after receiving. Or full-body mode, where every touch counts.',
+          },
+          {
+            heading: 'Ball Hits The Ground, Point Over',
+            body: 'If the ball touches the ground on your side of the rally, the point goes to the other team. First to 11, win by two. Then rematch. Always rematch.',
+          },
+        ],
+        gallery: [
+          { src: '/media/game/rally-01.jpg', alt: 'A rally around the AIRBALLER, ball in the air' },
+          { src: '/media/game/watching.jpg', alt: 'Players waiting for the ball to come back' },
         ],
         specs: [
           { label: 'Format', value: '1v1 or 2v2' },
           { label: 'Contacts', value: 'Up to three' },
-          { label: 'Touch', value: 'Feet or full body' },
+          { label: 'Modes', value: 'Football, padel, full body' },
+          { label: 'Scoring', value: 'First to 11, win by two' },
         ],
       },
     },
@@ -273,16 +296,39 @@ const de: SiteContent = {
       title: 'Das Spiel',
       meta: ['Drei Kontakte', '1v1 / 2v2'],
       detail: {
-        title: 'Drei Kontakte zum Antworten',
-        lead: '1v1 oder 2v2. Nur Füße, oder ganzer Körper.',
-        body: [
-          'Spiel den Ball auf den AIRBALLER — das andere Team hat bis zu drei Kontakte zum Zurückspielen. Ball am Boden, Punkt vorbei.',
-          'Schnell gelernt. Schwer wieder wegzulegen.',
+        title: 'So spielen wir',
+        lead: 'Schnell gelernt. Schwer wieder wegzulegen. Modus wählen, Seite wählen, und noch eine Runde.',
+        sections: [
+          {
+            heading: 'Wähl Deine Seite',
+            body: '1v1 oder 2v2. Zwei Spieler oder zwei Teams stehen sich rund um den Airballer gegenüber. Schere, Stein, Papier entscheidet, wer aufschlägt. Das ist Tradition.',
+          },
+          {
+            heading: 'Spiel Den Ball Auf Den Airballer',
+            body: 'Aufschlag oder Angriff: den Ball auf die Rebound-Fläche spielen. Der Absprung schickt ihn los. Wo er landet, ist das Problem des Gegners.',
+          },
+          {
+            heading: 'Bis Zu Drei Kontakte',
+            body: 'Das annehmende Team hat bis zu drei Kontakte, um den Ball zu kontrollieren und zurück auf den Airballer zu spielen. Alle drei nutzen — oder direkt aus der Annahme zurückhämmern.',
+          },
+          {
+            heading: 'Der Spielmodus',
+            body: 'Modus vor dem Match festlegen. Fußball-Regeln — nur Fuß, Brust und Kopf. Padel-Regeln — im 1v1 zwei Berührungen nach der Annahme. Oder Ganzkörper, da zählt jede Berührung.',
+          },
+          {
+            heading: 'Ball Am Boden, Punkt Vorbei',
+            body: 'Berührt der Ball auf deiner Seite den Boden, geht der Punkt ans andere Team. Bis 11, mit zwei Punkten Vorsprung. Dann Revanche. Immer Revanche.',
+          },
+        ],
+        gallery: [
+          { src: '/media/game/rally-01.jpg', alt: 'Ein Ballwechsel am AIRBALLER, der Ball in der Luft' },
+          { src: '/media/game/watching.jpg', alt: 'Spieler warten auf den Ball' },
         ],
         specs: [
           { label: 'Format', value: '1v1 oder 2v2' },
           { label: 'Kontakte', value: 'Bis zu drei' },
-          { label: 'Berührung', value: 'Füße oder ganzer Körper' },
+          { label: 'Modi', value: 'Fußball, Padel, Ganzkörper' },
+          { label: 'Zählweise', value: 'Bis 11, zwei Punkte Vorsprung' },
         ],
       },
     },
