@@ -68,6 +68,13 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="detail-title"
+      /*
+       * Lenis listens for wheel events on the window and preventDefaults them
+       * even while stopped, which leaves this panel unscrollable. The attribute
+       * is Lenis's opt-out for nested scroll containers — inside it, the
+       * browser scrolls natively.
+       */
+      data-lenis-prevent
       className="fixed inset-0 z-[80] overflow-y-auto overscroll-contain bg-cream text-court"
     >
       <div className="flex items-start justify-between gap-6 px-5 pt-5 md:px-10 md:pt-8">
@@ -113,7 +120,10 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
           <div className="mt-12 grid gap-x-16 gap-y-9 md:grid-cols-2">
             {work.detail.sections.map((section) => (
               <section key={section.heading} data-panel-item>
-                <h3 className="display text-[clamp(22px,2.6vw,32px)]">{section.heading}</h3>
+                {/* Butter Yellow reads as a marker here, not as type: at this
+                    lightness it has almost no contrast against Court Cream. */}
+                <span aria-hidden="true" className="block h-1 w-9 bg-butter" />
+                <h3 className="display mt-3 text-[clamp(22px,2.6vw,32px)]">{section.heading}</h3>
                 <p className="mt-2.5 max-w-[460px] text-court/75">{section.body}</p>
               </section>
             ))}
@@ -163,7 +173,7 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
                     className="flex items-baseline justify-between gap-6 border-b border-court/15 py-3.5 text-xs uppercase tracking-[0.1em]"
                   >
                     <span className="text-court/60">( {spec.label} )</span>
-                    <span className="text-right font-medium">{spec.value}</span>
+                    <span className="bg-butter px-1.5 text-right font-medium">{spec.value}</span>
                   </li>
                 ))}
               </ul>
