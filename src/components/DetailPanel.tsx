@@ -97,14 +97,61 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
           {work.detail.lead}
         </p>
 
-        <div className="mt-12 grid gap-x-16 gap-y-10 md:grid-cols-2">
-          <div className="max-w-[560px] space-y-5">
-            {work.detail.body.map((paragraph) => (
-              <p key={paragraph.slice(0, 32)} className="text-court/80" data-panel-item>
-                {paragraph}
-              </p>
+        {work.detail.hero && (
+          <figure className="mt-10 overflow-hidden rounded-xl bg-court md:rounded-2xl" data-panel-item>
+            <img
+              src={work.detail.hero.src}
+              alt={work.detail.hero.alt}
+              className="aspect-[3/2] w-full object-cover"
+            />
+          </figure>
+        )}
+
+        {/* Each block is one claim about the product, so they read as a list
+            of properties rather than continuous prose. */}
+        {work.detail.sections && (
+          <div className="mt-12 grid gap-x-16 gap-y-9 md:grid-cols-2">
+            {work.detail.sections.map((section) => (
+              <section key={section.heading} data-panel-item>
+                <h3 className="display text-[clamp(22px,2.6vw,32px)]">{section.heading}</h3>
+                <p className="mt-2.5 max-w-[460px] text-court/75">{section.body}</p>
+              </section>
             ))}
           </div>
+        )}
+
+        {work.detail.gallery && (
+          <div className="mt-12 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3" data-panel-item>
+            {work.detail.gallery.map((image, i) => (
+              <figure
+                key={image.src}
+                className={`overflow-hidden rounded-lg bg-court md:rounded-xl ${
+                  // Three portraits into two columns leaves an orphan; the
+                  // first spans both so the row stays whole on small screens.
+                  i === 0 ? 'col-span-2 md:col-span-1' : ''
+                }`}
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  loading="lazy"
+                  className={`w-full object-cover ${i === 0 ? 'aspect-[4/3] md:aspect-[2/3]' : 'aspect-[2/3]'}`}
+                />
+              </figure>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-12 grid gap-x-16 gap-y-10 md:grid-cols-2">
+          {work.detail.body && (
+            <div className="max-w-[560px] space-y-5">
+              {work.detail.body.map((paragraph) => (
+                <p key={paragraph.slice(0, 32)} className="text-court/80" data-panel-item>
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          )}
 
           {work.detail.specs && (
             <div data-panel-item>

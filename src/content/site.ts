@@ -18,12 +18,29 @@ export interface WorkSpec {
   value: string;
 }
 
+export interface DetailSection {
+  /** Small display heading. Never ends with a period. */
+  heading: string;
+  body: string;
+}
+
+export interface DetailImage {
+  src: string;
+  alt: string;
+}
+
 /** The panel that opens when a card is clicked. */
 export interface WorkDetail {
   /** Display headline inside the panel. Never ends with a period. */
   title: string;
   lead: string;
-  body: string[];
+  /** Wide image directly under the lead. */
+  hero?: DetailImage;
+  /** The substance of the page — one heading and paragraph per block. */
+  sections?: DetailSection[];
+  /** Portrait images shown as a row beneath the sections. */
+  gallery?: DetailImage[];
+  body?: string[];
   specs?: WorkSpec[];
 }
 
@@ -100,9 +117,29 @@ const en: SiteContent = {
       detail: {
         title: 'One court, one backpack',
         lead: 'The portable rebound sport. Real sport that still fits in a backpack. Born in Graz, for the world.',
-        body: [
-          'An inflatable rebound court that packs into a backpack. Inflate it in minutes and almost any place becomes your arena — grass, sand or indoor.',
-          'The AIRBALLER is the product. The game, the league and the people are built around it.',
+        hero: { src: '/media/airballer/court-wide.jpg', alt: 'The AIRBALLER set up on grass in a Graz park' },
+        sections: [
+          {
+            heading: 'The Court',
+            body: 'An inflatable rebound court, Ø 100 cm. Drop it on the ground and the arena is set. No lines to paint, no net to hang, no goal to carry.',
+          },
+          {
+            heading: 'Built To Take Hits',
+            body: 'Made to be smashed, dived over and played on all day, then packed away in minutes.',
+          },
+          {
+            heading: 'Setup In Minutes',
+            body: 'Unroll, inflate, play. Minutes, not hours. The pump is part of the kit. No power outlet, no tools, no assembly manual.',
+          },
+          {
+            heading: 'Any Surface',
+            body: "Grass, sand, indoor floors, rooftops. If you can stand on it, you can play on it. The Airballer doesn't care where, as long as it's flat. That's the point.",
+          },
+        ],
+        gallery: [
+          { src: '/media/airballer/play-01.jpg', alt: 'A player waiting on the AIRBALLER' },
+          { src: '/media/airballer/play-02.jpg', alt: 'A rally in progress' },
+          { src: '/media/airballer/play-03.jpg', alt: 'Striking the ball onto the AIRBALLER' },
         ],
         specs: [
           { label: 'Court', value: 'Ø 100 cm, inflatable' },
@@ -197,9 +234,29 @@ const de: SiteContent = {
       detail: {
         title: 'Ein Court, ein Rucksack',
         lead: 'Der tragbare Rebound-Sport. Echter Sport, der in einen Rucksack passt. Entstanden in Graz, gebaut für überall.',
-        body: [
-          'Ein aufblasbarer Rebound-Court, der in den Rucksack passt. In Minuten aufgepumpt — und fast jeder Ort wird zur Arena: Wiese, Sand oder Halle.',
-          'Der AIRBALLER ist das Produkt. Das Spiel, die Liga und die Leute bauen darauf auf.',
+        hero: { src: '/media/airballer/court-wide.jpg', alt: 'Der AIRBALLER aufgebaut auf einer Wiese in Graz' },
+        sections: [
+          {
+            heading: 'Der Court',
+            body: 'Ein aufblasbarer Rebound-Court, Ø 100 cm. Hinlegen und die Arena steht. Keine Linien ziehen, kein Netz spannen, kein Tor schleppen.',
+          },
+          {
+            heading: 'Hält Was Aus',
+            body: 'Gebaut zum Draufhauen, Drüberhechten und Durchspielen — und in Minuten wieder verpackt.',
+          },
+          {
+            heading: 'Aufbau In Minuten',
+            body: 'Ausrollen, aufpumpen, spielen. Minuten, keine Stunden. Die Pumpe gehört dazu. Keine Steckdose, kein Werkzeug, keine Aufbauanleitung.',
+          },
+          {
+            heading: 'Jeder Untergrund',
+            body: 'Wiese, Sand, Hallenboden, Dachterrasse. Worauf du stehen kannst, darauf kannst du spielen. Dem Airballer ist egal wo, solange es eben ist. Genau das ist der Punkt.',
+          },
+        ],
+        gallery: [
+          { src: '/media/airballer/play-01.jpg', alt: 'Ein Spieler wartet am AIRBALLER' },
+          { src: '/media/airballer/play-02.jpg', alt: 'Ein Ballwechsel läuft' },
+          { src: '/media/airballer/play-03.jpg', alt: 'Der Ball wird auf den AIRBALLER gespielt' },
         ],
         specs: [
           { label: 'Court', value: 'Ø 100 cm, aufblasbar' },
