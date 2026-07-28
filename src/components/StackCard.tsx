@@ -33,7 +33,15 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
+      mm.add(
+        {
+          motionOk: '(prefers-reduced-motion: no-preference)',
+          isNarrow: '(max-width: 767px)',
+        },
+        (context) => {
+        const { motionOk, isNarrow } = context.conditions as Record<string, boolean>;
+        if (!motionOk) return;
+
         // Meta rises as the card arrives.
         gsap.from(card.querySelectorAll('[data-card-line]'), {
           yPercent: 110,
@@ -46,14 +54,18 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
         /*
          * A slow push in across the whole runway. Two of the three cards are
          * stills, so without this the card is motionless for its entire hold
-         * and reads as stuck rather than held. Scaling up only — scaling down
-         * would pull the media inside the frame and expose its edges.
+         * and reads as stuck rather than held.
+         *
+         * On narrow screens the media is letterboxed rather than cropped so
+         * the footage stays whole, which means any scale above 1 would start
+         * shaving its edges. There the drift runs up TO 1 instead of past it,
+         * so it still moves without ever cutting into the frame.
          */
         gsap.fromTo(
           media,
-          { scale: 1 },
+          { scale: isNarrow ? 0.95 : 1 },
           {
-            scale: 1.06,
+            scale: isNarrow ? 1 : 1.06,
             ease: 'none',
             scrollTrigger: { trigger: card, start: 'top top', end: 'bottom top', scrub: true },
           },
@@ -95,7 +107,8 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
             scrub: 0.25,
           },
         });
-      });
+        },
+      );
     }, cardRef);
 
     return () => ctx.revert();
@@ -135,7 +148,13 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
         {work.media.type === 'video' ? (
           <video
             ref={videoRef}
-            className="h-full w-full object-cover"
+            /*
+             * Cropping a landscape clip into a narrow card cuts its own
+             * lettering off at both ends. On phones the frame is kept whole
+             * and letterboxed against Court Black instead; from md up there is
+             * enough width for cover to fill without losing anything.
+             */
+            className="h-full w-full object-contain md:object-cover"
             autoPlay
             muted
             loop

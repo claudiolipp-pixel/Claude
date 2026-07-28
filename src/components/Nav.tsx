@@ -104,10 +104,14 @@ export default function Nav({ lenis, onOpenContact }: NavProps) {
           lenis.current ? lenis.current.scrollTo(0) : window.scrollTo({ top: 0 });
         }}
       >
-        <Wordmark className="text-xl" invert={onLight} />
+        {/* The lockup is 12.4:1, so at text-xl it eats most of a phone's width
+            and the language switch lands on top of it. */}
+        <Wordmark className="text-[15px] md:text-xl" invert={onLight} />
       </a>
 
-      <div className="flex items-center gap-4 md:gap-5">
+      {/* Tight gaps inside the cluster so the language switch reads as part of
+          it, with real space back to the wordmark. */}
+      <div className="flex items-center gap-3 pl-4 md:gap-5">
         <button
           type="button"
           onClick={toggle}
