@@ -59,8 +59,19 @@ export interface WorkDetail {
 export interface Work {
   id: string;
   num: string;
-  /** Media lives in /public — swap the file, keep the path. */
-  media: { type: 'video' | 'image'; src: string; poster?: string; alt: string };
+  /**
+   * Media lives in /public — swap the file, keep the path.
+   *
+   * `focal` is a CSS object-position. Full-bleed cards crop hard on wide
+   * viewports, so a portrait frame needs to say which part must survive.
+   */
+  media: {
+    type: 'video' | 'image';
+    src: string;
+    poster?: string;
+    alt: string;
+    focal?: string;
+  };
   /** Cursor label over the media, and the verb on the open control. */
   tag: string;
   title: string;

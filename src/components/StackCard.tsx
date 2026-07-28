@@ -151,6 +151,7 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
             src={work.media.src}
             alt={work.media.alt}
             loading={eager ? 'eager' : 'lazy'}
+            style={{ objectPosition: work.media.focal }}
             className="h-full w-full object-cover"
           />
         )}
