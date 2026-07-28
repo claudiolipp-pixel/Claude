@@ -85,7 +85,7 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
           ref={closeRef}
           type="button"
           onClick={onClose}
-          className="label shrink-0 border border-court px-4 py-2.5 transition-colors hover:bg-court hover:text-cream"
+          className="label shrink-0 border border-court px-4 py-2.5 transition-colors hover:bg-butter hover:text-court focus-visible:bg-butter"
         >
           {t.close}
         </button>
@@ -164,16 +164,16 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
           </div>
         )}
 
-        {work.detail.values && (
-          /* The locked lines, each on its own yellow field — the one place the
-             guide lets the accent carry a whole surface outside conversion. */
-          <ul className="mt-12 flex max-w-[560px] list-none flex-col gap-1.5" data-panel-item>
-            {work.detail.values.map((value) => (
-              <li key={value} className="bg-butter px-4 py-3 text-court">
-                {value}
-              </li>
+        {/* The story runs first, the team next, and the locked lines close the
+            page — a statement lands harder after the people it describes. */}
+        {work.detail.body && (
+          <div className="mt-12 max-w-[560px] space-y-5">
+            {work.detail.body.map((paragraph) => (
+              <p key={paragraph.slice(0, 32)} className="text-court/80" data-panel-item>
+                {paragraph}
+              </p>
             ))}
-          </ul>
+          </div>
         )}
 
         {work.detail.people && (
@@ -204,14 +204,17 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
         )}
 
         <div className="mt-12 grid gap-x-16 gap-y-10 md:grid-cols-2">
-          {work.detail.body && (
-            <div className="max-w-[560px] space-y-5">
-              {work.detail.body.map((paragraph) => (
-                <p key={paragraph.slice(0, 32)} className="text-court/80" data-panel-item>
-                  {paragraph}
-                </p>
+          {work.detail.values && (
+            /* The locked lines, each on its own yellow field — the one place
+               the guide lets the accent carry a whole surface outside a
+               conversion block. */
+            <ul className="flex max-w-[560px] list-none flex-col gap-1.5" data-panel-item>
+              {work.detail.values.map((value) => (
+                <li key={value} className="bg-butter px-4 py-3 text-court">
+                  {value}
+                </li>
               ))}
-            </div>
+            </ul>
           )}
 
           {work.detail.specs && (
