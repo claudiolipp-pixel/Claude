@@ -192,9 +192,11 @@ const en: SiteContent = {
             body: 'If the ball touches the ground on your side of the rally, the point goes to the other team. First to 11, win by two. Then rematch. Always rematch.',
           },
         ],
+        hero: { src: '/media/game/rally-wide.jpg', alt: 'Three players mid-rally around the AIRBALLER at dusk' },
         gallery: [
+          { src: '/media/game/serve.jpg', alt: 'A player tossing the ball to serve' },
           { src: '/media/game/rally-01.jpg', alt: 'A rally around the AIRBALLER, ball in the air' },
-          { src: '/media/game/watching.jpg', alt: 'Players waiting for the ball to come back' },
+          { src: '/media/game/padel.jpg', alt: 'Playing the padel variant with a racket' },
         ],
         specs: [
           { label: 'Format', value: '1v1 or 2v2' },
@@ -360,9 +362,11 @@ const de: SiteContent = {
             body: 'Berührt der Ball auf deiner Seite den Boden, geht der Punkt ans andere Team. Bis 11, mit zwei Punkten Vorsprung. Dann Revanche. Immer Revanche.',
           },
         ],
+        hero: { src: '/media/game/rally-wide.jpg', alt: 'Drei Spieler im Ballwechsel am AIRBALLER in der Abenddämmerung' },
         gallery: [
+          { src: '/media/game/serve.jpg', alt: 'Ein Spieler wirft den Ball zum Aufschlag hoch' },
           { src: '/media/game/rally-01.jpg', alt: 'Ein Ballwechsel am AIRBALLER, der Ball in der Luft' },
-          { src: '/media/game/watching.jpg', alt: 'Spieler warten auf den Ball' },
+          { src: '/media/game/padel.jpg', alt: 'Die Padel-Variante mit Schläger' },
         ],
         specs: [
           { label: 'Format', value: '1v1 oder 2v2' },
