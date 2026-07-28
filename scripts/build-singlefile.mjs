@@ -38,14 +38,23 @@ if (!existsSync(DIST)) {
   process.exit(1);
 }
 
-// Map every file under public/ to its data URI, keyed by its served path.
+/*
+ * Map every file under public/ to its data URI, keyed by its served path.
+ * Walks subdirectories: assets are grouped into folders per section, and a
+ * flat readdir would try to read those folders as files.
+ */
 const publicMap = new Map();
+const walk = (abs, servedPrefix) => {
+  for (const entry of readdirSync(abs, { withFileTypes: true })) {
+    const child = join(abs, entry.name);
+    const served = `${servedPrefix}/${entry.name}`;
+    if (entry.isDirectory()) walk(child, served);
+    else publicMap.set(served, dataUri(child));
+  }
+};
 for (const dir of ['media', 'brand']) {
   const abs = join(ROOT, 'public', dir);
-  if (!existsSync(abs)) continue;
-  for (const file of readdirSync(abs)) {
-    publicMap.set(`/${dir}/${file}`, dataUri(join(abs, file)));
-  }
+  if (existsSync(abs)) walk(abs, `/${dir}`);
 }
 
 const assetsDir = join(DIST, 'assets');
