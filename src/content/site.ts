@@ -29,6 +29,13 @@ export interface DetailImage {
   alt: string;
 }
 
+export interface Person {
+  name: string;
+  role: string;
+  bio: string;
+  photo: DetailImage;
+}
+
 /** The panel that opens when a card is clicked. */
 export interface WorkDetail {
   /** Display headline inside the panel. Never ends with a period. */
@@ -40,6 +47,11 @@ export interface WorkDetail {
   sections?: DetailSection[];
   /** Portrait images shown as a row beneath the sections. */
   gallery?: DetailImage[];
+  /** Short locked lines, set as a stack of yellow-marked statements. */
+  values?: string[];
+  /** Heading above the people grid. */
+  peopleTitle?: string;
+  people?: Person[];
   body?: string[];
   specs?: WorkSpec[];
 }
@@ -200,15 +212,43 @@ const en: SiteContent = {
       title: 'From Ballers For Ballers',
       meta: ['The Team', 'Graz, AT'],
       detail: {
-        title: 'We are the first Airballers',
-        lead: 'Built by footballers from Graz who wanted real competition without a stadium.',
+        title: 'From Ballers. For Ballers.',
+        lead: 'Airball is a sport. A very portable sport. One that turns any patch of ground into a court and any stranger into an opponent.',
+        hero: { src: '/media/team/founders.jpg', alt: 'The three founders at an AIRBALL event in Graz' },
         body: [
-          'AIRBALL is the brand and the movement. AIRBALLERS are the people — the community, and the league that carries their name.',
-          'We build the product around its people, never an audience around the product.',
+          'Our roots are on the pitches of Graz, Austria. The three of us grew up playing football everywhere we were allowed to — and a few places we weren’t. Then we got older, the stadiums got further away and the excuses got easier. So we built the Airballer: real competition that fits in a backpack.',
+          'We are the first Airballers. You’re next.',
+        ],
+        values: [
+          'Anywhere is an arena',
+          'Real sport, not a gadget',
+          'Three contacts, no excuses',
+          'Play. Compete. Connect.',
+        ],
+        peopleTitle: 'We are what we play',
+        people: [
+          {
+            name: 'Alexander',
+            role: 'Founder',
+            bio: 'Airball is Alexander’s brainchild. He saw an arena in every park, beach and rooftop, and built the plan to prove it. Runs the vision, the product and the big picture, and still takes the first rally at every event.',
+            photo: { src: '/media/team/alexander.jpg', alt: 'Alexander' },
+          },
+          {
+            name: 'Claudio',
+            role: 'Co-founder',
+            bio: 'First to believe in the idea and first on the court when it counts. Runs the community, the marketing and the rematches — everything that turns a product into a crew.',
+            photo: { src: '/media/team/claudio.jpg', alt: 'Claudio' },
+          },
+          {
+            name: 'Luca',
+            role: 'Co-founder',
+            bio: 'The one who gets the Airballer from our backpacks into yours. Runs sales and partnerships, from the first pitch to the last handshake, and makes sure every ball actually drops.',
+            photo: { src: '/media/team/luca.jpg', alt: 'Luca' },
+          },
         ],
         specs: [
           { label: 'Home', value: 'Graz, Austria' },
-          { label: 'Started', value: '2026' },
+          { label: 'Founders', value: 'Three' },
           { label: 'Next', value: 'You' },
         ],
       },
@@ -340,15 +380,43 @@ const de: SiteContent = {
       title: 'From Ballers For Ballers',
       meta: ['Das Team', 'Graz, AT'],
       detail: {
-        title: 'Wir sind die ersten Airballers',
-        lead: 'Gebaut von Fußballern aus Graz, die echten Wettkampf ohne Stadion wollten.',
+        title: 'From Ballers. For Ballers.',
+        lead: 'Airball ist ein Sport. Ein sehr tragbarer Sport. Einer, der jedes Stück Boden zum Court macht und jeden Fremden zum Gegner.',
+        hero: { src: '/media/team/founders.jpg', alt: 'Die drei Gründer bei einem AIRBALL-Event in Graz' },
         body: [
-          'AIRBALL ist die Marke und die Bewegung. AIRBALLERS sind die Leute — die Community und die Liga, die ihren Namen trägt.',
-          'Wir bauen das Produkt um seine Leute herum, nie ein Publikum um das Produkt.',
+          'Unsere Wurzeln liegen auf den Plätzen von Graz. Wir drei sind mit Fußball aufgewachsen und haben überall gespielt, wo man uns ließ — und an ein paar Orten, wo man es nicht tat. Dann wurden wir älter, die Stadien weiter weg und die Ausreden leichter. Also haben wir den Airballer gebaut: echter Wettkampf, der in einen Rucksack passt.',
+          'Wir sind die ersten Airballers. Du bist der Nächste.',
+        ],
+        values: [
+          'Anywhere is an arena',
+          'Echter Sport, kein Gadget',
+          'Drei Kontakte, keine Ausreden',
+          'Play. Compete. Connect.',
+        ],
+        peopleTitle: 'Wir sind, was wir spielen',
+        people: [
+          {
+            name: 'Alexander',
+            role: 'Gründer',
+            bio: 'Airball ist Alexanders Idee. Er hat in jedem Park, an jedem Strand und auf jedem Dach eine Arena gesehen — und den Plan gebaut, um es zu beweisen. Verantwortet Vision, Produkt und das große Ganze, und spielt bei jedem Event den ersten Ballwechsel.',
+            photo: { src: '/media/team/alexander.jpg', alt: 'Alexander' },
+          },
+          {
+            name: 'Claudio',
+            role: 'Co-Gründer',
+            bio: 'Der Erste, der an die Idee geglaubt hat, und der Erste am Court, wenn es zählt. Verantwortet Community, Marketing und die Revanchen — alles, was aus einem Produkt eine Crew macht.',
+            photo: { src: '/media/team/claudio.jpg', alt: 'Claudio' },
+          },
+          {
+            name: 'Luca',
+            role: 'Co-Gründer',
+            bio: 'Der, der den Airballer aus unseren Rucksäcken in eure bringt. Verantwortet Vertrieb und Partnerschaften, vom ersten Pitch bis zum letzten Handschlag, und sorgt dafür, dass jeder Ball auch wirklich fällt.',
+            photo: { src: '/media/team/luca.jpg', alt: 'Luca' },
+          },
         ],
         specs: [
           { label: 'Zuhause', value: 'Graz, Österreich' },
-          { label: 'Gestartet', value: '2026' },
+          { label: 'Gründer', value: 'Drei' },
           { label: 'Als Nächstes', value: 'Du' },
         ],
       },

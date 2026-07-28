@@ -164,6 +164,45 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
           </div>
         )}
 
+        {work.detail.values && (
+          /* The locked lines, each on its own yellow field — the one place the
+             guide lets the accent carry a whole surface outside conversion. */
+          <ul className="mt-12 flex max-w-[560px] list-none flex-col gap-1.5" data-panel-item>
+            {work.detail.values.map((value) => (
+              <li key={value} className="bg-butter px-4 py-3 text-court">
+                {value}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {work.detail.people && (
+          <div className="mt-16" data-panel-item>
+            {work.detail.peopleTitle && (
+              <h3 className="display text-[clamp(28px,4vw,48px)]">{work.detail.peopleTitle}</h3>
+            )}
+            <div className="mt-8 grid gap-x-8 gap-y-10 sm:grid-cols-2 md:grid-cols-3">
+              {work.detail.people.map((person) => (
+                <figure key={person.name}>
+                  <div className="overflow-hidden rounded-lg bg-court md:rounded-xl">
+                    <img
+                      src={person.photo.src}
+                      alt={person.photo.alt}
+                      loading="lazy"
+                      className="aspect-[3/4] w-full object-cover"
+                    />
+                  </div>
+                  <figcaption className="mt-4">
+                    <h4 className="display text-[clamp(20px,2.2vw,26px)]">{person.name}</h4>
+                    <p className="label mt-1 text-court/55">{person.role}</p>
+                    <p className="mt-2.5 text-court/75">{person.bio}</p>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="mt-12 grid gap-x-16 gap-y-10 md:grid-cols-2">
           {work.detail.body && (
             <div className="max-w-[560px] space-y-5">
