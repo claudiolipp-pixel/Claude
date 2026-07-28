@@ -116,7 +116,7 @@ export interface SiteContent {
 /** Media paths are shared across languages — only the alt text differs. */
 const MEDIA = {
   airballer: '/media/airballer.mp4',
-  rally: '/media/rally.jpg',
+  gameCard: '/media/game-card.jpg',
   movement: '/media/movement.jpg',
 } as const;
 
@@ -192,7 +192,7 @@ const en: SiteContent = {
     {
       id: 'game',
       num: '02',
-      media: { type: 'image', src: MEDIA.rally, alt: 'An AIRBALL rally in a Graz park' },
+      media: { type: 'image', src: MEDIA.gameCard, alt: 'A player waiting to receive, ball in the air' },
       tag: 'The rules',
       title: 'The Game',
       meta: ['Three Contacts', '1v1 / 2v2'],
@@ -375,7 +375,7 @@ const de: SiteContent = {
     {
       id: 'game',
       num: '02',
-      media: { type: 'image', src: MEDIA.rally, alt: 'Ein AIRBALL-Ballwechsel in einem Grazer Park' },
+      media: { type: 'image', src: MEDIA.gameCard, alt: 'Ein Spieler wartet auf die Annahme, der Ball in der Luft' },
       tag: 'Die Regeln',
       title: 'Das Spiel',
       meta: ['Drei Kontakte', '1v1 / 2v2'],
