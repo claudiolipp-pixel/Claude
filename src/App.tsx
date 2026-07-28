@@ -8,6 +8,7 @@ import Loader from '@/components/Loader';
 import Nav from '@/components/Nav';
 import StackCard from '@/components/StackCard';
 import DetailPanel from '@/components/DetailPanel';
+import ContactPanel from '@/components/ContactPanel';
 import Ticker from '@/components/Ticker';
 import Waitlist from '@/components/Waitlist';
 import Footer from '@/components/Footer';
@@ -17,6 +18,7 @@ export default function App() {
   const { content, lang } = useLanguage();
   const [loaded, setLoaded] = useState(false);
   const [openWork, setOpenWork] = useState<Work | null>(null);
+  const [contactOpen, setContactOpen] = useState(false);
 
   /**
    * German copy is longer than English, so trigger positions shift when the
@@ -39,16 +41,17 @@ export default function App() {
   /** Lenis keeps running behind a modal and steals its wheel events. */
   useEffect(() => {
     if (!lenis.current) return;
-    if (openWork) lenis.current.stop();
+    if (openWork || contactOpen) lenis.current.stop();
     else lenis.current.start();
-  }, [openWork, lenis]);
+  }, [openWork, contactOpen, lenis]);
 
   const closeDetail = useCallback(() => setOpenWork(null), []);
+  const closeContact = useCallback(() => setContactOpen(false), []);
 
   return (
     <CursorProvider>
       <Loader onDone={() => setLoaded(true)} />
-      <Nav lenis={lenis} />
+      <Nav lenis={lenis} onOpenContact={() => setContactOpen(true)} />
 
       <main id="top">
         {/*
@@ -76,6 +79,8 @@ export default function App() {
       {openWork && (
         <DetailPanel key={openWork.id} work={openWork} onClose={closeDetail} />
       )}
+
+      {contactOpen && <ContactPanel onClose={closeContact} />}
     </CursorProvider>
   );
 }

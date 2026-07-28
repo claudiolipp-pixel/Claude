@@ -8,9 +8,10 @@ import Wordmark from '@/components/Wordmark';
 
 interface NavProps {
   lenis: React.MutableRefObject<Lenis | null>;
+  onOpenContact: () => void;
 }
 
-export default function Nav({ lenis }: NavProps) {
+export default function Nav({ lenis, onOpenContact }: NavProps) {
   const { content, lang, toggle } = useLanguage();
   const navRef = useRef<HTMLElement>(null);
   const [onLight, setOnLight] = useState(false);
@@ -124,6 +125,14 @@ export default function Nav({ lenis }: NavProps) {
         >
           {content.nav.instagram}
         </a>
+
+        <button
+          type="button"
+          onClick={onOpenContact}
+          className="label border-b-2 border-transparent pb-0.5 transition-colors hover:border-butter"
+        >
+          {content.nav.contact}
+        </button>
 
         <a
           href="#waitlist"

@@ -68,8 +68,22 @@ export interface Work {
   detail: WorkDetail;
 }
 
+export interface ContactContent {
+  /** Display headline. Never ends with a period. */
+  title: string;
+  /** The small question above the paragraph. */
+  eyebrow: string;
+  body: string;
+  image: DetailImage;
+  socialsLabel: string;
+  contactLabel: string;
+  locationLabel: string;
+  location: string;
+}
+
 export interface SiteContent {
-  nav: { waitlist: string; instagram: string; menuLabel: string };
+  nav: { waitlist: string; instagram: string; contact: string; menuLabel: string };
+  contact: ContactContent;
   /**
    * The load sequence cycles these places, then settles on the master line.
    * "Anywhere Is An Arena" made literal — each one is somewhere a court has
@@ -109,10 +123,25 @@ const MEDIA = {
 export const SOCIAL = {
   instagram: 'https://www.instagram.com/airball.at/',
   handle: '@airball.at',
+  linkedin: 'https://www.linkedin.com/company/airballers',
+  email: 'info@airball.at',
 } as const;
 
 const en: SiteContent = {
-  nav: { waitlist: 'Waitlist', instagram: 'Instagram', menuLabel: 'Menu' },
+  nav: { waitlist: 'Waitlist', instagram: 'Instagram', contact: 'Contact', menuLabel: 'Menu' },
+  contact: {
+    title: 'Don’t wait for an invite',
+    eyebrow: 'Wanna connect?',
+    body: 'We answer. Whether you want a court of your own, a game in your city, or you just played somewhere new and want to tell us where — write.',
+    image: {
+      src: '/media/contact/connect.jpg',
+      alt: 'An AIRBALLER walking off the court',
+    },
+    socialsLabel: 'Socials',
+    contactLabel: 'Contact',
+    locationLabel: 'Location',
+    location: 'Graz, Austria',
+  },
   loader: {
     places: ['A park', 'A rooftop', 'A beach', 'A courtyard', 'A car park', 'A gym floor'],
     resolve: 'Anywhere',
@@ -282,7 +311,20 @@ const en: SiteContent = {
 };
 
 const de: SiteContent = {
-  nav: { waitlist: 'Warteliste', instagram: 'Instagram', menuLabel: 'Menü' },
+  nav: { waitlist: 'Warteliste', instagram: 'Instagram', contact: 'Kontakt', menuLabel: 'Menü' },
+  contact: {
+    title: 'Warte nicht auf eine Einladung',
+    eyebrow: 'Wanna connect?',
+    body: 'Wir antworten. Ob du einen eigenen Court willst, ein Spiel in deiner Stadt, oder gerade irgendwo Neues gespielt hast und uns erzählen willst wo — schreib uns.',
+    image: {
+      src: '/media/contact/connect.jpg',
+      alt: 'Ein AIRBALLER verlässt den Court',
+    },
+    socialsLabel: 'Socials',
+    contactLabel: 'Kontakt',
+    locationLabel: 'Ort',
+    location: 'Graz, Österreich',
+  },
   loader: {
     places: ['Ein Park', 'Ein Dach', 'Ein Strand', 'Ein Hof', 'Ein Parkdeck', 'Eine Halle'],
     resolve: 'Überall',
