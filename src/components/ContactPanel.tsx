@@ -96,7 +96,7 @@ export default function ContactPanel({ onClose }: { onClose: () => void }) {
           <img
             src={t.image.src}
             alt={t.image.alt}
-            className="aspect-[2/3] w-full object-cover"
+            className="aspect-[4/5] w-full object-cover"
           />
         </figure>
 
@@ -116,10 +116,11 @@ export default function ContactPanel({ onClose }: { onClose: () => void }) {
             {t.body}
           </p>
 
-          {/* Pushed to the foot of the column so the three lists sit level
-              with the bottom of the photo on wide screens. */}
+          {/* The lists follow the paragraph directly. Pushing them to the foot
+              of the column to line up with the photo left a hole whenever the
+              copy was shorter than the image. */}
           <div
-            className="mt-12 grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3 md:mt-auto md:pt-16"
+            className="mt-12 grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3"
             data-contact-item
           >
             {columns.map((column) => (
