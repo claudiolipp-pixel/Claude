@@ -22,14 +22,24 @@ import { CONTENT } from '@/content/site';
 
 const EN = CONTENT.en;
 
-/** Repeated so the strip is long enough to build real speed before settling. */
-const STRIP = [
-  '/media/rally.jpg',
-  '/media/movement.jpg',
-  '/media/rally.jpg',
-  '/media/movement.jpg',
-  '/media/rally.jpg',
-];
+/**
+ * The reel is built from the site's own photography rather than a hand-kept
+ * list of paths. A hardcoded list silently rots the moment a photo is swapped
+ * out somewhere else — which is exactly how three of these tiles ended up
+ * pointing at a deleted file.
+ *
+ * Repeated so the strip is long enough to build real speed before settling.
+ */
+const STRIP = (() => {
+  const cardStills = EN.works
+    .filter((work) => work.media.type === 'image')
+    .map((work) => work.media.src);
+  const galleryStills = EN.works.flatMap((work) => work.detail.gallery?.map((g) => g.src) ?? []);
+  const pool = [...cardStills, ...galleryStills];
+
+  // Five tiles, cycling the pool so no two neighbours repeat while it lasts.
+  return Array.from({ length: 5 }, (_, i) => pool[i % pool.length]);
+})();
 
 export default function Loader({ onDone }: { onDone: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null);
