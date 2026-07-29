@@ -1,6 +1,9 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "airball-web",
+  // Must match the Worker in the Cloudflare dashboard. On deploy this file
+  // wins, so a different name here creates a second, empty Worker instead of
+  // updating the live one.
+  "name": "websiteairball",
   "compatibility_date": "2026-07-29",
   "observability": {
     "enabled": true
