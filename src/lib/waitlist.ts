@@ -1,36 +1,55 @@
 /**
- * Waitlist submission — the single seam between this front end and your
- * existing Lovable/Supabase backend.
+ * Waitlist submission — the seam between the form and where sign-ups land.
  *
- * Right now it resolves optimistically without sending anything anywhere, so
- * the form is demonstrable but NOT yet collecting sign-ups. Replace the body
- * of `submitWaitlist` with a real call before launch. With Supabase that is:
- *
- *   import { supabase } from '@/lib/supabase';
- *   const { error } = await supabase.from('waitlist').insert(entry);
- *   return { ok: !error };
- *
- * Your table needs columns for first_name, last_name and email. Whatever the
- * target, keep the `{ ok: boolean }` shape — the form only cares about that.
+ * Sends to the Google Apps Script web app deployed from
+ * `scripts/waitlist-sheet.gs`, which appends a row to the Sheet. Point
+ * VITE_WAITLIST_ENDPOINT at that deployment's URL (see .env.example and the
+ * README). With the variable unset, submissions are logged and discarded, so
+ * the form stays demonstrable in development without silently pretending to
+ * collect anything in production.
  */
 
 export interface WaitlistEntry {
   firstName: string;
   lastName: string;
   email: string;
+  lang: string;
+  /** Honeypot. Hidden from people, so anything here came from a bot. */
+  company?: string;
 }
 
 export interface WaitlistResult {
   ok: boolean;
 }
 
-const SIMULATED_LATENCY_MS = 600;
+const ENDPOINT = import.meta.env.VITE_WAITLIST_ENDPOINT as string | undefined;
 
 export async function submitWaitlist(entry: WaitlistEntry): Promise<WaitlistResult> {
-  if (import.meta.env.DEV) {
-    console.info('[waitlist] stub — not persisted:', entry);
+  if (!ENDPOINT) {
+    console.warn('[waitlist] VITE_WAITLIST_ENDPOINT is not set — nothing was saved:', entry);
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    return { ok: true };
   }
 
-  await new Promise((resolve) => setTimeout(resolve, SIMULATED_LATENCY_MS));
-  return { ok: true };
+  try {
+    const response = await fetch(ENDPOINT, {
+      method: 'POST',
+      /*
+       * text/plain keeps this a "simple" request. A JSON content type would
+       * trigger a CORS preflight, and Apps Script web apps do not answer
+       * preflights — the submission would fail before reaching the script.
+       */
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(entry),
+      redirect: 'follow',
+    });
+
+    if (!response.ok) return { ok: false };
+
+    const result = (await response.json()) as WaitlistResult;
+    return { ok: Boolean(result?.ok) };
+  } catch (error) {
+    console.error('[waitlist] submission failed:', error);
+    return { ok: false };
+  }
 }

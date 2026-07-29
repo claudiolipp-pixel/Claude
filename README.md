@@ -70,11 +70,42 @@ Every animation is registered inside a `gsap.matchMedia` block keyed to
 `prefers-reduced-motion: no-preference`, so switching reduced motion on leaves
 all content in its resting, visible state rather than mid-animation.
 
+## Waitlist
+
+Sign-ups are appended to a Google Sheet by an Apps Script web app. Nothing but
+a URL lives in the front end, so there are no credentials in the bundle.
+
+**One-time setup**
+
+1. Open the Sheet → **Extensions → Apps Script**.
+2. Replace the placeholder file with the contents of
+   `scripts/waitlist-sheet.gs` and save.
+3. **Deploy → New deployment → Web app**, then set:
+   - *Execute as:* **Me**
+   - *Who has access:* **Anyone**
+
+   "Anyone" is what lets a visitor's browser reach it. The script only ever
+   appends a row — it cannot read the Sheet back out.
+4. Copy the deployment URL (it ends in `/exec`) into `.env` as
+   `VITE_WAITLIST_ENDPOINT`, and set the same variable in your host's build
+   settings.
+5. Open that URL in a browser. `{"ok":true,"service":"airball-waitlist"}`
+   confirms it is live.
+
+Re-deploy after editing the script — **Deploy → Manage deployments → Edit →
+Version: New version**. Saving alone does not update the live web app.
+
+With the variable unset, submissions are logged to the console and discarded,
+so the form stays demonstrable locally without writing to the live Sheet.
+
+Columns are written on first use: timestamp, first name, last name, email,
+language. The form also carries a honeypot field, hidden off-screen and out of
+the tab order; anything that fills it is accepted and silently dropped.
+
 ## Before launch
 
-- [ ] **Wire the waitlist.** `src/lib/waitlist.ts` currently resolves without
-      sending anything — the form looks like it works but collects nothing.
-      Point it at Supabase (or whatever backend you keep) before going live.
+- [ ] Deploy the waitlist script and set `VITE_WAITLIST_ENDPOINT` — until then
+      the form collects nothing.
 - [ ] Replace the placeholder video in `public/media/airballer.mp4`, and add a
       `poster` frame to the video entry in `site.ts` so there is a still image
       before playback starts.

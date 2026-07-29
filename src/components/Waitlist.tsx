@@ -10,13 +10,15 @@ type Status = 'idle' | 'submitting' | 'success' | 'error';
  * full surface (03, Usage logic).
  */
 export default function Waitlist() {
-  const { content } = useLanguage();
+  const { content, lang } = useLanguage();
   const headRef = useMaskReveal<HTMLDivElement>();
   const formRef = useFadeUp<HTMLDivElement>(0.08);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  /** Honeypot — hidden from people, so anything here came from a bot. */
+  const [company, setCompany] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
 
@@ -41,6 +43,8 @@ export default function Waitlist() {
       firstName: firstName.trim(),
       lastName: lastName.trim(),
       email: email.trim(),
+      lang,
+      company,
     });
 
     if (result.ok) {
@@ -117,6 +121,24 @@ export default function Waitlist() {
                   aria-invalid={Boolean(error)}
                   aria-describedby={error ? 'wl-error' : undefined}
                   className="border border-court bg-cream px-4 py-4 font-mono text-[13px] tracking-[0.05em] outline-none focus:shadow-[inset_0_0_0_1px_theme(colors.court)] max-sm:border-t-0"
+                />
+              </div>
+
+              {/*
+                Honeypot. Off-screen rather than display:none, since some bots
+                skip hidden fields but fill anything they can read. Kept out of
+                the tab order and hidden from screen readers so no person meets
+                it.
+              */}
+              <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+                <label htmlFor="wl-company">Company</label>
+                <input
+                  id="wl-company"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
                 />
               </div>
 
