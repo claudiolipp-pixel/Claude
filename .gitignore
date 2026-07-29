@@ -5,6 +5,10 @@ dist
 .env
 .env.*
 !.env.example
+# Tracked on purpose: it holds only the waitlist endpoint, which Vite bakes
+# into the shipped bundle anyway, so it is public the moment the site loads.
+# Keep genuine secrets in .env, which stays ignored.
+!.env.production
 dist-single
 airball-preview.html
 
