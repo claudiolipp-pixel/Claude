@@ -12,3 +12,6 @@ airball-preview.html
 .wrangler
 .dev.vars*
 !.dev.vars.example
+
+# TypeScript incremental build cache
+*.tsbuildinfo
