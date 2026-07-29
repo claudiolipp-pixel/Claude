@@ -58,16 +58,16 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
          * stills, so without this the card is motionless for its entire hold
          * and reads as stuck rather than held.
          *
-         * On narrow screens the media is letterboxed rather than cropped so
-         * the footage stays whole, which means any scale above 1 would start
-         * shaving its edges. There the drift runs up TO 1 instead of past it,
-         * so it still moves without ever cutting into the frame.
+         * The media fills the card on every size. On tight screens the drift
+         * tops out lower, so the frame sits a touch wider than it otherwise
+         * would — it cannot make a landscape clip readable in a portrait card,
+         * but it stops the hold ending at maximum crop.
          */
         gsap.fromTo(
           media,
-          { scale: isNarrow ? 0.95 : 1 },
+          { scale: 1 },
           {
-            scale: isNarrow ? 1 : 1.06,
+            scale: isNarrow ? 1.02 : 1.06,
             ease: 'none',
             scrollTrigger: { trigger: card, start: 'top top', end: 'bottom top', scrub: true },
           },
@@ -150,13 +150,7 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
         {work.media.type === 'video' ? (
           <video
             ref={videoRef}
-            /*
-             * Cropping a landscape clip into a narrow card cuts its own
-             * lettering off at both ends. On phones the frame is kept whole
-             * and letterboxed against Court Black instead; from md up there is
-             * enough width for cover to fill without losing anything.
-             */
-            className="h-full w-full object-contain roomy:object-cover"
+            className="h-full w-full object-cover"
             autoPlay
             muted
             loop
