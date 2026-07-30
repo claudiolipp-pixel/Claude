@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollTrigger } from '@/lib/gsap';
 import { useSmoothScroll } from '@/hooks/useSmoothScroll';
+import { useOverlayHistory } from '@/hooks/useOverlayHistory';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import type { Work } from '@/content/site';
 import { CursorProvider } from '@/components/Cursor';
@@ -62,8 +63,16 @@ function HomePage() {
     else lenis.current.start();
   }, [openWork, contactOpen, lenis]);
 
-  const closeDetail = useCallback(() => setOpenWork(null), []);
-  const closeContact = useCallback(() => setContactOpen(false), []);
+  /*
+   * Both overlays share one history entry, because only one can be open at a
+   * time. Closing goes through `dismiss`, which steps back through that entry
+   * so Back never ends up pointing at an overlay that is already gone.
+   */
+  const closeOverlays = useCallback(() => {
+    setOpenWork(null);
+    setContactOpen(false);
+  }, []);
+  const dismiss = useOverlayHistory(Boolean(openWork) || contactOpen, closeOverlays);
 
   return (
     <CursorProvider>
@@ -94,10 +103,10 @@ function HomePage() {
       <Footer />
 
       {openWork && (
-        <DetailPanel key={openWork.id} work={openWork} onClose={closeDetail} />
+        <DetailPanel key={openWork.id} work={openWork} onClose={dismiss} />
       )}
 
-      {contactOpen && <ContactPanel onClose={closeContact} />}
+      {contactOpen && <ContactPanel onClose={dismiss} />}
     </CursorProvider>
   );
 }

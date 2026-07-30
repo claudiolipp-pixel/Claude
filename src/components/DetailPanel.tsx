@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { Work } from '@/content/site';
 import { gsap, prefersReducedMotion } from '@/lib/gsap';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface DetailPanelProps {
   work: Work;
@@ -22,22 +23,22 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
   const { content } = useLanguage();
   const t = content.detail;
 
+  useScrollLock();
+
   // Escape closes, and focus moves in on open and back out on close.
   useEffect(() => {
     const previouslyFocused = document.activeElement as HTMLElement | null;
-    closeRef.current?.focus();
+    // preventScroll: focusing an element the browser considers off-screen makes
+    // it scroll the page underneath the overlay to reach it.
+    closeRef.current?.focus({ preventScroll: true });
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', onKey);
 
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
     return () => {
       document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = prevOverflow;
       previouslyFocused?.focus?.();
     };
   }, [onClose]);

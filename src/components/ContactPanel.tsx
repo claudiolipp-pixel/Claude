@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { gsap, prefersReducedMotion } from '@/lib/gsap';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { SOCIAL } from '@/content/site';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 /**
  * Contact, opened from the nav. Court Cream like the detail pages, so the
@@ -16,22 +17,22 @@ export default function ContactPanel({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     const previouslyFocused = document.activeElement as HTMLElement | null;
-    closeRef.current?.focus();
+    // preventScroll: focusing an element the browser considers off-screen makes
+    // it scroll the page underneath the overlay to reach it.
+    closeRef.current?.focus({ preventScroll: true });
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', onKey);
 
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
     return () => {
       document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = prevOverflow;
       previouslyFocused?.focus?.();
     };
   }, [onClose]);
+
+  useScrollLock();
 
   useEffect(() => {
     const el = rootRef.current;
