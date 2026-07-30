@@ -135,6 +135,65 @@ Two traps when exporting the master:
 - **Do not cap the long axis.** A "1080p" limit applied to portrait footage
   caps the *height*, so 1080×1920 comes out as 608×1080.
 
+## Legal pages
+
+`/imprint` and `/privacy` are real URLs. There is no router: the Worker serves
+`index.html` for any unmatched path, `App.tsx` reads `location.pathname`, and
+`legalKeyForPath` decides whether to render the site or a legal document. Links
+between them are plain `<a>`, so the browser does an ordinary page load.
+
+Both texts live in `src/content/legal.ts`, in German and English, and both are
+**provisional and say so on the page**. The privacy notice describes what the
+site actually does — waitlist to a Google Sheet, Cloudflare logs, one
+localStorage key, no cookies, no analytics, self-hosted fonts. If any of that
+changes, that file has to change with it. Adding analytics or an embedded map
+or video would also mean needing a consent banner, which the site currently
+does not have and does not need.
+
+The imprint is missing the company registration details on purpose; they are
+listed on the page as outstanding. Austrian law (ECG §5, MedienG §25) requires
+them once the company exists.
+
+## Security
+
+`public/_headers` is read by Cloudflare at deploy time and sets HSTS, CSP,
+`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` and
+`Permissions-Policy`. `public/.well-known/security.txt` is the RFC 9116 contact
+file; its `Expires` date has to stay in the future.
+
+Two notes on the CSP:
+
+- `style-src` needs `'unsafe-inline'` and cannot drop it. GSAP animates by
+  writing `element.style` every frame, and inline style attributes fall under
+  `style-src`.
+- `connect-src` lists both `script.google.com` and
+  `script.googleusercontent.com`, because Apps Script answers the waitlist POST
+  with a redirect to the second one. Removing either breaks signups silently.
+
+After changing `_headers`, verify before deploying — a broken CSP fails in the
+browser, not in the build:
+
+```bash
+npm run build
+node scripts/serve-with-headers.mjs   # serves dist/ applying _headers
+```
+
+### Still to be set in the Cloudflare dashboard
+
+These cannot be done from the repo, because they act on requests before the
+assets are reached:
+
+| Setting | Where |
+| --- | --- |
+| **Always Use HTTPS** | SSL/TLS → Edge Certificates |
+| **HSTS** (optional, `_headers` already sends it) | SSL/TLS → Edge Certificates |
+| **Bot Fight Mode** | Security → Bots |
+| **AI Labyrinth** | Security → Bots |
+
+Always Use HTTPS matters most: HSTS only binds a browser that has already been
+served over HTTPS once, so without the redirect a first visit over plain HTTP
+is still unprotected.
+
 ## Before launch
 
 - [ ] Deploy the waitlist script and set `VITE_WAITLIST_ENDPOINT` — until then

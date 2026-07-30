@@ -165,13 +165,24 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
             <source src={work.media.src} type="video/mp4" />
           </video>
         ) : (
-          <img
-            src={work.media.src}
-            alt={work.media.alt}
-            loading={eager ? 'eager' : 'lazy'}
-            style={{ objectPosition: work.media.focal }}
-            className="h-full w-full object-cover"
-          />
+          <picture>
+            {/* Same query as the `roomy` screen, negated: anything short or
+                narrow gets the portrait cut instead of a sliver of the wide
+                one. */}
+            {work.media.srcNarrow && (
+              <source
+                media="not all and (min-width: 768px) and (min-height: 600px)"
+                srcSet={work.media.srcNarrow}
+              />
+            )}
+            <img
+              src={work.media.src}
+              alt={work.media.alt}
+              loading={eager ? 'eager' : 'lazy'}
+              style={{ objectPosition: work.media.focal }}
+              className="h-full w-full object-cover"
+            />
+          </picture>
         )}
         {/* Keeps the meta legible over any frame of the footage. */}
         <div

@@ -1,0 +1,9 @@
+# Where to report a security problem with airball.at (RFC 9116).
+#
+# Expires must stay in the future or scanners treat the file as stale, so it is
+# set a year out. Push a new date when you touch this file.
+
+Contact: mailto:info@airball.at
+Expires: 2027-07-30T00:00:00.000Z
+Preferred-Languages: de, en
+Canonical: https://airball.at/.well-known/security.txt

@@ -74,6 +74,14 @@ export interface Work {
      * falls through to the H.264 one.
      */
     srcWebm?: string;
+    /**
+     * Art direction for phone-shaped cards. A full-viewport card on a phone is
+     * roughly 1:2.7, so a landscape frame loses about three quarters of its
+     * width to the crop and stops being the photo that was chosen. Where that
+     * matters, a portrait cut of the same picture is set here and swapped in
+     * below the `roomy` breakpoint.
+     */
+    srcNarrow?: string;
     poster?: string;
     alt: string;
     focal?: string;
@@ -137,10 +145,12 @@ const MEDIA = {
   gameVideoWebm: '/media/airballer.webm',
   /** First frame of the clip, so the card shows the same image before playback. */
   gameVideoPoster: '/media/airballer-poster.jpg',
-  /** Card 02. The same frame opens the Airballer page, so card and detail rhyme. */
-  airballerCard: '/media/airballer/court-wide.jpg',
+  /** Card 02. Low-angle receive, ball still in the air. */
+  airballerCard: '/media/airballer-card.jpg',
+  airballerCardNarrow: '/media/airballer-card-narrow.jpg',
   /** Card 03. */
   teamCard: '/media/team-card.jpg',
+  teamCardNarrow: '/media/team-card-narrow.jpg',
 } as const;
 
 export const SOCIAL = {
@@ -226,7 +236,13 @@ const en: SiteContent = {
     {
       id: 'airballer',
       num: '02',
-      media: { type: 'image', src: MEDIA.airballerCard, alt: 'The AIRBALLER set up on grass in a Graz park' },
+      media: {
+        type: 'image',
+        src: MEDIA.airballerCard,
+        srcNarrow: MEDIA.airballerCardNarrow,
+        focal: 'center 12%',
+        alt: 'A player receiving, the ball still in the air above them',
+      },
       tag: 'The product',
       title: 'The Airballer',
       meta: ['Product', '2026'],
@@ -267,7 +283,12 @@ const en: SiteContent = {
     {
       id: 'movement',
       num: '03',
-      media: { type: 'image', src: MEDIA.teamCard, alt: 'The AIRBALL crew at an event in Graz' },
+      media: {
+        type: 'image',
+        src: MEDIA.teamCard,
+        srcNarrow: MEDIA.teamCardNarrow,
+        alt: 'The AIRBALL crew at an event in Graz',
+      },
       tag: 'Join us',
       title: 'From Ballers For Ballers',
       meta: ['The Team', 'Graz, AT'],
@@ -415,7 +436,13 @@ const de: SiteContent = {
     {
       id: 'airballer',
       num: '02',
-      media: { type: 'image', src: MEDIA.airballerCard, alt: 'Der AIRBALLER aufgebaut auf einer Wiese in Graz' },
+      media: {
+        type: 'image',
+        src: MEDIA.airballerCard,
+        srcNarrow: MEDIA.airballerCardNarrow,
+        focal: 'center 12%',
+        alt: 'Eine Spielerin in der Annahme, der Ball noch in der Luft',
+      },
       tag: 'Das Produkt',
       title: 'Der Airballer',
       meta: ['Produkt', '2026'],
@@ -456,7 +483,12 @@ const de: SiteContent = {
     {
       id: 'movement',
       num: '03',
-      media: { type: 'image', src: MEDIA.teamCard, alt: 'Die AIRBALL-Crew bei einem Event in Graz' },
+      media: {
+        type: 'image',
+        src: MEDIA.teamCard,
+        srcNarrow: MEDIA.teamCardNarrow,
+        alt: 'Die AIRBALL-Crew bei einem Event in Graz',
+      },
       tag: 'Mach mit',
       title: 'From Ballers For Ballers',
       meta: ['Das Team', 'Graz, AT'],

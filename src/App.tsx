@@ -12,8 +12,25 @@ import ContactPanel from '@/components/ContactPanel';
 import Ticker from '@/components/Ticker';
 import Waitlist from '@/components/Waitlist';
 import Footer from '@/components/Footer';
+import LegalPage from '@/components/LegalPage';
+import { legalKeyForPath } from '@/content/legal';
 
+/**
+ * The whole site is one page, apart from imprint and privacy, which need real
+ * URLs so they can be linked to and found. The Worker serves index.html for
+ * any unmatched path (`not_found_handling: single-page-application`), so the
+ * path is read here and decides which of the two things renders.
+ *
+ * Navigation between them is plain <a>, so there is no history handling to get
+ * wrong — the browser does a normal page load and this runs again.
+ */
 export default function App() {
+  const legal = legalKeyForPath(window.location.pathname);
+  if (legal) return <LegalPage which={legal} />;
+  return <HomePage />;
+}
+
+function HomePage() {
   const lenis = useSmoothScroll();
   const { content, lang } = useLanguage();
   const [loaded, setLoaded] = useState(false);
