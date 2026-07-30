@@ -42,7 +42,14 @@
   #
   # connect-src allows the waitlist endpoint. Apps Script answers a POST with a
   # redirect to script.googleusercontent.com, so both hosts are needed.
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self' https://script.google.com https://script.googleusercontent.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  #
+  # The two cloudflareinsights hosts are Web Analytics: the beacon is fetched
+  # from static.cloudflareinsights.com and reports to cloudflareinsights.com.
+  # Both entries are required whether the beacon is injected by the app or by
+  # Cloudflare at the edge. Miss either and the browser blocks it silently,
+  # which looks exactly like "analytics is not working" with nothing in the
+  # console to explain why.
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://cloudflareinsights.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests
 
 # Hashed filenames never change contents, so they can be cached hard.
 /assets/*

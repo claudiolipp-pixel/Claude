@@ -5,15 +5,18 @@
  * the site actually does today, so they are accurate rather than generic:
  *
  *  - the waitlist form posts first name, last name, email and language to a
- *    Google Apps Script that appends a row to a Google Sheet,
+ *    Google Apps Script that appends a row to a Google Sheet, together with the
+ *    campaign tags and referrer captured in attribution.ts,
  *  - Cloudflare serves the site and keeps request logs,
+ *  - Cloudflare Web Analytics counts visits without a cookie or a fingerprint,
  *  - `airball.lang` in localStorage remembers the language choice,
  *  - fonts are bundled, so no request ever leaves for a third-party CDN,
- *  - there is no analytics, no advertising and no cookie of any kind.
+ *  - there is no advertising and no cookie of any kind.
  *
- * If any of that changes, this file has to change with it. In particular,
- * adding analytics or an embedded map or video would need a consent banner,
- * which the site currently does not have and does not need.
+ * If any of that changes, this file has to change with it. The line that
+ * decides whether a consent banner is needed is whether something is written to
+ * or read from the visitor's device. Everything here stays on the right side of
+ * it; a pixel, an embedded map or a video would not.
  *
  * Anything a lawyer still has to fill in is marked TODO below and shown on the
  * page as a visible gap rather than quietly omitted.
@@ -107,6 +110,7 @@ const en: LegalContent = {
         heading: 'The waitlist form',
         body: [
           'If you sign up for the waitlist we store the first name, last name and email address you enter, along with the language the site was set to and the time of the signup.',
+          'We also record which link brought you here: the campaign tags in the address, if there were any, and the address of the page you followed a link from, without its query string. This tells us that a signup came from, say, Instagram. It says nothing about who you are, is read only at the moment you submit the form, and is never stored on your device.',
           'We use this only to tell you when the first AIRBALLERS are available. We do not send anything else, and we do not pass the list to anyone for advertising.',
           'The legal basis is your consent under Article 6(1)(a) GDPR. You can withdraw it at any time by writing to us, and we will delete your entry.',
         ],
@@ -126,9 +130,16 @@ const en: LegalContent = {
         ],
       },
       {
+        heading: 'Visitor statistics',
+        body: [
+          'We use Cloudflare Web Analytics to see how many people visit and which pages they reach. It sets no cookie, stores nothing on your device and builds no fingerprint, so it cannot recognise you again or follow you to another site. What we see are totals: visits, referring sites, countries, browsers and loading times.',
+          'The legal basis is our legitimate interest in understanding whether the site works under Article 6(1)(f) GDPR. Because nothing is stored on or read from your device, this needs no consent, which is why you are not being asked to accept anything.',
+        ],
+      },
+      {
         heading: 'Cookies and tracking',
         body: [
-          'This site sets no cookies. It runs no analytics, no advertising and no tracking pixels, and it embeds nothing from a third party.',
+          'This site sets no cookies. It runs no advertising, no tracking pixels and no cross-site profiling, and it embeds nothing from a third party.',
           'The only thing stored on your device is an entry called airball.lang in your browser’s local storage, which remembers whether you chose German or English. It contains nothing else and never leaves your browser. Clearing your browser data removes it.',
           'Fonts are delivered from our own server, so loading the page sends no request to any external font service.',
         ],
@@ -212,6 +223,7 @@ const de: LegalContent = {
         heading: 'Das Warteliste-Formular',
         body: [
           'Wenn du dich für die Warteliste einträgst, speichern wir Vorname, Nachname und E-Mail-Adresse, dazu die eingestellte Sprache und den Zeitpunkt der Anmeldung.',
+          'Außerdem halten wir fest, über welchen Link du gekommen bist: die Kampagnen-Parameter in der Adresse, falls vorhanden, und die Adresse der Seite, von der aus du den Link angeklickt hast, ohne deren Suchparameter. Damit sehen wir, dass eine Anmeldung zum Beispiel über Instagram kam. Über deine Person sagt das nichts aus, es wird erst im Moment des Absendens ausgelesen und niemals auf deinem Gerät gespeichert.',
           'Wir verwenden das ausschließlich, um dir Bescheid zu geben, sobald die ersten AIRBALLER verfügbar sind. Wir schicken nichts anderes und geben die Liste nicht für Werbung weiter.',
           'Rechtsgrundlage ist deine Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO. Du kannst sie jederzeit widerrufen, dann löschen wir deinen Eintrag.',
         ],
@@ -231,9 +243,16 @@ const de: LegalContent = {
         ],
       },
       {
+        heading: 'Besucherstatistik',
+        body: [
+          'Wir nutzen Cloudflare Web Analytics, um zu sehen, wie viele Menschen die Seite besuchen und welche Bereiche sie erreichen. Es setzt kein Cookie, speichert nichts auf deinem Gerät und bildet keinen Fingerabdruck. Es kann dich also weder wiedererkennen noch auf andere Seiten verfolgen. Wir sehen Summen: Besuche, verweisende Seiten, Länder, Browser und Ladezeiten.',
+          'Rechtsgrundlage ist unser berechtigtes Interesse daran zu verstehen, ob die Seite funktioniert, nach Art. 6 Abs. 1 lit. f DSGVO. Da nichts auf deinem Gerät gespeichert oder ausgelesen wird, ist dafür keine Einwilligung nötig. Deshalb wirst du auch nicht gefragt, irgendetwas zu akzeptieren.',
+        ],
+      },
+      {
         heading: 'Cookies und Tracking',
         body: [
-          'Diese Seite setzt keine Cookies. Es läuft keine Analyse, keine Werbung, kein Tracking-Pixel, und es ist nichts von Dritten eingebettet.',
+          'Diese Seite setzt keine Cookies. Es läuft keine Werbung, kein Tracking-Pixel, keine seitenübergreifende Profilbildung, und es ist nichts von Dritten eingebettet.',
           'Das Einzige, was auf deinem Gerät gespeichert wird, ist ein Eintrag namens airball.lang im lokalen Speicher deines Browsers, der sich merkt, ob du Deutsch oder Englisch gewählt hast. Er enthält sonst nichts und verlässt deinen Browser nie. Wenn du deine Browserdaten löschst, ist er weg.',
           'Die Schriften liegen auf unserem eigenen Server. Beim Laden der Seite geht also keine Anfrage an einen externen Schriftdienst.',
         ],

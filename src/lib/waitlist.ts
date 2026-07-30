@@ -9,6 +9,8 @@
  * collect anything in production.
  */
 
+import { ATTRIBUTION, type Attribution } from '@/lib/attribution';
+
 export interface WaitlistEntry {
   firstName: string;
   lastName: string;
@@ -17,6 +19,13 @@ export interface WaitlistEntry {
   /** Honeypot. Hidden from people, so anything here came from a bot. */
   company?: string;
 }
+
+/**
+ * What actually goes over the wire: the form fields plus where the visit came
+ * from. Attribution rides along with the submission rather than being tracked
+ * separately, which is what keeps it cookie-free and adblock-proof.
+ */
+type WaitlistPayload = WaitlistEntry & Attribution;
 
 export interface WaitlistResult {
   ok: boolean;
@@ -32,6 +41,8 @@ export async function submitWaitlist(entry: WaitlistEntry): Promise<WaitlistResu
   }
 
   try {
+    const payload: WaitlistPayload = { ...entry, ...ATTRIBUTION };
+
     const response = await fetch(ENDPOINT, {
       method: 'POST',
       /*
@@ -40,7 +51,7 @@ export async function submitWaitlist(entry: WaitlistEntry): Promise<WaitlistResu
        * preflights — the submission would fail before reaching the script.
        */
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(entry),
+      body: JSON.stringify(payload),
       redirect: 'follow',
     });
 

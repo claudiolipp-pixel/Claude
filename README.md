@@ -104,8 +104,15 @@ read the Sheet back out. Genuine secrets belong in `.env`, which stays ignored.
 locally logs to the console instead of writing junk rows into the live Sheet.
 
 Columns are written on first use: timestamp, first name, last name, email,
-language. The form also carries a honeypot field, hidden off-screen and out of
-the tab order; anything that fills it is accepted and silently dropped.
+language, source, medium, campaign, referrer. The last four are attribution,
+see "Measurement" below. If the Sheet already has rows from before those
+columns existed, the script widens the header row in place on the next signup,
+so nothing has to be migrated by hand.
+
+The form also carries a honeypot field, hidden off-screen and out of the tab
+order; anything that fills it is accepted and silently dropped. Text values are
+escaped before they are written, so a signup starting with `=` lands as text
+rather than as a live spreadsheet formula.
 
 ## Card video
 
@@ -144,15 +151,69 @@ between them are plain `<a>`, so the browser does an ordinary page load.
 
 Both texts live in `src/content/legal.ts`, in German and English, and both are
 **provisional and say so on the page**. The privacy notice describes what the
-site actually does — waitlist to a Google Sheet, Cloudflare logs, one
-localStorage key, no cookies, no analytics, self-hosted fonts. If any of that
-changes, that file has to change with it. Adding analytics or an embedded map
-or video would also mean needing a consent banner, which the site currently
-does not have and does not need.
+site actually does — waitlist to a Google Sheet, Cloudflare logs, cookie-free
+visitor statistics, one localStorage key, no cookies, self-hosted fonts. If any
+of that changes, that file has to change with it.
+
+The test for whether a consent banner becomes necessary is simple: does it
+write to or read from the visitor's device? Everything in place today stays on
+the right side of that line. A tracking pixel, an embedded map or a YouTube
+embed would not.
 
 The imprint is missing the company registration details on purpose; they are
 listed on the page as outstanding. Austrian law (ECG §5, MedienG §25) requires
 them once the company exists.
+
+## Measurement
+
+Deliberately cookie-free, which is why there is no consent banner. Nothing is
+written to or read from the visitor's device except `airball.lang`, and that is
+the visitor's own language choice. Two pieces, doing different jobs:
+
+**How many people come** — Cloudflare Web Analytics. Dashboard → Analytics &
+Logs → Web Analytics → add `airball.at`, then paste the site token into
+`VITE_CF_BEACON_TOKEN` in `.env.production`. Empty token, no beacon, nothing
+measured. It gives visits, referrers, countries, browsers and Core Web Vitals.
+It cannot do custom events, so it can never tell you that someone signed up.
+
+**Where each signup came from** — captured by `src/lib/attribution.ts` and
+written into the Sheet as `Source`, `Medium`, `Campaign` and `Referrer`. It
+reads the `utm_*` parameters, and falls back to recognising the referring host,
+so an untagged Instagram bio link still lands as `instagram` rather than
+`direct`. It travels with the form submission, so ad blockers and the Instagram
+in-app browser cannot break it.
+
+It lives in memory for one page load only. A visitor who detours to `/privacy`
+and comes back counts as `direct` from then on — the price of storing nothing.
+
+### Tagging links
+
+```
+https://airball.at/?utm_source=instagram&utm_medium=bio&utm_campaign=launch
+```
+
+`utm_source` is the channel, `utm_medium` is the placement, `utm_campaign` is
+the push. Tags always beat the referrer, so tag anything you control.
+
+### Conversion rate
+
+There is no single dashboard for it, by design. Signups per day come from the
+Sheet, visits per day from Cloudflare Web Analytics:
+
+```
+signups (Sheet, filtered by Source) ÷ visits (Cloudflare) = conversion rate
+```
+
+Per channel, filter the Sheet by `Source` and compare against the matching
+referrer in Cloudflare.
+
+### If a pixel is ever added
+
+Meta, Google Ads and GA4 all store identifiers on the device. Adding any of
+them means a consent banner with a genuine reject option, Consent Mode v2 for
+EEA traffic, a rewritten privacy notice, and consent records. It also means
+measuring only the visitors who accept. Worth it once real ad spend depends on
+it; not before.
 
 ## Security
 
