@@ -192,7 +192,7 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
         className="absolute inset-0 z-10 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-butter"
       >
         <span className="sr-only">
-          {work.title} — {openLabel}
+          {work.title} · {openLabel}
         </span>
       </button>
 

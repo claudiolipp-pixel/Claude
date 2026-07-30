@@ -26,7 +26,7 @@ const ENDPOINT = import.meta.env.VITE_WAITLIST_ENDPOINT as string | undefined;
 
 export async function submitWaitlist(entry: WaitlistEntry): Promise<WaitlistResult> {
   if (!ENDPOINT) {
-    console.warn('[waitlist] VITE_WAITLIST_ENDPOINT is not set — nothing was saved:', entry);
+    console.warn('[waitlist] VITE_WAITLIST_ENDPOINT is not set, nothing was saved:', entry);
     await new Promise((resolve) => setTimeout(resolve, 400));
     return { ok: true };
   }

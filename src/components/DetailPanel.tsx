@@ -79,7 +79,7 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
     >
       <div className="flex items-start justify-between gap-6 px-5 pt-5 md:px-10 md:pt-8">
         <span className="label pt-1 text-court/55 tabular-nums" data-panel-item>
-          {work.num} — {work.title}
+          {work.num} · {work.title}
         </span>
         <button
           ref={closeRef}

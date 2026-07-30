@@ -126,9 +126,12 @@ export interface SiteContent {
 
 /** Media paths are shared across languages — only the alt text differs. */
 const MEDIA = {
-  airballer: '/media/airballer.mp4',
-  gameCard: '/media/game-card.jpg',
-  movement: '/media/movement.jpg',
+  /** Card 01. The clip carries the game, so it opens the page. */
+  gameVideo: '/media/airballer.mp4',
+  /** Card 02. The same frame opens the Airballer page, so card and detail rhyme. */
+  airballerCard: '/media/airballer/court-wide.jpg',
+  /** Card 03. */
+  teamCard: '/media/team-card.jpg',
 } as const;
 
 export const SOCIAL = {
@@ -143,7 +146,7 @@ const en: SiteContent = {
   contact: {
     title: 'Don’t wait for an invite',
     eyebrow: 'Wanna connect?',
-    body: 'We answer. Whether you want a court of your own, a game in your city, or you just played somewhere new and want to tell us where — write.',
+    body: 'We answer. Whether you want a court of your own, a game in your city, or you just played somewhere new and want to tell us where. Write.',
     image: {
       src: '/media/contact/connect.jpg',
       alt: 'An AIRBALLER walking off the court',
@@ -160,10 +163,56 @@ const en: SiteContent = {
   detail: { open: 'Details', close: 'Close', specsLabel: 'Specs' },
   works: [
     {
-      id: 'airballer',
+      id: 'game',
       num: '01',
-      media: { type: 'video', src: MEDIA.airballer, alt: 'The AIRBALLER court in play' },
+      media: { type: 'video', src: MEDIA.gameVideo, alt: 'A rally around the AIRBALLER' },
       tag: 'Watch',
+      title: 'The Game',
+      meta: ['Three Contacts', '1v1 / 2v2'],
+      detail: {
+        title: 'This is how we play',
+        lead: 'Easy to learn. Hard to put down. Pick a mode, pick a side, and run it back.',
+        sections: [
+          {
+            heading: 'Pick Your Side',
+            body: '1v1 or 2v2. Two players or two teams face off around the Airballer. Rock-paper-scissors decides who serves first. That is tradition.',
+          },
+          {
+            heading: 'Strike The Ball Onto The Airballer',
+            body: 'Serve or attack by playing the ball onto the rebound surface. The bounce sends it flying. Where it goes next is your opponent’s problem.',
+          },
+          {
+            heading: 'Up To Three Contacts',
+            body: 'The receiving team has up to three contacts to control the ball and play it back onto the Airballer. Use all three, or smash it back first-touch.',
+          },
+          {
+            heading: 'The Game Mode',
+            body: 'Choose your mode before the match. Football rules mean feet, chest and head only. Padel rules, played 1v1, give you two touches after receiving. Or full-body mode, where every touch counts.',
+          },
+          {
+            heading: 'Ball Hits The Ground, Point Over',
+            body: 'If the ball touches the ground on your side of the rally, the point goes to the other team. First to 11, win by two. Then rematch. Always rematch.',
+          },
+        ],
+        hero: { src: '/media/game/rally-wide.jpg', alt: 'Three players mid-rally around the AIRBALLER at dusk' },
+        gallery: [
+          { src: '/media/game/serve.jpg', alt: 'A player tossing the ball to serve' },
+          { src: '/media/game/rally-01.jpg', alt: 'A rally around the AIRBALLER, ball in the air' },
+          { src: '/media/game/padel.jpg', alt: 'Playing the padel variant with a racket' },
+        ],
+        specs: [
+          { label: 'Format', value: '1v1 or 2v2' },
+          { label: 'Contacts', value: 'Up to three' },
+          { label: 'Modes', value: 'Football, padel, full body' },
+          { label: 'Scoring', value: 'First to 11, win by two' },
+        ],
+      },
+    },
+    {
+      id: 'airballer',
+      num: '02',
+      media: { type: 'image', src: MEDIA.airballerCard, alt: 'The AIRBALLER set up on grass in a Graz park' },
+      tag: 'The product',
       title: 'The Airballer',
       meta: ['Product', '2026'],
       detail: {
@@ -201,55 +250,9 @@ const en: SiteContent = {
       },
     },
     {
-      id: 'game',
-      num: '02',
-      media: { type: 'image', src: MEDIA.gameCard, alt: 'A player waiting to receive, ball in the air' },
-      tag: 'The rules',
-      title: 'The Game',
-      meta: ['Three Contacts', '1v1 / 2v2'],
-      detail: {
-        title: 'This is how we play',
-        lead: 'Easy to learn. Hard to put down. Pick a mode, pick a side, and run it back.',
-        sections: [
-          {
-            heading: 'Pick Your Side',
-            body: '1v1 or 2v2. Two players or two teams face off around the Airballer. Rock-paper-scissors decides who serves first. That is tradition.',
-          },
-          {
-            heading: 'Strike The Ball Onto The Airballer',
-            body: 'Serve or attack by playing the ball onto the rebound surface. The bounce sends it flying. Where it goes next is your opponent’s problem.',
-          },
-          {
-            heading: 'Up To Three Contacts',
-            body: 'The receiving team has up to three contacts to control the ball and play it back onto the Airballer. Use all three, or smash it back first-touch.',
-          },
-          {
-            heading: 'The Game Mode',
-            body: 'Choose your mode before the match. Football rules — feet, chest and head only. Padel rules — played 1v1, two touches after receiving. Or full-body mode, where every touch counts.',
-          },
-          {
-            heading: 'Ball Hits The Ground, Point Over',
-            body: 'If the ball touches the ground on your side of the rally, the point goes to the other team. First to 11, win by two. Then rematch. Always rematch.',
-          },
-        ],
-        hero: { src: '/media/game/rally-wide.jpg', alt: 'Three players mid-rally around the AIRBALLER at dusk' },
-        gallery: [
-          { src: '/media/game/serve.jpg', alt: 'A player tossing the ball to serve' },
-          { src: '/media/game/rally-01.jpg', alt: 'A rally around the AIRBALLER, ball in the air' },
-          { src: '/media/game/padel.jpg', alt: 'Playing the padel variant with a racket' },
-        ],
-        specs: [
-          { label: 'Format', value: '1v1 or 2v2' },
-          { label: 'Contacts', value: 'Up to three' },
-          { label: 'Modes', value: 'Football, padel, full body' },
-          { label: 'Scoring', value: 'First to 11, win by two' },
-        ],
-      },
-    },
-    {
       id: 'movement',
       num: '03',
-      media: { type: 'image', src: MEDIA.movement, alt: 'An AIRBALLER after a point' },
+      media: { type: 'image', src: MEDIA.teamCard, alt: 'The AIRBALL crew at an event in Graz' },
       tag: 'Join us',
       title: 'From Ballers For Ballers',
       meta: ['The Team', 'Graz, AT'],
@@ -258,7 +261,7 @@ const en: SiteContent = {
         lead: 'Airball is a sport. A very portable sport. One that turns any patch of ground into a court and any stranger into an opponent.',
         hero: { src: '/media/team/founders.jpg', alt: 'The three founders at an AIRBALL event in Graz' },
         body: [
-          'Our roots are on the pitches of Graz, Austria. The three of us grew up playing football everywhere we were allowed to — and a few places we weren’t. Then we got older, the stadiums got further away and the excuses got easier. So we built the Airballer: real competition that fits in a backpack.',
+          'Our roots are on the pitches of Graz, Austria. The three of us grew up playing football everywhere we were allowed to, and a few places we weren’t. Then we got older, the stadiums got further away and the excuses got easier. So we built the Airballer: real competition that fits in a backpack.',
           'We are the first Airballers. You’re next.',
         ],
         values: [
@@ -278,7 +281,7 @@ const en: SiteContent = {
           {
             name: 'Claudio',
             role: 'Co-founder',
-            bio: 'First to believe in the idea and first on the court when it counts. Runs the community, the marketing and the rematches — everything that turns a product into a crew.',
+            bio: 'First to believe in the idea and first on the court when it counts. Runs the community, the marketing and the rematches. Everything that turns a product into a crew.',
             photo: { src: '/media/team/claudio.jpg', alt: 'Claudio' },
           },
           {
@@ -326,7 +329,7 @@ const de: SiteContent = {
   contact: {
     title: 'Warte nicht auf eine Einladung',
     eyebrow: 'Wanna connect?',
-    body: 'Wir antworten. Ob du einen eigenen Court willst, ein Spiel in deiner Stadt, oder gerade irgendwo Neues gespielt hast und uns erzählen willst wo — schreib uns.',
+    body: 'Wir antworten. Ob du einen eigenen Court willst, ein Spiel in deiner Stadt, oder gerade irgendwo Neues gespielt hast und uns erzählen willst wo. Schreib uns.',
     image: {
       src: '/media/contact/connect.jpg',
       alt: 'Ein AIRBALLER verlässt den Court',
@@ -343,10 +346,56 @@ const de: SiteContent = {
   detail: { open: 'Details', close: 'Schließen', specsLabel: 'Daten' },
   works: [
     {
-      id: 'airballer',
+      id: 'game',
       num: '01',
-      media: { type: 'video', src: MEDIA.airballer, alt: 'Der AIRBALLER im Spiel' },
+      media: { type: 'video', src: MEDIA.gameVideo, alt: 'Ein Ballwechsel am AIRBALLER' },
       tag: 'Ansehen',
+      title: 'Das Spiel',
+      meta: ['Drei Kontakte', '1v1 / 2v2'],
+      detail: {
+        title: 'So spielen wir',
+        lead: 'Schnell gelernt. Schwer wieder wegzulegen. Modus wählen, Seite wählen, und noch eine Runde.',
+        sections: [
+          {
+            heading: 'Wähl Deine Seite',
+            body: '1v1 oder 2v2. Zwei Spieler oder zwei Teams stehen sich rund um den Airballer gegenüber. Schere, Stein, Papier entscheidet, wer aufschlägt. Das ist Tradition.',
+          },
+          {
+            heading: 'Spiel Den Ball Auf Den Airballer',
+            body: 'Aufschlag oder Angriff: den Ball auf die Rebound-Fläche spielen. Der Absprung schickt ihn los. Wo er landet, ist das Problem des Gegners.',
+          },
+          {
+            heading: 'Bis Zu Drei Kontakte',
+            body: 'Das annehmende Team hat bis zu drei Kontakte, um den Ball zu kontrollieren und zurück auf den Airballer zu spielen. Alle drei nutzen, oder direkt aus der Annahme zurückhämmern.',
+          },
+          {
+            heading: 'Der Spielmodus',
+            body: 'Modus vor dem Match festlegen. Bei Fußball-Regeln zählen nur Fuß, Brust und Kopf. Bei Padel-Regeln hast du im 1v1 zwei Berührungen nach der Annahme. Oder Ganzkörper, da zählt jede Berührung.',
+          },
+          {
+            heading: 'Ball Am Boden, Punkt Vorbei',
+            body: 'Berührt der Ball auf deiner Seite den Boden, geht der Punkt ans andere Team. Bis 11, mit zwei Punkten Vorsprung. Dann Revanche. Immer Revanche.',
+          },
+        ],
+        hero: { src: '/media/game/rally-wide.jpg', alt: 'Drei Spieler im Ballwechsel am AIRBALLER in der Abenddämmerung' },
+        gallery: [
+          { src: '/media/game/serve.jpg', alt: 'Ein Spieler wirft den Ball zum Aufschlag hoch' },
+          { src: '/media/game/rally-01.jpg', alt: 'Ein Ballwechsel am AIRBALLER, der Ball in der Luft' },
+          { src: '/media/game/padel.jpg', alt: 'Die Padel-Variante mit Schläger' },
+        ],
+        specs: [
+          { label: 'Format', value: '1v1 oder 2v2' },
+          { label: 'Kontakte', value: 'Bis zu drei' },
+          { label: 'Modi', value: 'Fußball, Padel, Ganzkörper' },
+          { label: 'Zählweise', value: 'Bis 11, zwei Punkte Vorsprung' },
+        ],
+      },
+    },
+    {
+      id: 'airballer',
+      num: '02',
+      media: { type: 'image', src: MEDIA.airballerCard, alt: 'Der AIRBALLER aufgebaut auf einer Wiese in Graz' },
+      tag: 'Das Produkt',
       title: 'Der Airballer',
       meta: ['Produkt', '2026'],
       detail: {
@@ -360,7 +409,7 @@ const de: SiteContent = {
           },
           {
             heading: 'Hält Was Aus',
-            body: 'Gebaut zum Draufhauen, Drüberhechten und Durchspielen — und in Minuten wieder verpackt.',
+            body: 'Gebaut zum Draufhauen, Drüberhechten und Durchspielen, und in Minuten wieder verpackt.',
           },
           {
             heading: 'Aufbau In Minuten',
@@ -384,55 +433,9 @@ const de: SiteContent = {
       },
     },
     {
-      id: 'game',
-      num: '02',
-      media: { type: 'image', src: MEDIA.gameCard, alt: 'Ein Spieler wartet auf die Annahme, der Ball in der Luft' },
-      tag: 'Die Regeln',
-      title: 'Das Spiel',
-      meta: ['Drei Kontakte', '1v1 / 2v2'],
-      detail: {
-        title: 'So spielen wir',
-        lead: 'Schnell gelernt. Schwer wieder wegzulegen. Modus wählen, Seite wählen, und noch eine Runde.',
-        sections: [
-          {
-            heading: 'Wähl Deine Seite',
-            body: '1v1 oder 2v2. Zwei Spieler oder zwei Teams stehen sich rund um den Airballer gegenüber. Schere, Stein, Papier entscheidet, wer aufschlägt. Das ist Tradition.',
-          },
-          {
-            heading: 'Spiel Den Ball Auf Den Airballer',
-            body: 'Aufschlag oder Angriff: den Ball auf die Rebound-Fläche spielen. Der Absprung schickt ihn los. Wo er landet, ist das Problem des Gegners.',
-          },
-          {
-            heading: 'Bis Zu Drei Kontakte',
-            body: 'Das annehmende Team hat bis zu drei Kontakte, um den Ball zu kontrollieren und zurück auf den Airballer zu spielen. Alle drei nutzen — oder direkt aus der Annahme zurückhämmern.',
-          },
-          {
-            heading: 'Der Spielmodus',
-            body: 'Modus vor dem Match festlegen. Fußball-Regeln — nur Fuß, Brust und Kopf. Padel-Regeln — im 1v1 zwei Berührungen nach der Annahme. Oder Ganzkörper, da zählt jede Berührung.',
-          },
-          {
-            heading: 'Ball Am Boden, Punkt Vorbei',
-            body: 'Berührt der Ball auf deiner Seite den Boden, geht der Punkt ans andere Team. Bis 11, mit zwei Punkten Vorsprung. Dann Revanche. Immer Revanche.',
-          },
-        ],
-        hero: { src: '/media/game/rally-wide.jpg', alt: 'Drei Spieler im Ballwechsel am AIRBALLER in der Abenddämmerung' },
-        gallery: [
-          { src: '/media/game/serve.jpg', alt: 'Ein Spieler wirft den Ball zum Aufschlag hoch' },
-          { src: '/media/game/rally-01.jpg', alt: 'Ein Ballwechsel am AIRBALLER, der Ball in der Luft' },
-          { src: '/media/game/padel.jpg', alt: 'Die Padel-Variante mit Schläger' },
-        ],
-        specs: [
-          { label: 'Format', value: '1v1 oder 2v2' },
-          { label: 'Kontakte', value: 'Bis zu drei' },
-          { label: 'Modi', value: 'Fußball, Padel, Ganzkörper' },
-          { label: 'Zählweise', value: 'Bis 11, zwei Punkte Vorsprung' },
-        ],
-      },
-    },
-    {
       id: 'movement',
       num: '03',
-      media: { type: 'image', src: MEDIA.movement, alt: 'Ein AIRBALLER nach dem Punkt' },
+      media: { type: 'image', src: MEDIA.teamCard, alt: 'Die AIRBALL-Crew bei einem Event in Graz' },
       tag: 'Mach mit',
       title: 'From Ballers For Ballers',
       meta: ['Das Team', 'Graz, AT'],
@@ -441,7 +444,7 @@ const de: SiteContent = {
         lead: 'Airball ist ein Sport. Ein sehr tragbarer Sport. Einer, der jedes Stück Boden zum Court macht und jeden Fremden zum Gegner.',
         hero: { src: '/media/team/founders.jpg', alt: 'Die drei Gründer bei einem AIRBALL-Event in Graz' },
         body: [
-          'Unsere Wurzeln liegen auf den Plätzen von Graz. Wir drei sind mit Fußball aufgewachsen und haben überall gespielt, wo man uns ließ — und an ein paar Orten, wo man es nicht tat. Dann wurden wir älter, die Stadien weiter weg und die Ausreden leichter. Also haben wir den Airballer gebaut: echter Wettkampf, der in einen Rucksack passt.',
+          'Unsere Wurzeln liegen auf den Plätzen von Graz. Wir drei sind mit Fußball aufgewachsen und haben überall gespielt, wo man uns ließ, und an ein paar Orten, wo man es nicht tat. Dann wurden wir älter, die Stadien weiter weg und die Ausreden leichter. Also haben wir den Airballer gebaut: echter Wettkampf, der in einen Rucksack passt.',
           'Wir sind die ersten Airballers. Du bist der Nächste.',
         ],
         values: [
@@ -455,13 +458,13 @@ const de: SiteContent = {
           {
             name: 'Alexander',
             role: 'Gründer',
-            bio: 'Airball ist Alexanders Idee. Er hat in jedem Park, an jedem Strand und auf jedem Dach eine Arena gesehen — und den Plan gebaut, um es zu beweisen. Verantwortet Vision, Produkt und das große Ganze, und spielt bei jedem Event den ersten Ballwechsel.',
+            bio: 'Airball ist Alexanders Idee. Er hat in jedem Park, an jedem Strand und auf jedem Dach eine Arena gesehen, und den Plan gebaut, um es zu beweisen. Verantwortet Vision, Produkt und das große Ganze, und spielt bei jedem Event den ersten Ballwechsel.',
             photo: { src: '/media/team/alexander.jpg', alt: 'Alexander' },
           },
           {
             name: 'Claudio',
             role: 'Co-Gründer',
-            bio: 'Der Erste, der an die Idee geglaubt hat, und der Erste am Court, wenn es zählt. Verantwortet Community, Marketing und die Revanchen — alles, was aus einem Produkt eine Crew macht.',
+            bio: 'Der Erste, der an die Idee geglaubt hat, und der Erste am Court, wenn es zählt. Verantwortet Community, Marketing und die Revanchen. Alles, was aus einem Produkt eine Crew macht.',
             photo: { src: '/media/team/claudio.jpg', alt: 'Claudio' },
           },
           {

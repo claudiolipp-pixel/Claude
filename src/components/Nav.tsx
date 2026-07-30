@@ -97,7 +97,7 @@ export default function Nav({ lenis, onOpenContact }: NavProps) {
     >
       <a
         href="#top"
-        aria-label="AIRBALL — home"
+        aria-label="AIRBALL, home"
         className="flex items-center gap-2.5"
         onClick={(e) => {
           e.preventDefault();

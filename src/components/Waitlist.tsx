@@ -65,7 +65,7 @@ export default function Waitlist() {
         <span className="label block text-court/55">
           <span className="reveal-mask">
             <span className="reveal-line" data-reveal-line>
-              04 — {t.eyebrow}
+              04 · {t.eyebrow}
             </span>
           </span>
         </span>
