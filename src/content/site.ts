@@ -68,6 +68,12 @@ export interface Work {
   media: {
     type: 'video' | 'image';
     src: string;
+    /**
+     * VP9 alternative, offered before `src`. Browsers take the first source
+     * they can decode, so Chrome and Firefox get the smaller file and Safari
+     * falls through to the H.264 one.
+     */
+    srcWebm?: string;
     poster?: string;
     alt: string;
     focal?: string;
@@ -128,6 +134,9 @@ export interface SiteContent {
 const MEDIA = {
   /** Card 01. The clip carries the game, so it opens the page. */
   gameVideo: '/media/airballer.mp4',
+  gameVideoWebm: '/media/airballer.webm',
+  /** First frame of the clip, so the card shows the same image before playback. */
+  gameVideoPoster: '/media/airballer-poster.jpg',
   /** Card 02. The same frame opens the Airballer page, so card and detail rhyme. */
   airballerCard: '/media/airballer/court-wide.jpg',
   /** Card 03. */
@@ -165,7 +174,13 @@ const en: SiteContent = {
     {
       id: 'game',
       num: '01',
-      media: { type: 'video', src: MEDIA.gameVideo, alt: 'A rally around the AIRBALLER' },
+      media: {
+        type: 'video',
+        src: MEDIA.gameVideo,
+        srcWebm: MEDIA.gameVideoWebm,
+        poster: MEDIA.gameVideoPoster,
+        alt: 'A rally around the AIRBALLER',
+      },
       tag: 'Watch',
       title: 'The Game',
       meta: ['Three Contacts', '1v1 / 2v2'],
@@ -186,12 +201,12 @@ const en: SiteContent = {
             body: 'The receiving team has up to three contacts to control the ball and play it back onto the Airballer. Use all three, or smash it back first-touch.',
           },
           {
-            heading: 'The Game Mode',
-            body: 'Choose your mode before the match. Football rules mean feet, chest and head only. Padel rules, played 1v1, give you two touches after receiving. Or full-body mode, where every touch counts.',
-          },
-          {
             heading: 'Ball Hits The Ground, Point Over',
             body: 'If the ball touches the ground on your side of the rally, the point goes to the other team. First to 11, win by two. Then rematch. Always rematch.',
+          },
+          {
+            heading: 'The Game Mode',
+            body: 'Choose your mode before the match. Football rules mean feet, chest and head only. Padel rules, played 1v1, give you two touches after receiving. Or full-body mode, where every touch counts.',
           },
         ],
         hero: { src: '/media/game/rally-wide.jpg', alt: 'Three players mid-rally around the AIRBALLER at dusk' },
@@ -348,7 +363,13 @@ const de: SiteContent = {
     {
       id: 'game',
       num: '01',
-      media: { type: 'video', src: MEDIA.gameVideo, alt: 'Ein Ballwechsel am AIRBALLER' },
+      media: {
+        type: 'video',
+        src: MEDIA.gameVideo,
+        srcWebm: MEDIA.gameVideoWebm,
+        poster: MEDIA.gameVideoPoster,
+        alt: 'Ein Ballwechsel am AIRBALLER',
+      },
       tag: 'Ansehen',
       title: 'Das Spiel',
       meta: ['Drei Kontakte', '1v1 / 2v2'],
@@ -369,12 +390,12 @@ const de: SiteContent = {
             body: 'Das annehmende Team hat bis zu drei Kontakte, um den Ball zu kontrollieren und zurück auf den Airballer zu spielen. Alle drei nutzen, oder direkt aus der Annahme zurückhämmern.',
           },
           {
-            heading: 'Der Spielmodus',
-            body: 'Modus vor dem Match festlegen. Bei Fußball-Regeln zählen nur Fuß, Brust und Kopf. Bei Padel-Regeln hast du im 1v1 zwei Berührungen nach der Annahme. Oder Ganzkörper, da zählt jede Berührung.',
-          },
-          {
             heading: 'Ball Am Boden, Punkt Vorbei',
             body: 'Berührt der Ball auf deiner Seite den Boden, geht der Punkt ans andere Team. Bis 11, mit zwei Punkten Vorsprung. Dann Revanche. Immer Revanche.',
+          },
+          {
+            heading: 'Der Spielmodus',
+            body: 'Modus vor dem Match festlegen. Bei Fußball-Regeln zählen nur Fuß, Brust und Kopf. Bei Padel-Regeln hast du im 1v1 zwei Berührungen nach der Annahme. Oder Ganzkörper, da zählt jede Berührung.',
           },
         ],
         hero: { src: '/media/game/rally-wide.jpg', alt: 'Drei Spieler im Ballwechsel am AIRBALLER in der Abenddämmerung' },

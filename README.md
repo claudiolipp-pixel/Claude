@@ -107,13 +107,41 @@ Columns are written on first use: timestamp, first name, last name, email,
 language. The form also carries a honeypot field, hidden off-screen and out of
 the tab order; anything that fills it is accepted and silently dropped.
 
+## Card video
+
+Card 01 plays `public/media/airballer.mp4`, with `airballer.webm` offered first
+and `airballer-poster.jpg` as the still before playback. All three are the same
+24-second cut in 9:16 portrait.
+
+To replace it, encode the master and drop all three files in:
+
+```bash
+ffmpeg -i master.mov -t 24 -c:v libx264 -profile:v high -crf 19 -preset slow \
+  -pix_fmt yuv420p -movflags +faststart -an public/media/airballer.mp4
+ffmpeg -i public/media/airballer.mp4 -c:v libvpx-vp9 -crf 32 -b:v 0 \
+  -row-mt 1 -speed 2 -an public/media/airballer.webm
+ffmpeg -i public/media/airballer.mp4 -frames:v 1 -q:v 3 \
+  public/media/airballer-poster.jpg
+```
+
+`-movflags +faststart` is not optional: without it the browser has to download
+the whole file before the first frame appears.
+
+Two traps when exporting the master:
+
+- **Keep it portrait.** The card crops to 9:16. Exporting portrait footage into
+  a 16:9 timeline pillarboxes it, and the black bars then have to be cropped
+  back off, which throws away most of the horizontal resolution.
+- **Do not cap the long axis.** A "1080p" limit applied to portrait footage
+  caps the *height*, so 1080×1920 comes out as 608×1080.
+
 ## Before launch
 
 - [ ] Deploy the waitlist script and set `VITE_WAITLIST_ENDPOINT` — until then
       the form collects nothing.
-- [ ] Replace the placeholder video in `public/media/airballer.mp4`, and add a
-      `poster` frame to the video entry in `site.ts` so there is a still image
-      before playback starts.
+- [ ] Re-export the card video at full resolution. The current files are a
+      608×1080 crop, because the export they were cut from had the portrait
+      footage pillarboxed inside a 1920×1080 frame. See *Card video* below.
 - [ ] Swap `public/brand/mark-a.jpg` for the SVG A-mark — it is a raster
       placeholder pulled out of the mockup and will look soft on retina.
 - [ ] Add real `/imprint` and `/privacy` pages. Both are legally required in

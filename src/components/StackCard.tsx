@@ -159,6 +159,9 @@ export default function StackCard({ work, index, onOpen, openLabel }: StackCardP
             poster={work.media.poster}
             aria-label={work.media.alt}
           >
+            {/* VP9 first: roughly half the bytes of the H.264 file, and every
+                browser that cannot decode it simply reads the next source. */}
+            {work.media.srcWebm && <source src={work.media.srcWebm} type="video/webm" />}
             <source src={work.media.src} type="video/mp4" />
           </video>
         ) : (
