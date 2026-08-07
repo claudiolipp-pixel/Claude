@@ -76,16 +76,52 @@ function sourceFromReferrer(referrer: string): { source: string; referrer: strin
   }
 }
 
+/**
+ * Short entry points, so a link can be tagged without looking tagged.
+ *
+ * `airball.at/ig` fits in an Instagram bio where a 70-character utm string
+ * does not, and it is the only way to attribute a poster, a QR code or a
+ * business card at all: print carries no referrer, so without this every
+ * scanned code arrives indistinguishable from someone typing the domain.
+ *
+ * They also separate placements the referrer cannot tell apart. A bio link, a
+ * story sticker and a post all report themselves as instagram.com; only the
+ * link itself knows which one it was.
+ *
+ * Any path not listed here falls through to the normal page, so adding one is
+ * safe and removing one only costs the distinction.
+ */
+const SHORT_LINKS: Record<string, { source: string; medium: string }> = {
+  '/ig': { source: 'instagram', medium: 'bio' },
+  '/igs': { source: 'instagram', medium: 'story' },
+  '/igp': { source: 'instagram', medium: 'post' },
+  '/li': { source: 'linkedin', medium: 'profile' },
+  '/lip': { source: 'linkedin', medium: 'post' },
+  '/qr': { source: 'print', medium: 'qr' },
+  '/card': { source: 'print', medium: 'card' },
+  '/mail': { source: 'email', medium: 'signature' },
+};
+
+/** Matches how legalKeyForPath reads the path, so a trailing slash is fine. */
+export function shortLinkForPath(pathname: string) {
+  return SHORT_LINKS[pathname.replace(/\/+$/, '').toLowerCase() || '/'] ?? null;
+}
+
 function capture(): Attribution {
   const params = new URLSearchParams(window.location.search);
   const utm = (key: string) => clean(params.get(key) ?? '');
 
+  const short = shortLinkForPath(window.location.pathname);
   const fromReferrer = sourceFromReferrer(document.referrer);
 
   return {
-    // An explicit tag always wins over what the browser reports.
-    source: utm('utm_source') || fromReferrer.source,
-    medium: utm('utm_medium'),
+    /*
+     * Most explicit wins. A hand-written utm tag beats the short link it was
+     * put on, and both beat whatever the browser happens to report, which is
+     * the least reliable of the three.
+     */
+    source: utm('utm_source') || short?.source || fromReferrer.source,
+    medium: utm('utm_medium') || short?.medium || '',
     campaign: utm('utm_campaign'),
     referrer: fromReferrer.referrer,
   };

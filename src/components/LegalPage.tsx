@@ -21,7 +21,16 @@ export default function LegalPage({ which }: LegalPageProps) {
 
   useEffect(() => {
     document.title = `${doc.title} — AIRBALL`;
-  }, [doc.title]);
+
+    // index.html declares the home page as canonical for the tagged short
+    // links; these two are their own pages and have to say so.
+    const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    const previous = canonical?.href;
+    if (canonical) canonical.href = `https://airball.at/${which}`;
+    return () => {
+      if (canonical && previous) canonical.href = previous;
+    };
+  }, [doc.title, which]);
 
   return (
     <div className="min-h-svh bg-cream text-court">

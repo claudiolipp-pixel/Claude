@@ -188,12 +188,40 @@ and comes back counts as `direct` from then on — the price of storing nothing.
 
 ### Tagging links
 
+Short links carry the tags, so nothing long has to be pasted anywhere. They
+are defined in `SHORT_LINKS` in `src/lib/attribution.ts`; each one serves the
+normal home page and only changes what gets written to the Sheet.
+
+| Link | Lands in the Sheet as | Use it for |
+| --- | --- | --- |
+| `airball.at/ig` | instagram / bio | the link in the Instagram profile |
+| `airball.at/igs` | instagram / story | story link stickers |
+| `airball.at/igp` | instagram / post | a link named in a post or caption |
+| `airball.at/li` | linkedin / profile | the LinkedIn company page |
+| `airball.at/lip` | linkedin / post | a LinkedIn post |
+| `airball.at/qr` | print / qr | QR codes on posters and at events |
+| `airball.at/card` | print / card | business cards and flyers |
+| `airball.at/mail` | email / signature | email signatures |
+
+The print ones matter most. Paper carries no referrer, so without a tagged link
+a scanned QR code is indistinguishable from someone typing the domain.
+
+For anything not in that table, write the parameters out:
+
 ```
-https://airball.at/?utm_source=instagram&utm_medium=bio&utm_campaign=launch
+https://airball.at/?utm_source=podcast&utm_medium=interview&utm_campaign=launch
 ```
 
 `utm_source` is the channel, `utm_medium` is the placement, `utm_campaign` is
-the push. Tags always beat the referrer, so tag anything you control.
+the push. Keep the values lowercase and reuse the same spelling every time:
+`Instagram`, `instagram` and `IG` become three separate rows in the Sheet and
+have to be added back together by hand.
+
+Precedence is most-explicit-wins: an explicit `utm_source` beats the short link
+it sits on, and both beat the referring site.
+
+Adding a short link is one line in `SHORT_LINKS`. Any path that is not listed
+renders the normal page, so a typo costs the tag, never the visit.
 
 ### Conversion rate
 

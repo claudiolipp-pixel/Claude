@@ -16,6 +16,12 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://airball.at" />
+    <!--
+      The tagged short links (/ig, /qr, ...) all serve this same page, so
+      without a canonical a search engine would see several duplicates of the
+      home page. LegalPage overrides this for /imprint and /privacy.
+    -->
+    <link rel="canonical" href="https://airball.at/" />
     <meta name="theme-color" content="#F2EFE7" />
   </head>
   <body>
