@@ -124,6 +124,11 @@ export interface ShopStrings {
   quantityLess: string;
   quantityMore: string;
   panels: ShopPanel[];
+  home: string;
+  /** Clubs, schools and events buy differently from one person. */
+  clubTitle: string;
+  clubBody: string;
+  clubCta: string;
   soonTitle: string;
   soonBody: string;
   trust: { title: string; body: string }[];
@@ -283,6 +288,11 @@ const de: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
     quantity: 'Menge',
     quantityLess: 'Menge verringern',
     quantityMore: 'Menge erhöhen',
+    home: 'Start',
+    clubTitle: 'Für Verein, Schule oder Event',
+    clubBody:
+      'Mehrere Courts, eigenes Branding oder ein Turnier: dafür gibt es keinen Knopf im Shop. Schreib uns, was du vorhast, und wir rechnen es dir.',
+    clubCta: 'Anfrage schreiben',
     panels: [
       {
         title: 'Lieferung',
@@ -453,6 +463,11 @@ const en: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
     quantity: 'Quantity',
     quantityLess: 'Decrease quantity',
     quantityMore: 'Increase quantity',
+    home: 'Home',
+    clubTitle: 'For a club, a school or an event',
+    clubBody:
+      'Several courts, your own branding, or a tournament: there is no button in the shop for that. Tell us what you have in mind and we will price it.',
+    clubCta: 'Send an enquiry',
     panels: [
       {
         title: 'Delivery',
@@ -590,6 +605,20 @@ export const SHOP: Record<Lang, { strings: ShopStrings; copy: Record<string, Sho
   de,
   en,
 };
+
+/**
+ * Shopify serves the product renders at 2048px square. Shown at roughly 600px
+ * that is several megabytes for nothing, and a gallery holds up to nine of
+ * them. The CDN resizes on request, so ask it for the size actually needed.
+ */
+export function sized(url: string, width: number): string {
+  return `${url}${url.includes('?') ? '&' : '?'}width=${width}`;
+}
+
+/** Widths a browser can choose from, for the one large image on screen. */
+export function srcSet(url: string, widths: number[] = [600, 900, 1200]): string {
+  return widths.map((w) => `${sized(url, w)} ${w}w`).join(', ');
+}
 
 export function productBySlug(slug: string): ShopProduct | undefined {
   return PRODUCTS.find((p) => p.slug === slug);

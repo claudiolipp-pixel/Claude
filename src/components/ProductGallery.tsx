@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { sized, srcSet } from '@/content/shop';
 
 /**
  * The product slideshow.
@@ -85,7 +86,10 @@ export default function ProductGallery({ images, name, labels }: ProductGalleryP
           {images.map((src, i) => (
             <img
               key={src}
-              src={src}
+              src={sized(src, 900)}
+              srcSet={srcSet(src)}
+              // One column on a phone, half the width on a desktop.
+              sizes="(min-width: 900px) 46vw, 100vw"
               alt={caption(i)}
               // The first frame is the one the page is judged on, so it is not
               // deferred; the rest can wait.
@@ -139,7 +143,12 @@ export default function ProductGallery({ images, name, labels }: ProductGalleryP
                 i === index ? 'opacity-100 ring-2 ring-court ring-offset-2 ring-offset-cream' : 'opacity-55 hover:opacity-100'
               }`}
             >
-              <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
+              <img
+                src={sized(src, 160)}
+                alt=""
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
             </button>
           ))}
         </div>

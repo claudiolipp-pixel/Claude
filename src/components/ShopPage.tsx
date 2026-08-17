@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { SOCIAL } from '@/content/site';
 import { CursorProvider, useCursorTarget } from '@/components/Cursor';
 import Wordmark from '@/components/Wordmark';
 import ProductGallery from '@/components/ProductGallery';
@@ -8,6 +9,8 @@ import {
   SHOP,
   cartUrl,
   productBySlug,
+  sized,
+  srcSet,
   type ShopProduct,
   type ShopPanel,
 } from '@/content/shop';
@@ -32,6 +35,38 @@ function usePrice() {
       style: 'currency',
       currency: 'EUR',
     }).format(value);
+}
+
+/**
+ * Where you are, and the way back up. A product reached from an Instagram link
+ * is often the first page someone sees, and without this there is nothing on
+ * screen saying the shop has anything else in it.
+ */
+function Breadcrumb({ product }: { product?: ShopProduct }) {
+  const { lang } = useLanguage();
+  const t = SHOP[lang].strings;
+  const name = product ? SHOP[lang].copy[product.slug].name : null;
+  return (
+    <nav aria-label="Breadcrumb" className="label px-5 pb-1 pt-2 text-court/45 md:px-10">
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <li><a href="/" className="transition-colors hover:text-court">{t.home}</a></li>
+        <li aria-hidden="true">&middot;</li>
+        <li>
+          {name ? (
+            <a href="/shop" className="transition-colors hover:text-court">{t.eyebrow}</a>
+          ) : (
+            <span aria-current="page" className="text-court">{t.eyebrow}</span>
+          )}
+        </li>
+        {name && (
+          <>
+            <li aria-hidden="true">&middot;</li>
+            <li><span aria-current="page" className="text-court">{name}</span></li>
+          </>
+        )}
+      </ol>
+    </nav>
+  );
 }
 
 function ShopHeader({ backHref, backLabel }: { backHref: string; backLabel: string }) {
@@ -82,7 +117,9 @@ function ProductCard({ product }: { product: ShopProduct }) {
       <a href={`/shop/${product.slug}`} className="group block" {...cursor}>
         <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-court md:rounded-2xl">
           <img
-            src={product.image}
+            src={sized(product.image, 700)}
+            srcSet={srcSet(product.image, [400, 700, 1000])}
+            sizes="(min-width: 768px) 31vw, 100vw"
             alt={copy.name}
             loading="lazy"
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
@@ -280,7 +317,7 @@ function ProductDetail({ product }: { product: ShopProduct }) {
             <p className="mt-2 text-[13px] text-court/70">{t.addOnNote}</p>
             <div className="mt-4 flex items-center gap-4">
               <img
-                src={addOn.image}
+                src={sized(addOn.image, 200)}
                 alt={addOnCopy.name}
                 loading="lazy"
                 className="h-20 w-20 shrink-0 rounded-lg bg-court object-cover"
@@ -366,10 +403,49 @@ function ProductDetail({ product }: { product: ShopProduct }) {
             ))}
           </div>
         </div>
+
+        {/* Clubs, schools and events do not buy one court through a cart, so
+            the page says so instead of pretending the button covers it. */}
+        <aside className="mt-16 border-2 border-court p-6 md:p-8">
+          <h2 className="display text-[clamp(22px,3vw,32px)]">{t.clubTitle}</h2>
+          <p className="mt-3 max-w-[52ch] text-court/75">{t.clubBody}</p>
+          <a
+            href={`mailto:${SOCIAL.email}?subject=${encodeURIComponent(copy.name)}`}
+            className="label mt-5 inline-block bg-butter px-6 py-3.5 font-medium text-court transition-colors hover:bg-court hover:text-butter"
+          >
+            {t.clubCta}
+          </a>
+        </aside>
       </div>
     </div>
   );
 }
+
+
+/**
+ * Three line icons, inline rather than from a set. At 18px with a 1.5 stroke
+ * they sit on the mono baseline without pulling attention from the yellow
+ * button, which is the only thing on the page allowed to shout.
+ */
+const PANEL_ICONS: Record<number, JSX.Element> = {
+  0: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" className="h-[18px] w-[18px] shrink-0">
+      <path d="M2 7h11v9H2z" /><path d="M13 10h4l3 3v3h-7z" />
+      <circle cx="6" cy="18" r="1.6" /><circle cx="17" cy="18" r="1.6" />
+    </svg>
+  ),
+  1: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" className="h-[18px] w-[18px] shrink-0">
+      <path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z" /><path d="M9 12l2 2 4-4" />
+    </svg>
+  ),
+  2: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" className="h-[18px] w-[18px] shrink-0">
+      <circle cx="12" cy="12" r="9" /><path d="M9.5 9.5a2.5 2.5 0 113.5 2.3c-.7.3-1 .9-1 1.7" />
+      <path d="M12 17h.01" />
+    </svg>
+  ),
+};
 
 /**
  * Delivery, returns and how to ask a question. Open one at a time, because
@@ -380,7 +456,7 @@ function ShopPanels({ panels }: { panels: ShopPanel[] }) {
   const [open, setOpen] = useState<string | null>(null);
   return (
     <div className="mt-10 border-t border-court/15">
-      {panels.map((panel) => {
+      {panels.map((panel, i) => {
         const isOpen = open === panel.title;
         return (
           <div key={panel.title} className="border-b border-court/15">
@@ -390,7 +466,10 @@ function ShopPanels({ panels }: { panels: ShopPanel[] }) {
               aria-expanded={isOpen}
               className="label flex w-full items-center justify-between gap-4 py-4 text-left font-medium transition-colors hover:text-court/60"
             >
-              {panel.title}
+              <span className="flex items-center gap-3">
+                {PANEL_ICONS[i]}
+                {panel.title}
+              </span>
               <span aria-hidden="true" className="text-lg leading-none">
                 {isOpen ? '\u2212' : '+'}
               </span>
@@ -435,6 +514,7 @@ export default function ShopPage({ slug }: { slug: string | null }) {
           backHref={product ? '/shop' : '/'}
           backLabel={product ? t.backToShop : t.back}
         />
+        <Breadcrumb product={product} />
 
         {product ? <ProductDetail product={product} /> : <ShopIndex />}
 
