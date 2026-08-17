@@ -232,16 +232,27 @@ function ProductDetail({ product }: { product: ShopProduct }) {
   const addOnCopy = addOn ? SHOP[lang].copy[addOn.slug] : undefined;
 
   return (
-    <div className="grid gap-8 px-5 pb-24 pt-6 md:grid-cols-2 md:gap-14 md:px-10 md:pb-32 md:pt-10">
-      <div>
-        <ProductGallery
-          images={product.gallery}
-          name={copy.name}
-          labels={{ counter: t.galleryLabel, previous: t.galleryPrev, next: t.galleryNext }}
-        />
-      </div>
+    <div className="px-5 pb-24 pt-6 md:px-10 md:pb-32 md:pt-10">
+      {/*
+        Two blocks, not one grid. The buying half is a two column grid with a
+        sticky info panel; the reading half is separate and full width.
 
-      <div className="md:sticky md:top-8 md:self-start">
+        They used to be one grid with the long read spanning both columns, and
+        the sticky panel then kept floating over it: a sticky grid item is
+        constrained by its grid area, and once the row ended it carried on
+        across the next one. Splitting them removes the constraint problem
+        instead of fighting it, and it matches how the page is used anyway.
+      */}
+      <div className="grid gap-8 md:grid-cols-2 md:gap-14">
+        <div>
+          <ProductGallery
+            images={product.gallery}
+            name={copy.name}
+            labels={{ counter: t.galleryLabel, previous: t.galleryPrev, next: t.galleryNext }}
+          />
+        </div>
+
+        <div className="md:sticky md:top-8 md:self-start">
         <span className="label block text-court/45">
           {product.kind === 'bundle' ? t.bundlesTitle : t.singlesTitle}
         </span>
@@ -337,12 +348,13 @@ function ProductDetail({ product }: { product: ShopProduct }) {
             </a>
           </aside>
         )}
+        </div>
       </div>
 
       {/* The long read sits under both columns, because it is for the visitor
           who is still deciding rather than the one already reaching for the
           button. */}
-      <div className="md:col-span-2">
+      <div>
         {copy.story && (
           <section className="mt-6 border-t-2 border-court pt-8 md:mt-10">
             <h2 className="display text-[clamp(26px,4vw,40px)]">{t.storyTitle}</h2>
