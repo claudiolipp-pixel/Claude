@@ -15,6 +15,8 @@ import Waitlist from '@/components/Waitlist';
 import Footer from '@/components/Footer';
 import LegalPage from '@/components/LegalPage';
 import { legalKeyForPath } from '@/content/legal';
+import ShopPage from '@/components/ShopPage';
+import { SHOP_LIVE, shopRouteForPath } from '@/content/shop';
 
 /**
  * The whole site is one page, apart from imprint and privacy, which need real
@@ -26,8 +28,22 @@ import { legalKeyForPath } from '@/content/legal';
  * wrong — the browser does a normal page load and this runs again.
  */
 export default function App() {
-  const legal = legalKeyForPath(window.location.pathname);
+  const path = window.location.pathname;
+
+  const legal = legalKeyForPath(path);
   if (legal) return <LegalPage which={legal} />;
+
+  /*
+   * The shop only exists once SHOP_LIVE is set. Until then /shop falls through
+   * to the home page, because the imprint is still a placeholder and the terms
+   * and right of withdrawal do not exist yet. A reachable buy button before
+   * those are in place would be a liability, not a soft launch.
+   */
+  if (SHOP_LIVE) {
+    const shop = shopRouteForPath(path);
+    if (shop) return <ShopPage slug={shop.slug} />;
+  }
+
   return <HomePage />;
 }
 
