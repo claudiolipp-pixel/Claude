@@ -46,7 +46,14 @@ export interface ShopProduct {
   /** Sum of the parts bought separately, where that comparison is honest. */
   partsPrice?: number;
   kind: 'bundle' | 'single';
+  /** Shown in the grid and as the link preview. */
   image: string;
+  /**
+   * The slideshow on the product page, in order. Mirrors the media order set
+   * in Shopify, so rearranging there is the source of truth for what a buyer
+   * sees first.
+   */
+  gallery: string[];
   /** Marks one bundle as the suggested one. Never a sales claim. */
   suggested?: boolean;
   /**
@@ -86,6 +93,9 @@ export interface ShopStrings {
   addOnNote: string;
   back: string;
   backToShop: string;
+  galleryLabel: string;
+  galleryPrev: string;
+  galleryNext: string;
   soonTitle: string;
   soonBody: string;
   trust: { title: string; body: string }[];
@@ -95,66 +105,120 @@ export interface ShopStrings {
  * Photography lives on Shopify's CDN, so replacing a product photo there
  * updates the site without a deploy. That is the right owner for it: the photo
  * belongs to the product, and the product lives in Shopify.
+ *
+ * Named rather than pasted inline, because the same shot appears in several
+ * galleries: the backpack render belongs to the backpack, to Pro and to
+ * Premium. One name means one place to change it.
  */
 const CDN = 'https://cdn.shopify.com/s/files/1/0953/7323/0461/files';
 const PHOTO = {
-  airballer: `${CDN}/hf_20260815_162336_ade2755e-b35a-4094-9efe-1ee3c0af5e70_1.png?v=1786813717`,
-  rucksack: `${CDN}/hf_20260815_160501_91286c88-3d89-44e6-9bec-19886873b0be.png?v=1786813911`,
-  handpumpe: `${CDN}/hf_20260815_160501_d938763f-5fef-48f7-bb50-83e738f7def5.png?v=1786813966`,
+  /** The court, three angles. */
+  court1: `${CDN}/hf_20260815_162336_ade2755e-b35a-4094-9efe-1ee3c0af5e70_1.png?v=1786813717`,
+  court2: `${CDN}/hf_20260815_170512_b2d0d18a-1bd2-49c3-b2cf-ff45dcf8fd42.png?v=1786813716`,
+  court3: `${CDN}/hf_20260815_170703_361b528b-4143-4f2c-a777-8fbc2fe6b425.png?v=1786813741`,
+  /** The backpack, three angles. */
+  pack1: `${CDN}/hf_20260815_160501_91286c88-3d89-44e6-9bec-19886873b0be.png?v=1786813911`,
+  pack2: `${CDN}/hf_20260815_160500_f13f15ad-a538-416b-93e8-8c231f6413dc.png?v=1786813910`,
+  pack3: `${CDN}/hf_20260815_160501_5d76735f-ffb0-4e4d-ab1c-3d184bf9affc.png?v=1786813911`,
+  pack4: `${CDN}/hf_20260815_160501_e3334243-4185-4fca-b25e-280747f785df.png?v=1786810065`,
+  handPump: `${CDN}/hf_20260815_160501_d938763f-5fef-48f7-bb50-83e738f7def5.png?v=1786813966`,
+  batteryPump: `${CDN}/hf_20260817_090844_2232aa45-657d-4d9b-9922-cd34691db486.png?v=1786957968`,
+  /** Real games, so a buyer sees the thing in use and not only on white. */
+  play1: `${CDN}/play-01.jpg?v=1786359791`,
+  play2: `${CDN}/play-02.jpg?v=1786359791`,
+  play3: `${CDN}/play-03.jpg?v=1786359791`,
 } as const;
 
-/**
- * TODO(shop): the three bundles still point at the Airballer's own photo,
- * because that is what Shopify holds for them today. Three identical tiles is
- * exactly the row where a customer has to choose, so this needs one photo per
- * bundle before the shop goes live.
+/*
+ * Gallery order is the sales argument, so it is deliberate: what the buyer
+ * gets as a whole, then each item on its own, then the thing in use. Someone
+ * spending 300 euro on a court they have never seen wants to count the parts.
+ *
+ * TODO(shop): the group shot goes in front of every bundle gallery once it
+ * exists, and each bundle needs its own featured image. Today all three share
+ * the court render, so the grid shows three tiles that look identical in
+ * exactly the row where a customer has to choose between them.
  */
 export const PRODUCTS: ShopProduct[] = [
   {
     slug: 'basic',
     variantId: '58544190652797',
-    price: 214.0,
+    price: 199.99,
+    partsPrice: 214.0, // 199 court + 15 hand pump
     kind: 'bundle',
-    image: PHOTO.airballer,
+    image: PHOTO.court1,
+    gallery: [PHOTO.court1, PHOTO.court2, PHOTO.court3, PHOTO.handPump, PHOTO.play2],
     crossSell: 'rucksack',
   },
   {
     slug: 'pro',
     variantId: '58544190783869',
     price: 249.99,
-    // 199 + 15 + 50. Basic has no comparison because 199 + 15 is exactly 214.
-    partsPrice: 264.0,
+    partsPrice: 264.0, // 199 + 15 + 50 backpack
     kind: 'bundle',
-    image: PHOTO.airballer,
+    image: PHOTO.court1,
+    gallery: [
+      PHOTO.court1,
+      PHOTO.court3,
+      PHOTO.court2,
+      PHOTO.pack2,
+      PHOTO.pack1,
+      PHOTO.pack4,
+      PHOTO.handPump,
+      PHOTO.play3,
+    ],
     suggested: true,
   },
   {
     slug: 'premium',
     variantId: '58544190914941',
     price: 299.99,
+    partsPrice: 313.99, // 199 + 15 + 50 + 49.99 battery pump
     kind: 'bundle',
-    image: PHOTO.airballer,
+    image: PHOTO.court1,
+    gallery: [
+      PHOTO.court1,
+      PHOTO.court2,
+      PHOTO.court3,
+      PHOTO.pack1,
+      PHOTO.pack2,
+      PHOTO.pack3,
+      PHOTO.handPump,
+      PHOTO.batteryPump,
+      PHOTO.play1,
+    ],
   },
   {
     slug: 'airballer',
     variantId: '58516276248957',
     price: 199.0,
     kind: 'single',
-    image: PHOTO.airballer,
+    image: PHOTO.court1,
+    gallery: [PHOTO.court1, PHOTO.court2, PHOTO.court3, PHOTO.play2, PHOTO.play3, PHOTO.play1],
   },
   {
     slug: 'rucksack',
     variantId: '58542242791805',
     price: 50.0,
     kind: 'single',
-    image: PHOTO.rucksack,
+    image: PHOTO.pack1,
+    gallery: [PHOTO.pack1, PHOTO.pack2, PHOTO.pack3],
   },
   {
     slug: 'handpumpe',
     variantId: '58542244397437',
     price: 15.0,
     kind: 'single',
-    image: PHOTO.handpumpe,
+    image: PHOTO.handPump,
+    gallery: [PHOTO.handPump],
+  },
+  {
+    slug: 'akkupumpe',
+    variantId: '58546667356541',
+    price: 49.99,
+    kind: 'single',
+    image: PHOTO.batteryPump,
+    gallery: [PHOTO.batteryPump],
   },
 ];
 
@@ -181,6 +245,9 @@ const de: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
     addOnNote: 'Ohne Rucksack lassen sich Court und Pumpe schlecht tragen.',
     back: 'Zurück',
     backToShop: 'Zurück zum Shop',
+    galleryLabel: 'Bild {n} von {total}',
+    galleryPrev: 'Vorheriges Bild',
+    galleryNext: 'Nächstes Bild',
     soonTitle: 'Bald zu haben',
     soonBody:
       'Der Shop öffnet zum Launch. Trag dich in die Warteliste ein, dann bekommst du eine Nachricht, sobald es losgeht.',
@@ -252,6 +319,15 @@ const de: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
         ['Adapter', 'für alle Ventile'],
       ],
     },
+    akkupumpe: {
+      name: 'Akkupumpe',
+      lede: 'Aufladbar, mit Abschaltung beim eingestellten Druck. Der Court steht in etwa einer Minute, ohne dass jemand pumpt.',
+      includes: [],
+      specs: [
+        ['Antrieb', 'Akku, aufladbar'],
+        ['Aufbau', 'ca. 1 Minute'],
+      ],
+    },
   },
 };
 
@@ -278,6 +354,9 @@ const en: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
     addOnNote: 'Without the backpack, the court and the pump are awkward to carry.',
     back: 'Back',
     backToShop: 'Back to the shop',
+    galleryLabel: 'Image {n} of {total}',
+    galleryPrev: 'Previous image',
+    galleryNext: 'Next image',
     soonTitle: 'Not open yet',
     soonBody:
       'The shop opens at launch. Join the waitlist and we will write the moment it does.',
@@ -347,6 +426,15 @@ const en: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
       specs: [
         ['Action', 'double stroke'],
         ['Adapters', 'all valves'],
+      ],
+    },
+    akkupumpe: {
+      name: 'Battery pump',
+      lede: 'Rechargeable, and it stops itself at the pressure you set. The court stands in about a minute, with nobody pumping.',
+      includes: [],
+      specs: [
+        ['Power', 'rechargeable battery'],
+        ['Setup', 'approx. 1 minute'],
       ],
     },
   },

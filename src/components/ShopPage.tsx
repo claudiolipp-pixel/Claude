@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { CursorProvider, useCursorTarget } from '@/components/Cursor';
 import Wordmark from '@/components/Wordmark';
+import ProductGallery from '@/components/ProductGallery';
 import {
   PRODUCTS,
   SHOP,
@@ -194,13 +195,11 @@ function ProductDetail({ product }: { product: ShopProduct }) {
   return (
     <div className="grid gap-8 px-5 pb-24 pt-6 md:grid-cols-2 md:gap-14 md:px-10 md:pb-32 md:pt-10">
       <div>
-        <figure className="overflow-hidden rounded-xl bg-court md:rounded-2xl">
-          <img
-            src={product.image}
-            alt={copy.name}
-            className="aspect-[4/5] w-full object-cover"
-          />
-        </figure>
+        <ProductGallery
+          images={product.gallery}
+          name={copy.name}
+          labels={{ counter: t.galleryLabel, previous: t.galleryPrev, next: t.galleryNext }}
+        />
       </div>
 
       <div className="md:sticky md:top-8 md:self-start">
