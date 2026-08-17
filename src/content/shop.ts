@@ -69,7 +69,27 @@ export interface ShopProductCopy {
   lede: string;
   /** What is in the box. Empty for single items. */
   includes: string[];
-  specs: [string, string][];
+  /**
+   * The longer read, further down the page. A rebound court that folds into a
+   * backpack is not a category anyone knows, so the page has to explain the
+   * thing before it can sell it.
+   */
+  story?: string[];
+  /** One claim per line, scannable. */
+  features?: string[];
+  /**
+   * What it is physically made of. Left empty until the supplier confirms it:
+   * material claims on a physical product are a promise, not marketing.
+   */
+  materials?: string[];
+  /** Grouped so measurements, play and contents do not run into one column. */
+  details: { group: string; rows: [string, string][] }[];
+}
+
+/** The three questions that block a purchase, answered in place. */
+export interface ShopPanel {
+  title: string;
+  body: string[];
 }
 
 export interface ShopStrings {
@@ -96,6 +116,14 @@ export interface ShopStrings {
   galleryLabel: string;
   galleryPrev: string;
   galleryNext: string;
+  storyTitle: string;
+  featuresTitle: string;
+  materialsTitle: string;
+  detailsTitle: string;
+  quantity: string;
+  quantityLess: string;
+  quantityMore: string;
+  panels: ShopPanel[];
   soonTitle: string;
   soonBody: string;
   trust: { title: string; body: string }[];
@@ -248,6 +276,37 @@ const de: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
     galleryLabel: 'Bild {n} von {total}',
     galleryPrev: 'Vorheriges Bild',
     galleryNext: 'Nächstes Bild',
+    storyTitle: 'Zum Produkt',
+    featuresTitle: 'Was es kann',
+    materialsTitle: 'Material',
+    detailsTitle: 'Details',
+    quantity: 'Menge',
+    quantityLess: 'Menge verringern',
+    quantityMore: 'Menge erhöhen',
+    panels: [
+      {
+        title: 'Lieferung',
+        body: [
+          // TODO(shop): echte Laufzeiten und Versandkosten eintragen, sobald
+          // die Zonen in Shopify stehen. Lieferzeit ist Pflichtangabe.
+          'Versand aus Graz nach Österreich, Deutschland, die Schweiz und in die EU.',
+          'Die Schweiz ist Drittland, dort kommen Zoll und Einfuhrumsatzsteuer dazu.',
+        ],
+      },
+      {
+        title: 'Rückgabe und Gewährleistung',
+        body: [
+          'Du kannst innerhalb von 14 Tagen ohne Angabe von Gründen widerrufen. Die Ware muss unbenutzt und vollständig zurückkommen.',
+          'Zusätzlich gilt die gesetzliche Gewährleistung von zwei Jahren.',
+        ],
+      },
+      {
+        title: 'Fragen zum Produkt',
+        body: [
+          'Schreib an info@airball.at. Wir antworten, auch auf die Fragen, die vor dem Kauf kommen.',
+        ],
+      },
+    ],
     soonTitle: 'Bald zu haben',
     soonBody:
       'Der Shop öffnet zum Launch. Trag dich in die Warteliste ein, dann bekommst du eine Nachricht, sobald es losgeht.',
@@ -262,71 +321,101 @@ const de: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
       name: 'Airball Basic',
       lede: 'Der Einstieg. Court und Pumpe, mehr braucht ein Spiel nicht.',
       includes: ['The Airballer', 'Handpumpe'],
-      specs: [
-        ['Aufbau', 'unter 5 Minuten'],
-        ['Format', '1v1 oder 2v2'],
-        ['Packmaß', '70 x 20 x 20 cm'],
-        ['Gewicht', 'ca. 6 kg'],
+      story: [
+        'Ausrollen, aufpumpen, spielen. Der Airballer ist ein aufblasbarer Rebound-Court mit 100 cm Durchmesser: hinlegen, und die Arena steht. Keine Linien ziehen, kein Netz spannen, kein Tor schleppen.',
+        'Basic ist die kleinste Zusammenstellung, mit der sich sofort spielen lässt. Court und Handpumpe, sonst nichts. Wer den Court oft mitnimmt, greift eher zu Pro, weil dort der Rucksack dabei ist.',
+      ],
+      features: [
+        'Aufbau in Minuten, ohne Werkzeug und ohne Steckdose',
+        'Auf jedem ebenen Untergrund: Wiese, Sand, Hallenboden, Dachterrasse',
+        'Für 1v1 und 2v2',
+        'Pumpe ist dabei',
+      ],
+      details: [
+        { group: 'Maße', rows: [['Court', 'Ø 100 cm, aufblasbar'], ['Packmaß', '70 x 20 x 20 cm'], ['Gewicht', 'ca. 6 kg']] },
+        { group: 'Spiel', rows: [['Format', '1v1 oder 2v2'], ['Aufbau', 'unter 5 Minuten']] },
+        { group: 'Lieferumfang', rows: [['Enthalten', 'Court, Handpumpe']] },
       ],
     },
     pro: {
       name: 'Airball Pro',
       lede: 'Alles aus Basic, dazu der Rucksack, damit der Court in einem Stück mitkommt.',
       includes: ['The Airballer', 'Handpumpe', 'Rucksack'],
-      specs: [
-        ['Aufbau', 'unter 5 Minuten'],
-        ['Format', '1v1 oder 2v2'],
-        ['Packmaß', '70 x 20 x 20 cm'],
-        ['Gewicht', 'ca. 7 kg'],
+      story: [
+        'Der Unterschied zu Basic ist nicht das Spiel, sondern der Weg dorthin. Court, Pumpe und dein Zeug wandern in einen gepolsterten Rucksack, und der Court fährt mit dem Rad, in der Bahn oder zu Fuß mit.',
+        'Das ist die Zusammenstellung für alle, die nicht immer am selben Platz spielen.',
+      ],
+      features: [
+        'Alles in einem Stück tragbar',
+        'Aufbau in Minuten, ohne Werkzeug und ohne Steckdose',
+        'Auf jedem ebenen Untergrund',
+        'Für 1v1 und 2v2',
+      ],
+      details: [
+        { group: 'Maße', rows: [['Court', 'Ø 100 cm, aufblasbar'], ['Packmaß', '70 x 20 x 20 cm'], ['Gewicht', 'ca. 7 kg']] },
+        { group: 'Spiel', rows: [['Format', '1v1 oder 2v2'], ['Aufbau', 'unter 5 Minuten']] },
+        { group: 'Lieferumfang', rows: [['Enthalten', 'Court, Handpumpe, Rucksack']] },
       ],
     },
     premium: {
       name: 'Airball Premium',
       lede: 'Das komplette Paket. Mit Akkupumpe steht der Court in etwa einer Minute, ohne dass jemand pumpt.',
       includes: ['The Airballer', 'Handpumpe', 'Akkupumpe', 'Rucksack'],
-      specs: [
-        ['Aufbau', 'ca. 1 Minute'],
-        ['Format', '1v1 oder 2v2'],
-        ['Packmaß', '70 x 20 x 20 cm'],
-        ['Gewicht', 'ca. 7 kg'],
+      story: [
+        'Die Akkupumpe ist der eigentliche Grund für Premium. Sie schaltet beim eingestellten Druck selbst ab, der Court steht in etwa einer Minute, und niemand steht daneben und pumpt.',
+        'Die Handpumpe bleibt trotzdem dabei. Ein Akku ist irgendwann leer, ein Court sollte deswegen nicht ausfallen.',
+      ],
+      features: [
+        'Aufbau in etwa einer Minute',
+        'Handpumpe als Rückfallebene dabei',
+        'Alles in einem Stück tragbar',
+        'Für 1v1 und 2v2',
+      ],
+      details: [
+        { group: 'Maße', rows: [['Court', 'Ø 100 cm, aufblasbar'], ['Packmaß', '70 x 20 x 20 cm'], ['Gewicht', 'ca. 7 kg']] },
+        { group: 'Spiel', rows: [['Format', '1v1 oder 2v2'], ['Aufbau', 'ca. 1 Minute']] },
+        { group: 'Lieferumfang', rows: [['Enthalten', 'Court, Handpumpe, Akkupumpe, Rucksack']] },
       ],
     },
     airballer: {
       name: 'The Airballer',
-      lede: 'Der tragbare Rebound-Court. Eine plane, druckstabile Fläche, aufgeblasen in Minuten, verstaut in einem Rucksack.',
+      lede: 'Der tragbare Rebound-Court. Hinlegen, aufpumpen, und die Arena steht.',
       includes: [],
-      specs: [
-        ['Packmaß', '70 x 20 x 20 cm'],
-        ['Gewicht', 'ca. 6 kg'],
-        ['Format', '1v1 oder 2v2'],
+      story: [
+        'Ein aufblasbarer Rebound-Court mit 100 cm Durchmesser. Der Ball wird darauf gespielt, springt ab, und der Gegner ist dran. Bis zu drei Kontakte, dann muss er zurück.',
+        'Gebaut zum Draufhauen, Drüberhechten und Durchspielen. Wiese, Sand, Hallenboden, Dachterrasse: worauf du stehen kannst, darauf kannst du spielen, solange es eben ist.',
+      ],
+      features: [
+        'Aufblasbar, Ø 100 cm',
+        'Aufbau in Minuten, ohne Werkzeug',
+        'Auf jedem ebenen Untergrund',
+        'Passt in einen Rucksack',
+      ],
+      details: [
+        { group: 'Maße', rows: [['Court', 'Ø 100 cm, aufblasbar'], ['Packmaß', '70 x 20 x 20 cm'], ['Gewicht', 'ca. 6 kg']] },
+        { group: 'Spiel', rows: [['Format', '1v1 oder 2v2'], ['Kontakte', 'bis zu drei']] },
       ],
     },
     rucksack: {
       name: 'Rucksack',
-      lede: 'Court, Pumpe und dein Zeug in einem Stück tragbar, mit gepolsterten Trägern.',
+      lede: 'Court, Pumpe und dein Zeug in einem Stück tragbar.',
       includes: [],
-      specs: [
-        ['Trägt', 'Court und Pumpe'],
-        ['Träger', 'gepolstert'],
-      ],
+      features: ['Trägt Court und Pumpe', 'Gepolsterte Träger', 'Airball-Branding'],
+      details: [{ group: 'Details', rows: [['Fasst', 'Court und Pumpe'], ['Träger', 'gepolstert']] }],
     },
     handpumpe: {
       name: 'Handpumpe',
-      lede: 'Doppelhub, Schlauch und Ventiladapter. Der Court steht in Minuten, ohne Steckdose und ohne Werkzeug.',
+      lede: 'Doppelhub, Schlauch und Ventiladapter. Ohne Steckdose, ohne Werkzeug.',
       includes: [],
-      specs: [
-        ['Prinzip', 'Doppelhub'],
-        ['Adapter', 'für alle Ventile'],
-      ],
+      features: ['Doppelhub, also Luft in beide Richtungen', 'Adapter für alle Ventile', 'Braucht keinen Strom'],
+      details: [{ group: 'Details', rows: [['Prinzip', 'Doppelhub'], ['Adapter', 'für alle Ventile']] }],
     },
     akkupumpe: {
       name: 'Akkupumpe',
-      lede: 'Aufladbar, mit Abschaltung beim eingestellten Druck. Der Court steht in etwa einer Minute, ohne dass jemand pumpt.',
+      lede: 'Aufladbar, schaltet beim eingestellten Druck selbst ab.',
       includes: [],
-      specs: [
-        ['Antrieb', 'Akku, aufladbar'],
-        ['Aufbau', 'ca. 1 Minute'],
-      ],
+      features: ['Aufbau in etwa einer Minute', 'Abschaltung beim eingestellten Druck', 'Aufladbar'],
+      details: [{ group: 'Details', rows: [['Antrieb', 'Akku, aufladbar'], ['Aufbau', 'ca. 1 Minute']] }],
     },
   },
 };
@@ -357,6 +446,33 @@ const en: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
     galleryLabel: 'Image {n} of {total}',
     galleryPrev: 'Previous image',
     galleryNext: 'Next image',
+    storyTitle: 'About it',
+    featuresTitle: 'What it does',
+    materialsTitle: 'Materials',
+    detailsTitle: 'Details',
+    quantity: 'Quantity',
+    quantityLess: 'Decrease quantity',
+    quantityMore: 'Increase quantity',
+    panels: [
+      {
+        title: 'Delivery',
+        body: [
+          'Ships from Graz to Austria, Germany, Switzerland and the EU.',
+          'Switzerland is outside the EU customs area, so duty and import VAT apply there.',
+        ],
+      },
+      {
+        title: 'Returns and warranty',
+        body: [
+          'You can withdraw within 14 days without giving a reason. The item has to come back unused and complete.',
+          'The statutory two year warranty applies on top of that.',
+        ],
+      },
+      {
+        title: 'Questions about the product',
+        body: ['Write to info@airball.at. We answer, including the questions that come before a purchase.'],
+      },
+    ],
     soonTitle: 'Not open yet',
     soonBody:
       'The shop opens at launch. Join the waitlist and we will write the moment it does.',
@@ -371,71 +487,101 @@ const en: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
       name: 'Airball Basic',
       lede: 'The way in. The court and the pump, which is all a game needs.',
       includes: ['The Airballer', 'Hand pump'],
-      specs: [
-        ['Setup', 'under 5 minutes'],
-        ['Format', '1v1 or 2v2'],
-        ['Packed size', '70 x 20 x 20 cm'],
-        ['Weight', 'approx. 6 kg'],
+      story: [
+        'Unroll it, pump it up, play. The Airballer is an inflatable rebound court, 100 cm across: put it down and the arena is there. No lines to mark, no net to string, no goal to carry.',
+        'Basic is the smallest set you can play with straight away. Court and hand pump, nothing else. If you plan to take it places often, Pro is the one, because the backpack comes with it.',
+      ],
+      features: [
+        'Set up in minutes, with no tools and no socket',
+        'Any flat ground: grass, sand, a gym floor, a roof terrace',
+        'For 1v1 and 2v2',
+        'Pump included',
+      ],
+      details: [
+        { group: 'Measurements', rows: [['Court', '100 cm across, inflatable'], ['Packed size', '70 x 20 x 20 cm'], ['Weight', 'approx. 6 kg']] },
+        { group: 'Play', rows: [['Format', '1v1 or 2v2'], ['Setup', 'under 5 minutes']] },
+        { group: 'In the box', rows: [['Included', 'Court, hand pump']] },
       ],
     },
     pro: {
       name: 'Airball Pro',
       lede: 'Everything in Basic, plus the backpack, so the court travels in one piece.',
       includes: ['The Airballer', 'Hand pump', 'Backpack'],
-      specs: [
-        ['Setup', 'under 5 minutes'],
-        ['Format', '1v1 or 2v2'],
-        ['Packed size', '70 x 20 x 20 cm'],
-        ['Weight', 'approx. 7 kg'],
+      story: [
+        'What separates Pro from Basic is not the game, it is the journey to it. Court, pump and your things go into one padded backpack, and the court comes along by bike, on the train or on foot.',
+        'This is the set for anyone who does not always play in the same place.',
+      ],
+      features: [
+        'Carries in one piece',
+        'Set up in minutes, with no tools and no socket',
+        'Any flat ground',
+        'For 1v1 and 2v2',
+      ],
+      details: [
+        { group: 'Measurements', rows: [['Court', '100 cm across, inflatable'], ['Packed size', '70 x 20 x 20 cm'], ['Weight', 'approx. 7 kg']] },
+        { group: 'Play', rows: [['Format', '1v1 or 2v2'], ['Setup', 'under 5 minutes']] },
+        { group: 'In the box', rows: [['Included', 'Court, hand pump, backpack']] },
       ],
     },
     premium: {
       name: 'Airball Premium',
       lede: 'The full kit. With the battery pump the court stands in about a minute, with nobody pumping.',
       includes: ['The Airballer', 'Hand pump', 'Battery pump', 'Backpack'],
-      specs: [
-        ['Setup', 'approx. 1 minute'],
-        ['Format', '1v1 or 2v2'],
-        ['Packed size', '70 x 20 x 20 cm'],
-        ['Weight', 'approx. 7 kg'],
+      story: [
+        'The battery pump is the actual reason for Premium. It stops itself at the pressure you set, the court stands in about a minute, and nobody is standing there pumping.',
+        'The hand pump still comes with it. A battery runs flat eventually, and a court should not be cancelled because of that.',
+      ],
+      features: [
+        'Standing in about a minute',
+        'Hand pump included as a fallback',
+        'Carries in one piece',
+        'For 1v1 and 2v2',
+      ],
+      details: [
+        { group: 'Measurements', rows: [['Court', '100 cm across, inflatable'], ['Packed size', '70 x 20 x 20 cm'], ['Weight', 'approx. 7 kg']] },
+        { group: 'Play', rows: [['Format', '1v1 or 2v2'], ['Setup', 'approx. 1 minute']] },
+        { group: 'In the box', rows: [['Included', 'Court, hand pump, battery pump, backpack']] },
       ],
     },
     airballer: {
       name: 'The Airballer',
-      lede: 'The portable rebound court. A flat, pressure-stable surface, inflated in minutes, packed into a backpack.',
+      lede: 'The portable rebound court. Put it down, pump it up, and the arena is there.',
       includes: [],
-      specs: [
-        ['Packed size', '70 x 20 x 20 cm'],
-        ['Weight', 'approx. 6 kg'],
-        ['Format', '1v1 or 2v2'],
+      story: [
+        'An inflatable rebound court, 100 cm across. The ball is played onto it, bounces off, and it is the opponent\'s turn. Up to three touches, then it has to go back.',
+        'Built to be hit, dived over and played through. Grass, sand, a gym floor, a roof terrace: if you can stand on it you can play on it, as long as it is flat.',
+      ],
+      features: [
+        'Inflatable, 100 cm across',
+        'Set up in minutes, with no tools',
+        'Any flat ground',
+        'Packs into a backpack',
+      ],
+      details: [
+        { group: 'Measurements', rows: [['Court', '100 cm across, inflatable'], ['Packed size', '70 x 20 x 20 cm'], ['Weight', 'approx. 6 kg']] },
+        { group: 'Play', rows: [['Format', '1v1 or 2v2'], ['Touches', 'up to three']] },
       ],
     },
     rucksack: {
       name: 'Backpack',
-      lede: 'Court, pump and your things in one carry, with padded straps.',
+      lede: 'Court, pump and your things, carried in one piece.',
       includes: [],
-      specs: [
-        ['Carries', 'court and pump'],
-        ['Straps', 'padded'],
-      ],
+      features: ['Carries the court and the pump', 'Padded straps', 'Airball branding'],
+      details: [{ group: 'Details', rows: [['Fits', 'court and pump'], ['Straps', 'padded']] }],
     },
     handpumpe: {
       name: 'Hand pump',
-      lede: 'Double action, hose and valve adapters. The court stands in minutes, with no socket and no tools.',
+      lede: 'Double action, hose and valve adapters. No socket, no tools.',
       includes: [],
-      specs: [
-        ['Action', 'double stroke'],
-        ['Adapters', 'all valves'],
-      ],
+      features: ['Double action, so air moves both ways', 'Adapters for every valve', 'Needs no power'],
+      details: [{ group: 'Details', rows: [['Action', 'double stroke'], ['Adapters', 'all valves']] }],
     },
     akkupumpe: {
       name: 'Battery pump',
-      lede: 'Rechargeable, and it stops itself at the pressure you set. The court stands in about a minute, with nobody pumping.',
+      lede: 'Rechargeable, and it stops itself at the pressure you set.',
       includes: [],
-      specs: [
-        ['Power', 'rechargeable battery'],
-        ['Setup', 'approx. 1 minute'],
-      ],
+      features: ['Standing in about a minute', 'Stops at the set pressure', 'Rechargeable'],
+      details: [{ group: 'Details', rows: [['Power', 'rechargeable battery'], ['Setup', 'approx. 1 minute']] }],
     },
   },
 };
@@ -454,8 +600,9 @@ export function productBySlug(slug: string): ShopProduct | undefined {
  * whole integration: no cart state, no API key, nothing of ours to go wrong
  * between the click and the checkout.
  */
-export function cartUrl(product: ShopProduct): string {
-  return `https://${SHOPIFY_DOMAIN}/cart/${product.variantId}:1`;
+export function cartUrl(product: ShopProduct, quantity = 1): string {
+  const safe = Math.min(Math.max(Math.round(quantity), 1), 10);
+  return `https://${SHOPIFY_DOMAIN}/cart/${product.variantId}:${safe}`;
 }
 
 /** `/shop` and `/shop/<slug>`, or null when the path is something else. */

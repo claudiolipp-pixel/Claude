@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { CursorProvider, useCursorTarget } from '@/components/Cursor';
 import Wordmark from '@/components/Wordmark';
@@ -9,6 +9,7 @@ import {
   cartUrl,
   productBySlug,
   type ShopProduct,
+  type ShopPanel,
 } from '@/content/shop';
 
 /**
@@ -185,6 +186,7 @@ function ShopIndex() {
 }
 
 function ProductDetail({ product }: { product: ShopProduct }) {
+  const [qty, setQty] = useState(1);
   const { lang } = useLanguage();
   const t = SHOP[lang].strings;
   const copy = SHOP[lang].copy[product.slug];
@@ -233,20 +235,42 @@ function ProductDetail({ product }: { product: ShopProduct }) {
         </div>
         <p className="label mt-1 text-court/45">{t.vat}</p>
 
-        <BuyButton product={product} label={t.buy} />
+        {/* The quantity travels in the cart link itself, so Shopify receives it
+            without us holding any cart state. */}
+        <div className="mt-5 flex flex-wrap items-stretch gap-3">
+          <div className="flex items-center border border-court">
+            <button
+              type="button"
+              onClick={() => setQty((q) => Math.max(1, q - 1))}
+              aria-label={t.quantityLess}
+              className="px-4 py-3 transition-colors hover:bg-butter disabled:opacity-40"
+              disabled={qty <= 1}
+            >
+              <span aria-hidden="true">&minus;</span>
+            </button>
+            <span className="label w-9 text-center tabular-nums" aria-live="polite">
+              {qty}
+            </span>
+            <button
+              type="button"
+              onClick={() => setQty((q) => Math.min(10, q + 1))}
+              aria-label={t.quantityMore}
+              className="px-4 py-3 transition-colors hover:bg-butter disabled:opacity-40"
+              disabled={qty >= 10}
+            >
+              <span aria-hidden="true">+</span>
+            </button>
+          </div>
+          <a
+            href={cartUrl(product, qty)}
+            className="label flex-1 bg-butter px-6 py-4 text-center font-medium text-court transition-colors hover:bg-court hover:text-butter"
+          >
+            {t.buy}
+          </a>
+        </div>
         <p className="label mt-3 text-court/45">{t.shipping}</p>
 
-        <ul className="mt-10 list-none border-t border-court/15">
-          {copy.specs.map(([label, value]) => (
-            <li
-              key={label}
-              className="flex items-baseline justify-between gap-6 border-b border-court/10 py-3 text-xs uppercase tracking-[0.09em]"
-            >
-              <span className="text-court/50">{label}</span>
-              <span className="text-right font-medium">{value}</span>
-            </li>
-          ))}
-        </ul>
+        <ShopPanels panels={t.panels} />
 
         {/* Basic is the only bundle without the backpack, so it is the only
             place this offer is useful rather than noise. */}
@@ -277,6 +301,110 @@ function ProductDetail({ product }: { product: ShopProduct }) {
           </aside>
         )}
       </div>
+
+      {/* The long read sits under both columns, because it is for the visitor
+          who is still deciding rather than the one already reaching for the
+          button. */}
+      <div className="md:col-span-2">
+        {copy.story && (
+          <section className="mt-6 border-t-2 border-court pt-8 md:mt-10">
+            <h2 className="display text-[clamp(26px,4vw,40px)]">{t.storyTitle}</h2>
+            <div className="mt-5 max-w-[62ch] space-y-4 text-court/80">
+              {copy.story.map((paragraph) => (
+                <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <div className="mt-14 grid gap-10 md:grid-cols-2 md:gap-16">
+          <div>
+            {copy.features && (
+              <section>
+                <h2 className="display text-[clamp(22px,3vw,32px)]">{t.featuresTitle}</h2>
+                <ul className="mt-4 list-none border-t border-court/15">
+                  {copy.features.map((item) => (
+                    <li key={item} className="border-b border-court/10 py-3.5 text-court/80">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {copy.materials && copy.materials.length > 0 && (
+              <section className="mt-12">
+                <h2 className="display text-[clamp(22px,3vw,32px)]">{t.materialsTitle}</h2>
+                <ul className="mt-4 list-none border-t border-court/15">
+                  {copy.materials.map((item) => (
+                    <li key={item} className="border-b border-court/10 py-3.5 text-court/80">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </div>
+
+          <div>
+            <h2 className="display text-[clamp(22px,3vw,32px)]">{t.detailsTitle}</h2>
+            {copy.details.map((group) => (
+              <section key={group.group} className="mt-6 first:mt-4">
+                <h3 className="label text-court/45">{group.group}</h3>
+                <ul className="mt-2 list-none border-t border-court/15">
+                  {group.rows.map(([label, value]) => (
+                    <li
+                      key={label}
+                      className="flex items-baseline justify-between gap-6 border-b border-court/10 py-3 text-[13px]"
+                    >
+                      <span className="text-court/60">{label}</span>
+                      <span className="text-right font-medium">{value}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Delivery, returns and how to ask a question. Open one at a time, because
+ * these are answers a visitor looks up rather than reads through, and three
+ * open blocks would push the rest of the page away.
+ */
+function ShopPanels({ panels }: { panels: ShopPanel[] }) {
+  const [open, setOpen] = useState<string | null>(null);
+  return (
+    <div className="mt-10 border-t border-court/15">
+      {panels.map((panel) => {
+        const isOpen = open === panel.title;
+        return (
+          <div key={panel.title} className="border-b border-court/15">
+            <button
+              type="button"
+              onClick={() => setOpen(isOpen ? null : panel.title)}
+              aria-expanded={isOpen}
+              className="label flex w-full items-center justify-between gap-4 py-4 text-left font-medium transition-colors hover:text-court/60"
+            >
+              {panel.title}
+              <span aria-hidden="true" className="text-lg leading-none">
+                {isOpen ? '\u2212' : '+'}
+              </span>
+            </button>
+            {isOpen && (
+              <div className="max-w-[52ch] space-y-3 pb-5 text-[13px] text-court/75">
+                {panel.body.map((line) => (
+                  <p key={line.slice(0, 30)}>{line}</p>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
