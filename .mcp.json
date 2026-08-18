@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "token-savior": {
+      "command": "uvx",
+      "args": ["--from", "token-savior-recall[mcp]", "token-savior"],
+      "env": {
+        "TOKEN_SAVIOR_CLIENT": "claude-code",
+        "TOKEN_SAVIOR_PROFILE": "optimized"
+      }
+    }
+  }
+}

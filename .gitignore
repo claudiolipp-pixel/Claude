@@ -19,3 +19,7 @@ airball-preview.html
 
 # TypeScript incremental build cache
 *.tsbuildinfo
+
+# Token Savior's symbol index. Rebuilt per machine from the working tree, so
+# committing it would only ever be someone else's stale copy of our own code.
+.token-savior-cache.json
