@@ -17,6 +17,7 @@ import LegalPage from '@/components/LegalPage';
 import { legalKeyForPath } from '@/content/legal';
 import ShopPage from '@/components/ShopPage';
 import { SHOP_LIVE, shopRouteForPath } from '@/content/shop';
+import { currentPath } from '@/lib/route';
 
 /**
  * The whole site is one page, apart from imprint and privacy, which need real
@@ -28,7 +29,7 @@ import { SHOP_LIVE, shopRouteForPath } from '@/content/shop';
  * wrong — the browser does a normal page load and this runs again.
  */
 export default function App() {
-  const path = window.location.pathname;
+  const path = currentPath();
 
   const legal = legalKeyForPath(path);
   if (legal) return <LegalPage which={legal} />;
