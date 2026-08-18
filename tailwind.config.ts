@@ -40,6 +40,26 @@ export default {
         // Long, low-drama easing — the milledollars-style feel
         editorial: 'cubic-bezier(0.16, 1, 0.3, 1)',
       },
+      /*
+       * The cart drawer. GSAP animates everything else on the site, but the
+       * drawer mounts and unmounts on a state change and has no timeline to
+       * join, so CSS is the smaller answer. The global prefers-reduced-motion
+       * rule in index.css collapses both of these to nothing.
+       */
+      keyframes: {
+        'fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+        'slide-in-right': {
+          from: { transform: 'translateX(100%)' },
+          to: { transform: 'translateX(0)' },
+        },
+      },
+      animation: {
+        'fade-in': 'fade-in 240ms ease-out',
+        'slide-in-right': 'slide-in-right 300ms cubic-bezier(0.22, 1, 0.36, 1)',
+      },
     },
   },
   plugins: [],

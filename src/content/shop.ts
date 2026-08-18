@@ -34,6 +34,25 @@ import { OUR_PHOTOS, OUR_WIDTHS, type OurPhoto } from '@/content/shop-photos';
  */
 export const SHOP_LIVE = false;
 
+/**
+ * Whether the single items are for sale.
+ *
+ * At launch only the three bundles are. Everyone buying is buying their first
+ * court, and a row of spare parts next to that decision is noise: nobody needs
+ * a second pump before they own a first one. The parts stay in the catalogue
+ * because they are real products with real prices and they will be sold later,
+ * probably once there are customers who already have a court.
+ *
+ * Setting this to true brings back the singles section, their product pages
+ * and the backpack offered alongside Basic, with nothing else to change.
+ */
+export const SELL_SINGLES = false;
+
+/** Is this product buyable right now? */
+export function isForSale(product: ShopProduct): boolean {
+  return SELL_SINGLES || product.kind === 'bundle';
+}
+
 /** Where the checkout lives. Also the host that serves the renders and the
  * game photography, see PHOTO. */
 export const SHOPIFY_DOMAIN = 'airball-8655.myshopify.com';
@@ -134,6 +153,25 @@ export interface ShopStrings {
   soonTitle: string;
   soonBody: string;
   trust: { title: string; body: string }[];
+  cart: ShopCartStrings;
+}
+
+/** The drawer. Small surface, but every label is on the path to a payment. */
+export interface ShopCartStrings {
+  /** The icon's accessible name. Carries the count, since the badge is visual. */
+  open: string;
+  title: string;
+  close: string;
+  empty: string;
+  emptyCta: string;
+  /** Never "total": shipping is added at the checkout, so this is a subtotal. */
+  subtotal: string;
+  note: string;
+  checkout: string;
+  remove: string;
+  less: string;
+  more: string;
+  added: string;
 }
 
 /**
@@ -370,6 +408,20 @@ const de: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
       { title: '14 Tage Rückgabe', body: 'Ohne Begründung, unbenutzt zurück.' },
       { title: 'Erste Produktion', body: 'Begrenzte Stückzahl, danach Nachschub.' },
     ],
+    cart: {
+      open: 'Warenkorb, {n} Artikel',
+      title: 'Warenkorb',
+      close: 'Warenkorb schließen',
+      empty: 'Noch nichts drin.',
+      emptyCta: 'Setups ansehen',
+      subtotal: 'Zwischensumme',
+      note: 'Inkl. 20% MwSt. Versand wird an der Kasse berechnet.',
+      checkout: 'Zur Kasse',
+      remove: 'Entfernen',
+      less: 'Weniger',
+      more: 'Mehr',
+      added: 'In den Warenkorb gelegt',
+    },
   },
   copy: {
     basic: {
@@ -541,6 +593,20 @@ const en: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
       { title: '14 day returns', body: 'No reason needed, unused.' },
       { title: 'First production run', body: 'Limited quantity, then a restock.' },
     ],
+    cart: {
+      open: 'Cart, {n} items',
+      title: 'Cart',
+      close: 'Close the cart',
+      empty: 'Nothing in here yet.',
+      emptyCta: 'See the setups',
+      subtotal: 'Subtotal',
+      note: 'Includes 20% VAT. Shipping is calculated at the checkout.',
+      checkout: 'Check out',
+      remove: 'Remove',
+      less: 'Fewer',
+      more: 'More',
+      added: 'Added to the cart',
+    },
   },
   copy: {
     basic: {
@@ -693,14 +759,23 @@ export function productBySlug(slug: string): ShopProduct | undefined {
   return PRODUCTS.find((p) => p.slug === slug);
 }
 
+/** One line of a cart permalink: `<variantId>:<quantity>`. */
+export const MAX_QTY = 10;
+function line(product: ShopProduct, quantity: number): string {
+  return `${product.variantId}:${Math.min(Math.max(Math.round(quantity), 1), MAX_QTY)}`;
+}
+
 /**
- * Hands the visitor to Shopify with the item already in the cart. This is the
- * whole integration: no cart state, no API key, nothing of ours to go wrong
- * between the click and the checkout.
+ * Hands the visitor to Shopify with the whole basket already in the cart.
+ * This is the whole integration: no API key, no cart API, nothing of ours to
+ * go wrong between the click and the checkout.
+ *
+ * The basket is assembled on our side and spent in one URL, which is why it
+ * can be several lines. Shopify takes them comma separated.
  */
-export function cartUrl(product: ShopProduct, quantity = 1): string {
-  const safe = Math.min(Math.max(Math.round(quantity), 1), 10);
-  return `https://${SHOPIFY_DOMAIN}/cart/${product.variantId}:${safe}`;
+export function cartUrl(items: { product: ShopProduct; quantity: number }[]): string {
+  const lines = items.map(({ product, quantity }) => line(product, quantity));
+  return `https://${SHOPIFY_DOMAIN}/cart/${lines.join(',')}`;
 }
 
 /** `/shop` and `/shop/<slug>`, or null when the path is something else. */
@@ -708,6 +783,11 @@ export function shopRouteForPath(pathname: string): { slug: string | null } | nu
   const clean = pathname.replace(/\/+$/, '').toLowerCase();
   if (clean === '/shop') return { slug: null };
   const match = clean.match(/^\/shop\/([a-z0-9-]+)$/);
-  if (match && productBySlug(match[1])) return { slug: match[1] };
+  if (!match) return null;
+  // A product that is not for sale has no page. Otherwise the singles stay
+  // reachable by typing the URL, with a buy button and no way to have found
+  // them, which is worse than not having them.
+  const product = productBySlug(match[1]);
+  if (product && isForSale(product)) return { slug: match[1] };
   return null;
 }

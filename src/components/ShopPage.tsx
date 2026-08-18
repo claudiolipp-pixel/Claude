@@ -4,10 +4,13 @@ import { SOCIAL } from '@/content/site';
 import { CursorProvider, useCursorTarget } from '@/components/Cursor';
 import Wordmark from '@/components/Wordmark';
 import ProductGallery from '@/components/ProductGallery';
+import CartButton from '@/components/CartButton';
+import CartDrawer from '@/components/CartDrawer';
+import { useCart } from '@/state/CartProvider';
 import {
   PRODUCTS,
   SHOP,
-  cartUrl,
+  isForSale,
   productBySlug,
   sized,
   srcSet,
@@ -19,9 +22,10 @@ import {
  * The shop, on the same origin and in the same design as the rest of the site.
  *
  * The split is deliberate: everything a visitor reads while deciding is ours,
- * and the moment money is involved Shopify takes over. The buy button is a
- * plain link to a Shopify cart permalink, so there is no cart state, no API key
- * in the bundle and nothing of ours between the click and the checkout.
+ * and the moment money is involved Shopify takes over. The basket is assembled
+ * on this side and handed to Shopify as one cart permalink at the checkout, so
+ * there is no API key in the bundle and nothing of ours between that click and
+ * the payment.
  *
  * No loader here. It is a first impression, not a ritual, and nobody wants nine
  * seconds of animation between them and a product they came to buy.
@@ -88,19 +92,35 @@ function ShopHeader({ backHref, backLabel }: { backHref: string; backLabel: stri
         <a href={backHref} className="border border-court px-4 py-2 transition-colors hover:bg-butter">
           {backLabel}
         </a>
+        <CartButton className="ml-1 mr-1 text-court hover:text-court/60" />
       </div>
     </header>
   );
 }
 
-function BuyButton({ product, label }: { product: ShopProduct; label: string }) {
+/**
+ * Adds to the basket rather than jumping to Shopify.
+ *
+ * Sending someone off-site on the first click cost every sale where they might
+ * have bought two, and it threw away the page they were reading. Now the
+ * drawer opens over it and the trip to Shopify happens once, at the checkout.
+ */
+function BuyButton({
+  product,
+  label,
+  quantity = 1,
+  className = 'label mt-4 block w-full bg-butter px-6 py-4 text-center font-medium text-court transition-colors hover:bg-court hover:text-butter',
+}: {
+  product: ShopProduct;
+  label: string;
+  quantity?: number;
+  className?: string;
+}) {
+  const cart = useCart();
   return (
-    <a
-      href={cartUrl(product)}
-      className="label mt-4 block bg-butter px-6 py-4 text-center font-medium text-court transition-colors hover:bg-court hover:text-butter"
-    >
+    <button type="button" onClick={() => cart.add(product.slug, quantity)} className={className}>
       {label}
-    </a>
+    </button>
   );
 }
 
@@ -171,7 +191,8 @@ function ShopIndex() {
   const { lang } = useLanguage();
   const t = SHOP[lang].strings;
   const bundles = PRODUCTS.filter((p) => p.kind === 'bundle');
-  const singles = PRODUCTS.filter((p) => p.kind === 'single');
+  // Empty at launch, when only the bundles are sold. See SELL_SINGLES.
+  const singles = PRODUCTS.filter((p) => p.kind === 'single' && isForSale(p));
 
   return (
     <>
@@ -193,17 +214,19 @@ function ShopIndex() {
         </div>
       </section>
 
-      <section className="px-5 pt-16 md:px-10 md:pt-24">
-        <div className="flex flex-wrap items-baseline justify-between gap-4 border-t-2 border-court pt-3">
-          <h2 className="display text-[clamp(26px,4.4vw,44px)]">{t.singlesTitle}</h2>
-          <span className="label text-court/45">{t.singlesNote}</span>
-        </div>
-        <div className="mt-7 grid gap-5 md:grid-cols-3 md:gap-6">
-          {singles.map((p) => (
-            <ProductCard key={p.slug} product={p} />
-          ))}
-        </div>
-      </section>
+      {singles.length > 0 && (
+        <section className="px-5 pt-16 md:px-10 md:pt-24">
+          <div className="flex flex-wrap items-baseline justify-between gap-4 border-t-2 border-court pt-3">
+            <h2 className="display text-[clamp(26px,4.4vw,44px)]">{t.singlesTitle}</h2>
+            <span className="label text-court/45">{t.singlesNote}</span>
+          </div>
+          <div className="mt-7 grid gap-5 md:grid-cols-3 md:gap-6">
+            {singles.map((p) => (
+              <ProductCard key={p.slug} product={p} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="mt-20 grid border-y border-court/15 px-5 md:grid-cols-3 md:px-10">
         {t.trust.map((item, i) => (
@@ -228,7 +251,10 @@ function ProductDetail({ product }: { product: ShopProduct }) {
   const t = SHOP[lang].strings;
   const copy = SHOP[lang].copy[product.slug];
   const price = usePrice();
-  const addOn = product.crossSell ? productBySlug(product.crossSell) : undefined;
+  // The offer alongside disappears with the singles: something offered here
+  // has to be something the shop can actually sell.
+  const crossSell = product.crossSell ? productBySlug(product.crossSell) : undefined;
+  const addOn = crossSell && isForSale(crossSell) ? crossSell : undefined;
   const addOnCopy = addOn ? SHOP[lang].copy[addOn.slug] : undefined;
 
   return (
@@ -283,8 +309,8 @@ function ProductDetail({ product }: { product: ShopProduct }) {
         </div>
         <p className="label mt-1 text-court/45">{t.vat}</p>
 
-        {/* The quantity travels in the cart link itself, so Shopify receives it
-            without us holding any cart state. */}
+        {/* The quantity chosen here is what goes into the basket. It can still
+            be changed in the drawer, which is where people actually correct it. */}
         <div className="mt-5 flex flex-wrap items-stretch gap-3">
           <div className="flex items-center border border-court">
             <button
@@ -309,12 +335,12 @@ function ProductDetail({ product }: { product: ShopProduct }) {
               <span aria-hidden="true">+</span>
             </button>
           </div>
-          <a
-            href={cartUrl(product, qty)}
+          <BuyButton
+            product={product}
+            quantity={qty}
+            label={t.buy}
             className="label flex-1 bg-butter px-6 py-4 text-center font-medium text-court transition-colors hover:bg-court hover:text-butter"
-          >
-            {t.buy}
-          </a>
+          />
         </div>
         <p className="label mt-3 text-court/45">{t.shipping}</p>
 
@@ -340,12 +366,11 @@ function ProductDetail({ product }: { product: ShopProduct }) {
                 <p className="tabular-nums text-court/70">{price(addOn.price)}</p>
               </div>
             </div>
-            <a
-              href={cartUrl(addOn)}
-              className="label mt-4 block border border-court px-5 py-3 text-center font-medium transition-colors hover:bg-butter"
-            >
-              {t.buy}
-            </a>
+            <BuyButton
+              product={addOn}
+              label={t.buy}
+              className="label mt-4 block w-full border border-court px-5 py-3 text-center font-medium transition-colors hover:bg-butter"
+            />
           </aside>
         )}
         </div>
@@ -529,6 +554,8 @@ export default function ShopPage({ slug }: { slug: string | null }) {
         <Breadcrumb product={product} />
 
         {product ? <ProductDetail product={product} /> : <ShopIndex />}
+
+        <CartDrawer />
 
         <footer className="flex flex-wrap items-center justify-between gap-4 bg-court px-5 py-10 text-chalk md:px-10 md:py-12">
           <Wordmark className="text-xl" />

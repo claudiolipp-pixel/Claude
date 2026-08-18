@@ -10,6 +10,8 @@
  *  - Cloudflare serves the site and keeps request logs,
  *  - Cloudflare Web Analytics counts visits without a cookie or a fingerprint,
  *  - `airball.lang` in localStorage remembers the language choice,
+ *  - `airball.cart` in localStorage holds the basket, but only once the shop is
+ *    live, which is why that paragraph is conditional,
  *  - fonts are bundled, so no request ever leaves for a third-party CDN,
  *  - there is no advertising and no cookie of any kind.
  *
@@ -23,6 +25,35 @@
  */
 
 import type { Lang } from '@/content/site';
+import { SHOP_LIVE } from '@/content/shop';
+
+/*
+ * The cart paragraph, which only tells the truth once the shop exists.
+ *
+ * With the shop off, nothing writes airball.cart and describing it would be a
+ * privacy notice for something that never happens: wrong in the direction that
+ * matters, because it invites a reader to look for storage they will not find
+ * and makes the rest of the page less believable. Tied to SHOP_LIVE so the two
+ * cannot drift.
+ */
+const storage: Record<Lang, string[]> = {
+  en: SHOP_LIVE
+    ? [
+        'The only things stored on your device are two entries in your browser’s local storage. airball.lang remembers whether you chose German or English. airball.cart holds what you put in the shopping cart, as product names and quantities, so it is still there if you close the tab and come back. Neither contains anything about who you are, neither leaves your browser until you choose to go to the checkout, and clearing your browser data removes both.',
+        'Storing the cart needs no consent because it is strictly necessary to provide something you explicitly asked for, namely a shop that remembers what you selected. That is the same exemption a login session falls under.',
+      ]
+    : [
+        'The only thing stored on your device is an entry called airball.lang in your browser’s local storage, which remembers whether you chose German or English. It contains nothing else and never leaves your browser. Clearing your browser data removes it.',
+      ],
+  de: SHOP_LIVE
+    ? [
+        'Das Einzige, was auf deinem Gerät gespeichert wird, sind zwei Einträge im lokalen Speicher deines Browsers. airball.lang merkt sich, ob du Deutsch oder Englisch gewählt hast. airball.cart enthält, was du in den Warenkorb gelegt hast, als Produktnamen und Mengen, damit es noch da ist, wenn du den Tab schließt und wiederkommst. Keiner der beiden enthält etwas darüber, wer du bist, keiner verlässt deinen Browser, bis du selbst zur Kasse gehst, und wenn du deine Browserdaten löschst, sind beide weg.',
+        'Für das Speichern des Warenkorbs ist keine Einwilligung nötig, weil es unbedingt erforderlich ist, um etwas bereitzustellen, das du ausdrücklich verlangt hast, nämlich einen Shop, der sich deine Auswahl merkt. Das ist dieselbe Ausnahme, unter die auch eine Login-Sitzung fällt.',
+      ]
+    : [
+        'Das Einzige, was auf deinem Gerät gespeichert wird, ist ein Eintrag namens airball.lang im lokalen Speicher deines Browsers, der sich merkt, ob du Deutsch oder Englisch gewählt hast. Er enthält sonst nichts und verlässt deinen Browser nie. Wenn du deine Browserdaten löschst, ist er weg.',
+      ],
+};
 
 export interface LegalSection {
   heading: string;
@@ -140,7 +171,7 @@ const en: LegalContent = {
         heading: 'Cookies and tracking',
         body: [
           'This site sets no cookies. It runs no advertising, no tracking pixels and no cross-site profiling, and it embeds nothing from a third party.',
-          'The only thing stored on your device is an entry called airball.lang in your browser’s local storage, which remembers whether you chose German or English. It contains nothing else and never leaves your browser. Clearing your browser data removes it.',
+          ...storage.en,
           'Fonts are delivered from our own server, so loading the page sends no request to any external font service.',
         ],
       },
@@ -253,7 +284,7 @@ const de: LegalContent = {
         heading: 'Cookies und Tracking',
         body: [
           'Diese Seite setzt keine Cookies. Es läuft keine Werbung, kein Tracking-Pixel, keine seitenübergreifende Profilbildung, und es ist nichts von Dritten eingebettet.',
-          'Das Einzige, was auf deinem Gerät gespeichert wird, ist ein Eintrag namens airball.lang im lokalen Speicher deines Browsers, der sich merkt, ob du Deutsch oder Englisch gewählt hast. Er enthält sonst nichts und verlässt deinen Browser nie. Wenn du deine Browserdaten löschst, ist er weg.',
+          ...storage.de,
           'Die Schriften liegen auf unserem eigenen Server. Beim Laden der Seite geht also keine Anfrage an einen externen Schriftdienst.',
         ],
       },

@@ -10,6 +10,7 @@ import Nav from '@/components/Nav';
 import StackCard from '@/components/StackCard';
 import DetailPanel from '@/components/DetailPanel';
 import ContactPanel from '@/components/ContactPanel';
+import CartDrawer from '@/components/CartDrawer';
 import Ticker from '@/components/Ticker';
 import Waitlist from '@/components/Waitlist';
 import Footer from '@/components/Footer';
@@ -124,6 +125,10 @@ function HomePage() {
       )}
 
       {contactOpen && <ContactPanel onClose={dismiss} />}
+
+      {/* The cart icon is in the bar here too, so the drawer has to be
+          reachable from the home page and not only inside the shop. */}
+      {SHOP_LIVE && <CartDrawer />}
     </CursorProvider>
   );
 }
