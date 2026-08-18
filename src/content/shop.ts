@@ -16,8 +16,8 @@
  * WHAT MUST STAY IN SYNC WITH SHOPIFY
  *  - `variantId`  wrong id means the wrong item lands in the cart
  *  - `price`      a mismatch means the cart shows a different number
- *  - `image`      lives on Shopify's CDN, so a photo swapped there follows
- *                 automatically without a deploy
+ *
+ * Photography comes from two places, see PHOTO below.
  */
 
 import type { Lang } from '@/content/site';
@@ -33,7 +33,8 @@ import type { Lang } from '@/content/site';
  */
 export const SHOP_LIVE = false;
 
-/** Where the checkout lives. Also the host that serves the product images. */
+/** Where the checkout lives. Also the host that serves the renders and the
+ * game photography, see PHOTO. */
 export const SHOPIFY_DOMAIN = 'airball-8655.myshopify.com';
 
 export interface ShopProduct {
@@ -49,9 +50,9 @@ export interface ShopProduct {
   /** Shown in the grid and as the link preview. */
   image: string;
   /**
-   * The slideshow on the product page, in order. Mirrors the media order set
-   * in Shopify, so rearranging there is the source of truth for what a buyer
-   * sees first.
+   * The slideshow on the product page, in order. This list is the source of
+   * truth for what a buyer sees first, not Shopify's media order: the two
+   * storefronts sell to different people and want a different opening frame.
    */
   gallery: string[];
   /** Marks one bundle as the suggested one. Never a sales claim. */
@@ -135,28 +136,47 @@ export interface ShopStrings {
 }
 
 /**
- * Photography lives on Shopify's CDN, so replacing a product photo there
- * updates the site without a deploy. That is the right owner for it: the photo
- * belongs to the product, and the product lives in Shopify.
+ * Every photo in the shop, named once.
  *
  * Named rather than pasted inline, because the same shot appears in several
- * galleries: the backpack render belongs to the backpack, to Pro and to
- * Premium. One name means one place to change it.
+ * galleries: the backpack belongs to the backpack, to Pro and to Premium. One
+ * name means one place to change it.
  */
 const CDN = 'https://cdn.shopify.com/s/files/1/0953/7323/0461/files';
+
+/**
+ * A photo we serve ourselves. The path has no extension: `sized()` appends the
+ * width and .webp, because scripts/product-photos.mjs writes one file per
+ * rung. Everything under /media/shop is already cropped to 4:5, the ratio
+ * every frame in the shop uses.
+ */
+const OURS = '/media/shop';
+
 const PHOTO = {
-  /** The court, three angles. */
-  court1: `${CDN}/hf_20260815_162336_ade2755e-b35a-4094-9efe-1ee3c0af5e70_1.png?v=1786813717`,
-  court2: `${CDN}/hf_20260815_170512_b2d0d18a-1bd2-49c3-b2cf-ff45dcf8fd42.png?v=1786813716`,
-  court3: `${CDN}/hf_20260815_170703_361b528b-4143-4f2c-a777-8fbc2fe6b425.png?v=1786813741`,
-  /** The backpack, three angles. */
-  pack1: `${CDN}/hf_20260815_160501_91286c88-3d89-44e6-9bec-19886873b0be.png?v=1786813911`,
-  pack2: `${CDN}/hf_20260815_160500_f13f15ad-a538-416b-93e8-8c231f6413dc.png?v=1786813910`,
-  pack3: `${CDN}/hf_20260815_160501_5d76735f-ffb0-4e4d-ab1c-3d184bf9affc.png?v=1786813911`,
-  pack4: `${CDN}/hf_20260815_160501_e3334243-4185-4fca-b25e-280747f785df.png?v=1786810065`,
-  handPump: `${CDN}/hf_20260815_160501_d938763f-5fef-48f7-bb50-83e738f7def5.png?v=1786813966`,
-  batteryPump: `${CDN}/hf_20260817_090844_2232aa45-657d-4d9b-9922-cd34691db486.png?v=1786957968`,
-  /** Real games, so a buyer sees the thing in use and not only on white. */
+  /*
+   * The product shot, ours. These are the studio masters, cropped and
+   * compressed at build time rather than resized by Shopify. Two reasons: the
+   * group shot does not exist in Shopify at all, and a photo we ship with the
+   * site is one fewer host between a buyer and the picture that sells them the
+   * thing. The cost is that swapping one needs a deploy.
+   */
+  group: `${OURS}/group-premium`,
+  courtFront: `${OURS}/court-front`,
+  courtSide: `${OURS}/court-side`,
+  packSide: `${OURS}/pack-side`,
+  packUpright: `${OURS}/pack-upright`,
+  packLogo: `${OURS}/pack-logo`,
+  handPump: `${OURS}/hand-pump`,
+  batteryPump: `${OURS}/battery-pump`,
+
+  /*
+   * Renders and game photography, still on Shopify's CDN, which resizes on
+   * request. The court renders are extra angles behind the real photographs;
+   * the game shots are the only frames with people in them.
+   */
+  courtRender1: `${CDN}/hf_20260815_162336_ade2755e-b35a-4094-9efe-1ee3c0af5e70_1.png?v=1786813717`,
+  courtRender2: `${CDN}/hf_20260815_170512_b2d0d18a-1bd2-49c3-b2cf-ff45dcf8fd42.png?v=1786813716`,
+  courtRender3: `${CDN}/hf_20260815_170703_361b528b-4143-4f2c-a777-8fbc2fe6b425.png?v=1786813741`,
   play1: `${CDN}/play-01.jpg?v=1786359791`,
   play2: `${CDN}/play-02.jpg?v=1786359791`,
   play3: `${CDN}/play-03.jpg?v=1786359791`,
@@ -167,10 +187,13 @@ const PHOTO = {
  * gets as a whole, then each item on its own, then the thing in use. Someone
  * spending 300 euro on a court they have never seen wants to count the parts.
  *
- * TODO(shop): the group shot goes in front of every bundle gallery once it
- * exists, and each bundle needs its own featured image. Today all three share
- * the court render, so the grid shows three tiles that look identical in
- * exactly the row where a customer has to choose between them.
+ * Photographs come before renders everywhere. A render of an inflatable court
+ * reads as a concept drawing, which is the last thing a new category needs.
+ *
+ * TODO(shop): Basic and Pro have no group shot of their own, so their tiles
+ * lead with the court instead of with everything in the box. Premium's exists
+ * and does the job the other two are missing. What is needed is one frame per
+ * bundle: Basic = court + hand pump, Pro = court + hand pump + backpack.
  */
 export const PRODUCTS: ShopProduct[] = [
   {
@@ -179,8 +202,14 @@ export const PRODUCTS: ShopProduct[] = [
     price: 199.99,
     partsPrice: 214.0, // 199 court + 15 hand pump
     kind: 'bundle',
-    image: PHOTO.court1,
-    gallery: [PHOTO.court1, PHOTO.court2, PHOTO.court3, PHOTO.handPump, PHOTO.play2],
+    image: PHOTO.courtFront,
+    gallery: [
+      PHOTO.courtFront,
+      PHOTO.courtSide,
+      PHOTO.handPump,
+      PHOTO.courtRender1,
+      PHOTO.play2,
+    ],
     crossSell: 'rucksack',
   },
   {
@@ -189,15 +218,14 @@ export const PRODUCTS: ShopProduct[] = [
     price: 249.99,
     partsPrice: 264.0, // 199 + 15 + 50 backpack
     kind: 'bundle',
-    image: PHOTO.court1,
+    image: PHOTO.courtSide,
     gallery: [
-      PHOTO.court1,
-      PHOTO.court3,
-      PHOTO.court2,
-      PHOTO.pack2,
-      PHOTO.pack1,
-      PHOTO.pack4,
+      PHOTO.courtSide,
+      PHOTO.courtFront,
+      PHOTO.packSide,
+      PHOTO.packUpright,
       PHOTO.handPump,
+      PHOTO.packLogo,
       PHOTO.play3,
     ],
     suggested: true,
@@ -208,16 +236,18 @@ export const PRODUCTS: ShopProduct[] = [
     price: 299.99,
     partsPrice: 313.99, // 199 + 15 + 50 + 49.99 battery pump
     kind: 'bundle',
-    image: PHOTO.court1,
+    // The one bundle photographed as a whole: court, backpack and both pumps
+    // in a single frame, which is exactly what is in the box.
+    image: PHOTO.group,
     gallery: [
-      PHOTO.court1,
-      PHOTO.court2,
-      PHOTO.court3,
-      PHOTO.pack1,
-      PHOTO.pack2,
-      PHOTO.pack3,
-      PHOTO.handPump,
+      PHOTO.group,
+      PHOTO.courtFront,
+      PHOTO.courtSide,
+      PHOTO.packSide,
+      PHOTO.packUpright,
       PHOTO.batteryPump,
+      PHOTO.handPump,
+      PHOTO.packLogo,
       PHOTO.play1,
     ],
   },
@@ -226,16 +256,26 @@ export const PRODUCTS: ShopProduct[] = [
     variantId: '58516276248957',
     price: 199.0,
     kind: 'single',
-    image: PHOTO.court1,
-    gallery: [PHOTO.court1, PHOTO.court2, PHOTO.court3, PHOTO.play2, PHOTO.play3, PHOTO.play1],
+    image: PHOTO.courtFront,
+    // The court on its own is the one page where the extra render angles earn
+    // their place: there is nothing else in the box to show.
+    gallery: [
+      PHOTO.courtFront,
+      PHOTO.courtSide,
+      PHOTO.courtRender1,
+      PHOTO.courtRender2,
+      PHOTO.courtRender3,
+      PHOTO.play2,
+      PHOTO.play3,
+    ],
   },
   {
     slug: 'rucksack',
     variantId: '58542242791805',
     price: 50.0,
     kind: 'single',
-    image: PHOTO.pack1,
-    gallery: [PHOTO.pack1, PHOTO.pack2, PHOTO.pack3],
+    image: PHOTO.packSide,
+    gallery: [PHOTO.packSide, PHOTO.packUpright, PHOTO.packLogo],
   },
   {
     slug: 'handpumpe',
@@ -607,16 +647,42 @@ export const SHOP: Record<Lang, { strings: ShopStrings; copy: Record<string, Sho
 };
 
 /**
- * Shopify serves the product renders at 2048px square. Shown at roughly 600px
- * that is several megabytes for nothing, and a gallery holds up to nine of
- * them. The CDN resizes on request, so ask it for the size actually needed.
+ * The rungs scripts/product-photos.mjs writes for every photo under
+ * /media/shop. Shopify resizes to any width on request; our own files are
+ * whatever was generated, so a request has to be rounded up to one of these.
+ */
+const OUR_WIDTHS = [200, 400, 700, 1000, 1400];
+
+/**
+ * The masters are up to 2048px square. Shown at roughly 600px that is several
+ * megabytes for nothing, and a gallery holds up to nine of them, so every
+ * `<img>` asks for the size it will actually be drawn at.
+ *
+ * Two sources, two spellings. Shopify takes a query parameter. Ours are one
+ * file per width, so the request is rounded up to the nearest rung: rounding
+ * down would upscale, which is visible on the logo lettering.
  */
 export function sized(url: string, width: number): string {
+  if (url.startsWith(OURS)) {
+    return `${url}-${OUR_WIDTHS.find((w) => w >= width) ?? OUR_WIDTHS[OUR_WIDTHS.length - 1]}.webp`;
+  }
   return `${url}${url.includes('?') ? '&' : '?'}width=${width}`;
 }
 
-/** Widths a browser can choose from, for the one large image on screen. */
+/**
+ * Widths a browser can choose from, for the one large image on screen.
+ *
+ * For our own files the requested widths are ignored in favour of the rungs
+ * that exist. The descriptor has to be the file's true width or the browser
+ * picks by a number that is not real, so there is no way to honour an
+ * arbitrary list here.
+ */
 export function srcSet(url: string, widths: number[] = [600, 900, 1200]): string {
+  if (url.startsWith(OURS)) {
+    return OUR_WIDTHS.filter((w) => w >= 400)
+      .map((w) => `${url}-${w}.webp ${w}w`)
+      .join(', ');
+  }
   return widths.map((w) => `${sized(url, w)} ${w}w`).join(', ');
 }
 
