@@ -21,6 +21,7 @@
  */
 
 import type { Lang } from '@/content/site';
+import { OUR_PHOTOS, OUR_WIDTHS, type OurPhoto } from '@/content/shop-photos';
 
 /**
  * The shop is off until this is true.
@@ -145,12 +146,16 @@ export interface ShopStrings {
 const CDN = 'https://cdn.shopify.com/s/files/1/0953/7323/0461/files';
 
 /**
- * A photo we serve ourselves. The path has no extension: `sized()` appends the
- * width and .webp, because scripts/product-photos.mjs writes one file per
- * rung. Everything under /media/shop is already cropped to 4:5, the ratio
- * every frame in the shop uses.
+ * Names one of our own photos. Not a URL: `sized()` resolves it against the
+ * generated manifest, which holds one real path per width. The prefix is what
+ * tells the two sources apart, and naming a photo that was never generated is
+ * a compile error rather than a 404.
+ *
+ * Everything under /media/shop is already cropped to 4:5, the ratio every
+ * frame in the shop uses.
  */
-const OURS = '/media/shop';
+const OURS = 'ours:';
+const ours = (name: OurPhoto) => `${OURS}${name}`;
 
 const PHOTO = {
   /*
@@ -160,14 +165,14 @@ const PHOTO = {
    * site is one fewer host between a buyer and the picture that sells them the
    * thing. The cost is that swapping one needs a deploy.
    */
-  group: `${OURS}/group-premium`,
-  courtFront: `${OURS}/court-front`,
-  courtSide: `${OURS}/court-side`,
-  packSide: `${OURS}/pack-side`,
-  packUpright: `${OURS}/pack-upright`,
-  packLogo: `${OURS}/pack-logo`,
-  handPump: `${OURS}/hand-pump`,
-  batteryPump: `${OURS}/battery-pump`,
+  group: ours('group-premium'),
+  courtFront: ours('court-front'),
+  courtSide: ours('court-side'),
+  packSide: ours('pack-side'),
+  packUpright: ours('pack-upright'),
+  packLogo: ours('pack-logo'),
+  handPump: ours('hand-pump'),
+  batteryPump: ours('battery-pump'),
 
   /*
    * Renders and game photography, still on Shopify's CDN, which resizes on
@@ -646,27 +651,25 @@ export const SHOP: Record<Lang, { strings: ShopStrings; copy: Record<string, Sho
   en,
 };
 
-/**
- * The rungs scripts/product-photos.mjs writes for every photo under
- * /media/shop. Shopify resizes to any width on request; our own files are
- * whatever was generated, so a request has to be rounded up to one of these.
- */
-const OUR_WIDTHS = [200, 400, 700, 1000, 1400];
+/** Our own photos, or null for anything on Shopify's CDN. */
+function ourFrames(url: string) {
+  return url.startsWith(OURS) ? OUR_PHOTOS[url.slice(OURS.length) as OurPhoto] : null;
+}
 
 /**
  * The masters are up to 2048px square. Shown at roughly 600px that is several
  * megabytes for nothing, and a gallery holds up to nine of them, so every
  * `<img>` asks for the size it will actually be drawn at.
  *
- * Two sources, two spellings. Shopify takes a query parameter. Ours are one
- * file per width, so the request is rounded up to the nearest rung: rounding
- * down would upscale, which is visible on the logo lettering.
+ * Two sources, two spellings. Shopify takes a query parameter and resizes to
+ * any width. Ours are one file per width, so the request is rounded up to the
+ * nearest rung that exists: rounding down would upscale, which is visible on
+ * the logo lettering.
  */
 export function sized(url: string, width: number): string {
-  if (url.startsWith(OURS)) {
-    return `${url}-${OUR_WIDTHS.find((w) => w >= width) ?? OUR_WIDTHS[OUR_WIDTHS.length - 1]}.webp`;
-  }
-  return `${url}${url.includes('?') ? '&' : '?'}width=${width}`;
+  const frames = ourFrames(url);
+  if (!frames) return `${url}${url.includes('?') ? '&' : '?'}width=${width}`;
+  return frames[OUR_WIDTHS.find((w) => w >= width) ?? OUR_WIDTHS[OUR_WIDTHS.length - 1]];
 }
 
 /**
@@ -674,16 +677,16 @@ export function sized(url: string, width: number): string {
  *
  * For our own files the requested widths are ignored in favour of the rungs
  * that exist. The descriptor has to be the file's true width or the browser
- * picks by a number that is not real, so there is no way to honour an
- * arbitrary list here.
+ * chooses by a number that is not real, so an arbitrary list cannot be
+ * honoured here. The 200px rung is left out: it is the thumbnail size and
+ * would only ever be picked by mistake.
  */
 export function srcSet(url: string, widths: number[] = [600, 900, 1200]): string {
-  if (url.startsWith(OURS)) {
-    return OUR_WIDTHS.filter((w) => w >= 400)
-      .map((w) => `${url}-${w}.webp ${w}w`)
-      .join(', ');
-  }
-  return widths.map((w) => `${sized(url, w)} ${w}w`).join(', ');
+  const frames = ourFrames(url);
+  if (!frames) return widths.map((w) => `${sized(url, w)} ${w}w`).join(', ');
+  return OUR_WIDTHS.filter((w) => w >= 400)
+    .map((w) => `${frames[w]} ${w}w`)
+    .join(', ');
 }
 
 export function productBySlug(slug: string): ShopProduct | undefined {
