@@ -3,6 +3,7 @@ import type Lenis from 'lenis';
 import { gsap, Observer, EASE } from '@/lib/gsap';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { SOCIAL } from '@/content/site';
+import { SHOP, SHOP_LIVE } from '@/content/shop';
 import { scrollToAnchor } from '@/hooks/useSmoothScroll';
 import Wordmark from '@/components/Wordmark';
 
@@ -138,16 +139,32 @@ export default function Nav({ lenis, onOpenContact }: NavProps) {
           {content.nav.contact}
         </button>
 
-        <a
-          href="#waitlist"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToAnchor(lenis.current, '#waitlist');
-          }}
-          className="label bg-butter px-3.5 py-2.5 text-court transition-colors hover:bg-chalk"
-        >
-          {content.nav.waitlist}
-        </a>
+        {/*
+          The one yellow button in the bar, and there is only ever room for
+          one. Before launch it collects addresses; once the shop can take
+          money, asking someone to wait for a thing they could buy is worse
+          than useless, so it becomes the way in. Tied to SHOP_LIVE rather
+          than swapped by hand, so the two can never disagree.
+        */}
+        {SHOP_LIVE ? (
+          <a
+            href="/shop"
+            className="label bg-butter px-3.5 py-2.5 text-court transition-colors hover:bg-chalk"
+          >
+            {SHOP[lang].strings.navShop}
+          </a>
+        ) : (
+          <a
+            href="#waitlist"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToAnchor(lenis.current, '#waitlist');
+            }}
+            className="label bg-butter px-3.5 py-2.5 text-court transition-colors hover:bg-chalk"
+          >
+            {content.nav.waitlist}
+          </a>
+        )}
       </div>
     </nav>
   );
