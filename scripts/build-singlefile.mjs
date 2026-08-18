@@ -108,7 +108,13 @@ html = html
 writeFileSync(OUT, html);
 
 const leftover = paths.filter((p) => html.includes(`"${p}"`));
-const external = /(?:src|href)="(?:https?:)?\/\/[^"]+"/.exec(html)?.[0];
+
+// Only flag references the browser would actually fetch. rel="canonical" is a
+// declaration about where the page lives, not a request, and it has to keep
+// pointing at the real site or it stops meaning anything.
+const external = /(?:src|href)="(?:https?:)?\/\/[^"]+"/.exec(
+  html.replace(/<link[^>]*rel="canonical"[^>]*>/g, ''),
+)?.[0];
 
 console.log(`wrote ${OUT}`);
 console.log(`size  ${(Buffer.byteLength(html) / 1024 / 1024).toFixed(2)} MB`);
