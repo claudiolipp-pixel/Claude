@@ -1,0 +1,14 @@
+{
+  "extraKnownMarketplaces": {
+    "liquid-skills": {
+      "source": {
+        "source": "github",
+        "repo": "Shopify/liquid-skills"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "liquid-skills@liquid-skills": true,
+    "liquid-lsp@liquid-skills": true
+  }
+}
