@@ -283,6 +283,21 @@ Always Use HTTPS matters most: HSTS only binds a browser that has already been
 served over HTTPS once, so without the redirect a first visit over plain HTTP
 is still unprotected.
 
+## The shop
+
+The shop lives in its own repository: **claudiolipp-pixel/airball-theme**, a
+Shopify theme in this same design. It is separate because Shopify's GitHub
+integration syncs a whole repository root, and because it deploys to a
+different place than this one does.
+
+`SHOP_LIVE` here is on its way out. Until the theme is live, `/shop` in this
+app is the shop; after that, the button in the bar points at the Shopify
+storefront and the React shop can be deleted.
+
+The brand tokens in `tailwind.config.ts` are the source. `assets/theme.css` in
+the theme repo carries a hand-copied duplicate of them. Changing a colour means
+changing both.
+
 ## Before launch
 
 - [ ] Deploy the waitlist script and set `VITE_WAITLIST_ENDPOINT` — until then
