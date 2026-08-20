@@ -1,0 +1,128 @@
+{% doc %}
+  A product in the grid: photo, name, one line, price, and a way to buy.
+
+  Add-to-cart sits on the card because the bundles differ by what is in the
+  box, not by a variant to choose. Someone who has read the three names has
+  already decided, and sending them through a product page first only adds a
+  click. The name still links there for the ones who want to count the parts.
+
+  @param {object} product - The product to render.
+  @param {boolean} [suggested] - Mark this one as the suggested bundle.
+
+  @example
+  {% render 'product-card', product: product, suggested: true %}
+{% enddoc %}
+
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign image = product.featured_media.preview_image
+-%}
+
+<article class="product-card">
+  <a class="product-card__link" href="{{ product.url }}">
+    <div class="frame product-card__frame">
+      {%- if image -%}
+        <img
+          src="{{ image | image_url: width: 700 }}"
+          srcset="
+            {{ image | image_url: width: 400 }} 400w,
+            {{ image | image_url: width: 700 }} 700w,
+            {{ image | image_url: width: 1000 }} 1000w
+          "
+          sizes="(min-width: 768px) 31vw, 100vw"
+          alt="{{ image.alt | default: product.title | escape }}"
+          width="{{ image.width }}"
+          height="{{ image.height }}"
+          loading="lazy"
+        >
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder' }}
+      {%- endif -%}
+
+      {%- if suggested -%}
+        <span class="product-card__flag label">{{ 'products.suggested' | t }}</span>
+      {%- endif -%}
+    </div>
+
+    <h3 class="product-card__title">{{ product.title }}</h3>
+  </a>
+
+  {%- comment -%}
+    The short line is the product's own excerpt in Shopify, so it is editable
+    in the admin rather than sitting in a theme file.
+  {%- endcomment -%}
+  {%- if product.description != blank -%}
+    <p class="product-card__lede">{{ product.description | strip_html | truncatewords: 22 }}</p>
+  {%- endif -%}
+
+  <div class="product-card__foot">
+    {% render 'price', product: product, compare_at: true, size: 'clamp(24px, 3vw, 32px)' %}
+
+    {%- if variant.available -%}
+      {%- form 'product', product, class: 'product-card__form', data-cart-add: '' -%}
+        <input type="hidden" name="id" value="{{ variant.id }}">
+        <input type="hidden" name="quantity" value="1">
+        <button type="submit" class="button button--primary">
+          {{ 'products.add_to_cart' | t }}
+        </button>
+      {%- endform -%}
+    {%- else -%}
+      <button type="button" class="button" disabled>{{ 'products.sold_out' | t }}</button>
+    {%- endif -%}
+  </div>
+</article>
+
+{% stylesheet %}
+  .product-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card__link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .product-card__frame img {
+    transition: transform 700ms var(--ease);
+  }
+  .product-card__link:hover .product-card__frame img {
+    transform: scale(1.04);
+  }
+
+  .product-card__flag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--color-butter);
+    color: var(--color-court);
+    font-weight: 500;
+    padding: 6px 10px;
+  }
+
+  .product-card__title {
+    font-size: var(--text-h3);
+    margin-top: 16px;
+  }
+
+  .product-card__lede {
+    margin-top: 8px;
+    max-width: 34ch;
+    color: var(--color-ink-soft);
+  }
+
+  /* Pushed to the bottom so the price and the button line up across a row of
+     cards whose descriptions are different lengths. */
+  .product-card__foot {
+    margin-top: auto;
+    padding-top: 16px;
+  }
+
+  .product-card__form {
+    margin: 0;
+  }
+
+  .product-card__foot .button {
+    margin-top: 16px;
+  }
+{% endstylesheet %}

@@ -1,0 +1,101 @@
+{%- comment -%}
+  Clubs, schools and events buy differently from one person: several courts,
+  their own branding, an invoice rather than a card. None of that fits a buy
+  button, and pretending it does loses the largest orders in the shop. So this
+  block does not try to sell, it starts a conversation.
+{%- endcomment -%}
+
+<div class="club page">
+  <div class="club__inner">
+    <h2 class="club__title">{{ section.settings.title }}</h2>
+    <div class="club__body">{{ section.settings.body }}</div>
+    <a class="button button--primary club__cta" href="mailto:{{ section.settings.email }}?subject={{ section.settings.subject | url_encode }}">
+      {{ section.settings.cta }}
+    </a>
+  </div>
+</div>
+
+{% stylesheet %}
+  .club {
+    margin-top: 80px;
+  }
+
+  .club__inner {
+    background: var(--color-court);
+    color: var(--color-chalk);
+    border-radius: var(--radius);
+    padding: 36px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  @media (min-width: 768px) {
+    .club__inner {
+      padding: 56px 48px;
+    }
+  }
+
+  .club__title {
+    font-size: var(--text-h2);
+    max-width: 20ch;
+  }
+
+  .club__body {
+    max-width: 56ch;
+    color: rgba(250, 250, 250, 0.72);
+  }
+
+  .club__body p {
+    margin: 0;
+  }
+
+  /* The one place on a dark surface where the yellow button appears, so it
+     stays the single loudest thing in view. */
+  .club__cta {
+    width: auto;
+    margin-top: 8px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.club_enquiry.name",
+  "tag": "section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.club_enquiry.settings.title.label",
+      "default": "Für Verein, Schule oder Event"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "t:sections.club_enquiry.settings.body.label",
+      "default": "<p>Mehrere Courts, eigenes Branding oder ein Turnier: dafür gibt es keinen Knopf im Shop. Schreib uns, was du vorhast, und wir rechnen es dir.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta",
+      "label": "t:sections.club_enquiry.settings.cta.label",
+      "default": "Anfrage schreiben"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "t:sections.club_enquiry.settings.email.label",
+      "default": "info@airball.at"
+    },
+    {
+      "type": "text",
+      "id": "subject",
+      "label": "t:sections.club_enquiry.settings.subject.label",
+      "default": "Anfrage Verein / Schule / Event"
+    }
+  ],
+  "presets": [{ "name": "t:sections.club_enquiry.name" }]
+}
+{% endschema %}

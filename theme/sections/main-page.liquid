@@ -1,0 +1,30 @@
+{%- comment -%}
+  Shopify Pages: terms, right of withdrawal, shipping. Long-form legal text,
+  so the only job here is a comfortable measure and honest hierarchy.
+{%- endcomment -%}
+
+<article class="page-body page">
+  <h1 class="page-body__title">{{ page.title }}</h1>
+  <div class="page-body__rte rte">{{ page.content }}</div>
+</article>
+
+{% stylesheet %}
+  .page-body {
+    padding-block: 40px 80px;
+    max-width: 74ch;
+  }
+
+  .page-body__title {
+    font-size: var(--text-h2);
+  }
+
+  .page-body__rte {
+    margin-top: 28px;
+    color: var(--color-ink-soft);
+  }
+
+{% endstylesheet %}
+
+{% schema %}
+{ "name": "t:sections.main_page.name", "tag": "section" }
+{% endschema %}

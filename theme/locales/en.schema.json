@@ -1,0 +1,127 @@
+{
+  "sections": {
+    "header": {
+      "name": "Header",
+      "settings": {
+        "site_url": {
+          "label": "Website address",
+          "info": "Where the back button goes, for example https://airball.at"
+        }
+      }
+    },
+    "footer": {
+      "name": "Footer",
+      "settings": {
+        "menu": {
+          "label": "Legal",
+          "info": "Imprint, privacy, terms, right of withdrawal, shipping"
+        }
+      }
+    },
+    "shop_intro": {
+      "name": "Shop intro",
+      "settings": {
+        "eyebrow": {
+          "label": "Small line above"
+        },
+        "title": {
+          "label": "Heading"
+        },
+        "intro": {
+          "label": "Intro"
+        }
+      }
+    },
+    "bundle_grid": {
+      "name": "Bundles",
+      "settings": {
+        "title": {
+          "label": "Heading"
+        },
+        "note": {
+          "label": "Note on the right"
+        },
+        "collection": {
+          "label": "Collection"
+        },
+        "limit": {
+          "label": "How many to show"
+        },
+        "suggested_tag": {
+          "label": "Tag for Suggested",
+          "info": "Products carrying this tag get the yellow flag"
+        }
+      }
+    },
+    "trust_row": {
+      "name": "Trust row",
+      "blocks": {
+        "item": {
+          "name": "Item",
+          "settings": {
+            "title": {
+              "label": "Title"
+            },
+            "body": {
+              "label": "Body"
+            }
+          }
+        }
+      }
+    },
+    "club_enquiry": {
+      "name": "Club enquiry",
+      "settings": {
+        "title": {
+          "label": "Heading"
+        },
+        "body": {
+          "label": "Body"
+        },
+        "cta": {
+          "label": "Button label"
+        },
+        "email": {
+          "label": "Recipient"
+        },
+        "subject": {
+          "label": "Subject"
+        }
+      }
+    },
+    "main_page": {
+      "name": "Page"
+    },
+    "main_404": {
+      "name": "Not found"
+    },
+    "main_search": {
+      "name": "Search"
+    },
+    "main_collection": {
+      "name": "Collection"
+    },
+    "main_cart": {
+      "name": "Cart page"
+    },
+    "cart_drawer": {
+      "name": "Cart drawer"
+    },
+    "main_product": {
+      "name": "Product page",
+      "blocks": {
+        "panel": {
+          "name": "Panel",
+          "settings": {
+            "title": {
+              "label": "Title"
+            },
+            "body": {
+              "label": "Body"
+            }
+          }
+        }
+      }
+    }
+  }
+}

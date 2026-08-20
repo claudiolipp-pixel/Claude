@@ -1,0 +1,94 @@
+{%- comment -%}
+  The three things a first-time buyer of an unfamiliar product checks before
+  paying: where it ships from, whether it can go back, and whether it exists.
+
+  Blocks rather than fixed settings, so the answers can change as the business
+  does without the theme changing with them.
+{%- endcomment -%}
+
+<div class="trust-row page">
+  {%- for block in section.blocks -%}
+    <div class="trust-row__item" {{ block.shopify_attributes }}>
+      <b class="trust-row__title">{{ block.settings.title }}</b>
+      <span class="trust-row__body">{{ block.settings.body }}</span>
+    </div>
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+  .trust-row {
+    display: grid;
+    margin-top: 80px;
+    border-block: 1px solid var(--color-rule);
+  }
+
+  .trust-row__item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--color-rule-soft);
+  }
+  .trust-row__item:last-child {
+    border-bottom: 0;
+  }
+
+  @media (min-width: 768px) {
+    .trust-row {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .trust-row__item {
+      padding: 24px;
+      border-bottom: 0;
+      border-right: 1px solid var(--color-rule-soft);
+    }
+    .trust-row__item:first-child {
+      padding-left: 0;
+    }
+    .trust-row__item:last-child {
+      border-right: 0;
+    }
+  }
+
+  .trust-row__title {
+    display: block;
+    font-weight: 500;
+  }
+
+  .trust-row__body {
+    font-size: 13px;
+    color: var(--color-ink-soft);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.trust_row.name",
+  "tag": "section",
+  "max_blocks": 3,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:sections.trust_row.blocks.item.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:sections.trust_row.blocks.item.settings.title.label",
+          "default": "Versand aus Graz"
+        },
+        {
+          "type": "text",
+          "id": "body",
+          "label": "t:sections.trust_row.blocks.item.settings.body.label",
+          "default": "In den DACH-Raum und in die EU."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.trust_row.name",
+      "blocks": [{ "type": "item" }, { "type": "item" }, { "type": "item" }]
+    }
+  ]
+}
+{% endschema %}

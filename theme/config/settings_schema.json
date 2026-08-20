@@ -1,0 +1,22 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "AIRBALL",
+    "theme_version": "0.1.0",
+    "theme_author": "AIRBALL, Graz",
+    "theme_documentation_url": "https://airball.at",
+    "theme_support_url": "mailto:info@airball.at"
+  },
+  {
+    "name": "Farben",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Diese Werte stammen aus dem AIRBALL Brand Guide V1.0 und stimmen mit airball.at überein. Wer sie hier ändert, ändert die Marke nur an einer von zwei Stellen."
+      },
+      { "type": "color", "id": "color_ground", "label": "Hintergrund", "default": "#F2EFE7" },
+      { "type": "color", "id": "color_ink", "label": "Schrift", "default": "#0A0A0A" },
+      { "type": "color", "id": "color_accent", "label": "Akzent", "default": "#FFFF81" }
+    ]
+  }
+]

@@ -1,0 +1,81 @@
+{%- comment -%}
+  Inverted, like the website's footer, so the two pages end the same way.
+
+  The legal links are a menu rather than fixed markup: imprint and privacy
+  exist today, terms and the right of withdrawal are coming from a lawyer, and
+  adding them should be a menu item and not a deploy.
+{%- endcomment -%}
+
+<div class="shop-footer">
+  <div class="shop-footer__inner page">
+    <a class="shop-footer__mark" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+      {% render 'wordmark', size: '20px' %}
+    </a>
+
+    {%- if section.settings.menu != blank -%}
+      <nav class="shop-footer__links label" aria-label="{{ 'general.legal' | t }}">
+        {%- for link in section.settings.menu.links -%}
+          <a class="shop-footer__link" href="{{ link.url }}">{{ link.title }}</a>
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .shop-footer {
+    margin-top: 80px;
+    background: var(--color-court);
+    color: var(--color-chalk);
+  }
+
+  .shop-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 40px;
+  }
+
+  @media (min-width: 768px) {
+    .shop-footer__inner {
+      padding-block: 48px;
+    }
+  }
+
+  .shop-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    color: rgba(250, 250, 250, 0.55);
+  }
+
+  .shop-footer__link {
+    text-decoration: none;
+    transition: background-color 200ms var(--ease), color 200ms var(--ease);
+  }
+  .shop-footer__link:hover {
+    background: var(--color-butter);
+    color: var(--color-court);
+  }
+
+  .shop-footer :focus-visible {
+    outline-color: var(--color-butter);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.footer.name",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:sections.footer.settings.menu.label",
+      "info": "t:sections.footer.settings.menu.info"
+    }
+  ]
+}
+{% endschema %}

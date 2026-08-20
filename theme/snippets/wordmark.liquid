@@ -1,0 +1,31 @@
+{% doc %}
+  The AIRBALL wordmark as letter-spaced type rather than an image.
+
+  Type, not SVG, because the mark is set in the brand's display face at the
+  brand's tracking. Rendering it as text means it inherits colour from its
+  parent, scales with the layout and stays selectable and searchable.
+
+  @param {string} [size] - CSS font-size for the mark. Defaults to 24px.
+
+  @example
+  {% render 'wordmark' %}
+  {% render 'wordmark', size: '20px' %}
+{% enddoc %}
+
+<span class="wordmark" style="--wordmark-size: {{ size | default: '24px' }};">AIRBALL</span>
+
+{% stylesheet %}
+  .wordmark {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--wordmark-size, 24px);
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    /* The tracking adds space after the last letter too, which visually
+       pushes the mark off its left edge. Pulling it back keeps it aligned
+       with everything below it. */
+    margin-right: -0.14em;
+  }
+{% endstylesheet %}

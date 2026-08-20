@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_ground | default: '#F2EFE7' }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- comment -%}
+      The fonts are the brand, so they are preloaded rather than discovered
+      after the stylesheet parses. Display comes first: it is the headline a
+      visitor sees before anything else has painted.
+    {%- endcomment -%}
+    {{ 'big-shoulders-display-900.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {{ 'ibm-plex-mono-400.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {{ content_for_header }}
+
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+  </head>
+
+  <body class="template-{{ template.name | handle }}">
+    <a class="skip-link label" href="#main">{{ 'general.skip_to_content' | t }}</a>
+
+    {% section 'header' %}
+
+    <main id="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
+
+    {% section 'cart-drawer' %}
+
+    {%- comment -%}
+      One module, loaded once, for the two interactive pieces in the shop: the
+      cart drawer and the product gallery. Both are custom elements, so they
+      upgrade whenever the script lands and the markup is complete without it.
+    {%- endcomment -%}
+    <script src="{{ 'theme.js' | asset_url }}" type="module"></script>
+  </body>
+</html>

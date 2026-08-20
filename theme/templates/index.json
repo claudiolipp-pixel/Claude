@@ -1,0 +1,60 @@
+{
+  "sections": {
+    "intro": {
+      "type": "shop-intro",
+      "settings": {
+        "eyebrow": "Shop",
+        "title": "Wähl dein Setup",
+        "intro": "<p>Drei Wege auf den Court. Alle drei enthalten den Airballer. Der Unterschied ist, wie schnell er steht und wie du ihn trägst.<\/p>"
+      }
+    },
+    "bundles": {
+      "type": "bundle-grid",
+      "settings": {
+        "title": "Bundles",
+        "note": "Preise inkl. USt.",
+        "collection": "bundles",
+        "limit": 3,
+        "suggested_tag": "suggested"
+      }
+    },
+    "trust": {
+      "type": "trust-row",
+      "blocks": {
+        "shipping": {
+          "type": "item",
+          "settings": {
+            "title": "Versand aus Graz",
+            "body": "In den DACH-Raum und in die EU."
+          }
+        },
+        "returns": {
+          "type": "item",
+          "settings": {
+            "title": "14 Tage Rückgabe",
+            "body": "Ohne Begründung, unbenutzt zurück."
+          }
+        },
+        "run": {
+          "type": "item",
+          "settings": {
+            "title": "Erste Produktion",
+            "body": "Begrenzte Stückzahl, danach Nachschub."
+          }
+        }
+      },
+      "block_order": ["shipping", "returns", "run"]
+    },
+    "club": {
+      "type": "club-enquiry",
+      "settings": {
+        "title": "Für Verein, Schule oder Event",
+        "body": "<p>Mehrere Courts, eigenes Branding oder ein Turnier: dafür gibt es keinen Knopf im Shop. Schreib uns, was du vorhast, und wir rechnen es dir.<\/p>",
+        "cta": "Anfrage schreiben",
+        "email": "info@airball.at",
+        "subject": "Anfrage Verein / Schule / Event"
+      }
+    }
+  },
+  "order": ["intro", "bundles", "trust", "club"]
+}

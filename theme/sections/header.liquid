@@ -1,0 +1,158 @@
+{%- comment -%}
+  The shop header, which is the website's shop header.
+
+  Deliberately not a store navigation. There are three products; a menu bar
+  would be furniture. What a visitor needs here is the way back to the site
+  they came from, the language they read in, and the basket they filled.
+{%- endcomment -%}
+
+<header class="shop-header">
+  <a class="shop-header__mark" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+    {% render 'wordmark' %}
+  </a>
+
+  <div class="shop-header__tools label">
+    {%- comment -%}
+      Shopify's own locale form, styled to look like the website's DE/EN
+      toggle. Using the form rather than a link means the choice is persisted
+      the way Shopify expects and survives the checkout handover.
+    {%- endcomment -%}
+    {%- if localization.available_languages.size > 1 -%}
+      {%- form 'localization', class: 'shop-header__locale' -%}
+        {%- for language in localization.available_languages -%}
+          {%- unless language.iso_code == request.locale.iso_code -%}
+            <button
+              type="submit"
+              name="locale_code"
+              value="{{ language.iso_code }}"
+              class="shop-header__button"
+              lang="{{ language.iso_code }}"
+            >
+              {{ language.iso_code | upcase }}
+            </button>
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endform -%}
+    {%- endif -%}
+
+    {%- comment -%}
+      Back to the marketing site. It lives in a setting because the shop and
+      the site are on different hosts, and that address must be changeable
+      without a deploy.
+    {%- endcomment -%}
+    <a class="shop-header__button" href="{{ section.settings.site_url | default: '/' }}">
+      {{ 'general.back_to_site' | t }}
+    </a>
+
+    <button
+      type="button"
+      class="shop-header__cart"
+      data-cart-open
+      aria-label="{{ 'cart.open' | t: count: cart.item_count }}"
+    >
+      {% render 'icon-cart' %}
+      <span class="shop-header__count tabular" data-cart-count aria-hidden="true">
+        {{- cart.item_count -}}
+      </span>
+    </button>
+  </div>
+</header>
+
+{% stylesheet %}
+  .shop-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px var(--page-x);
+  }
+
+  @media (min-width: 768px) {
+    .shop-header {
+      padding: 28px var(--page-x);
+    }
+  }
+
+  .shop-header__mark {
+    display: block;
+    color: var(--color-ink);
+    transition: opacity 200ms var(--ease);
+  }
+  .shop-header__mark:hover {
+    opacity: 0.7;
+  }
+
+  .shop-header__tools {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .shop-header__locale {
+    display: flex;
+    margin: 0;
+  }
+
+  .shop-header__button {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid var(--color-ink);
+    padding: 8px 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 200ms var(--ease);
+  }
+  .shop-header__button:hover {
+    background: var(--color-butter);
+  }
+
+  .shop-header__cart {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: 0;
+    padding: 6px;
+    cursor: pointer;
+    transition: opacity 200ms var(--ease);
+  }
+  .shop-header__cart:hover {
+    opacity: 0.6;
+  }
+
+  /* The badge is hidden at zero rather than removed, so the button does not
+     change width the first time something is added. */
+  .shop-header__count {
+    position: absolute;
+    top: -2px;
+    right: -6px;
+    min-width: 16px;
+    padding-inline: 4px;
+    border-radius: 999px;
+    background: var(--color-butter);
+    color: var(--color-court);
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 16px;
+    text-align: center;
+  }
+  .shop-header__cart[data-count='0'] .shop-header__count {
+    visibility: hidden;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "url",
+      "id": "site_url",
+      "label": "t:sections.header.settings.site_url.label",
+      "info": "t:sections.header.settings.site_url.info"
+    }
+  ]
+}
+{% endschema %}

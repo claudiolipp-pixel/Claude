@@ -1,0 +1,60 @@
+{% doc %}
+  One place where a price is rendered, so every price in the shop looks the
+  same and none of them is ever typed by hand.
+
+  This snippet is the whole reason for the move to Shopify. The React shop
+  carried its prices as literals and they drifted from the store twice in two
+  days. Here the number comes from the product object and cannot disagree with
+  the checkout.
+
+  `compare_at` prints the sum of the parts bought separately, struck through,
+  but only when that comparison is honest: Shopify's compare-at price has to be
+  higher than the price actually charged.
+
+  @param {object} product - The product whose price to show.
+  @param {boolean} [compare_at] - Show the struck-through comparison. Default false.
+  @param {string} [size] - CSS font-size for the main figure. Defaults to the display scale.
+
+  @example
+  {% render 'price', product: product, compare_at: true %}
+{% enddoc %}
+
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign has_compare = false
+  if compare_at and variant.compare_at_price > variant.price
+    assign has_compare = true
+  endif
+-%}
+
+<div class="price" style="--price-size: {{ size | default: 'clamp(30px, 4vw, 46px)' }};">
+  <span class="price__now tabular">{{ variant.price | money }}</span>
+
+  {%- if has_compare -%}
+    <s class="price__was tabular">{{ variant.compare_at_price | money }}</s>
+    <span class="visually-hidden">
+      {{- 'products.price.separately' | t -}}
+    </span>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .price__now {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--price-size);
+    line-height: 1;
+  }
+
+  .price__was {
+    color: var(--color-ink-mute);
+    text-decoration-thickness: 1px;
+  }
+{% endstylesheet %}

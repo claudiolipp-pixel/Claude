@@ -1,0 +1,429 @@
+{%- comment -%}
+  THE PRODUCT PAGE.
+
+  Two blocks, not one grid. The buying half is a two column grid with a sticky
+  info panel; the reading half is separate and full width.
+
+  They were one grid in the React shop, with the long read spanning both
+  columns, and the sticky panel then floated over it: a sticky grid item is
+  constrained by its grid area, and once the row ended it carried on across the
+  next one. Measured at up to 453px of overlap while scrolling. Splitting them
+  removes the constraint instead of fighting it, and it matches how the page is
+  read anyway.
+
+  Price, availability and the media list all come from the product object, so
+  nothing on this page can disagree with the checkout.
+{%- endcomment -%}
+
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign in_the_box = product.metafields.airball.in_the_box.value
+-%}
+
+<div class="product page">
+  <nav class="product__crumbs label" aria-label="{{ 'general.breadcrumb' | t }}">
+    <a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a>
+    <span aria-hidden="true">&middot;</span>
+    <span aria-current="page">{{ product.title }}</span>
+  </nav>
+
+  {%- comment -%} The buying half. {%- endcomment -%}
+  <div class="product__buy">
+    <div class="product__media">
+      {% render 'product-gallery', product: product %}
+    </div>
+
+    <div class="product__info">
+      {%- if product.type != blank -%}
+        <span class="label product__type">{{ product.type }}</span>
+      {%- endif -%}
+
+      <h1 class="product__title">{{ product.title }}</h1>
+
+      {%- if product.metafields.airball.lede != blank -%}
+        <p class="product__lede">{{ product.metafields.airball.lede }}</p>
+      {%- endif -%}
+
+      {%- if in_the_box != blank -%}
+        <div class="product__box">
+          <h2 class="label product__box-title">{{ 'products.in_the_box' | t }}</h2>
+          <ul class="product__box-list">
+            {%- for item in in_the_box -%}
+              <li class="product__box-item">{{ item }}</li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      <div class="product__price">
+        {% render 'price', product: product, compare_at: true %}
+        <p class="label product__vat">{{ 'products.price.vat' | t }}</p>
+      </div>
+
+      {%- form 'product', product, class: 'product__form', data-cart-add: '' -%}
+        <input type="hidden" name="id" value="{{ variant.id }}">
+
+        {%- if variant.available -%}
+          <div class="product__actions">
+            <quantity-stepper class="stepper">
+              <button
+                type="button"
+                class="stepper__button"
+                data-step="-1"
+                aria-label="{{ 'products.quantity.decrease' | t }}"
+              >
+                &minus;
+              </button>
+              <label class="visually-hidden" for="quantity">{{ 'products.quantity.label' | t }}</label>
+              <input
+                id="quantity"
+                class="stepper__value tabular"
+                type="number"
+                name="quantity"
+                value="1"
+                min="1"
+                max="10"
+                inputmode="numeric"
+              >
+              <button
+                type="button"
+                class="stepper__button"
+                data-step="1"
+                aria-label="{{ 'products.quantity.increase' | t }}"
+              >
+                +
+              </button>
+            </quantity-stepper>
+
+            <button type="submit" class="button button--primary product__submit">
+              {{ 'products.add_to_cart' | t }}
+            </button>
+          </div>
+
+          <p class="label product__shipping">{{ 'products.price.shipping' | t }}</p>
+        {%- else -%}
+          <button type="button" class="button" disabled>{{ 'products.sold_out' | t }}</button>
+        {%- endif -%}
+      {%- endform -%}
+
+      {%- comment -%}
+        The three questions that block a purchase, answered where they are
+        asked. One open at a time, so the column does not turn into a wall.
+      {%- endcomment -%}
+      {%- if section.blocks.size > 0 -%}
+        <div class="panels">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'panel' -%}
+              <details class="panels__item" name="product-panels" {{ block.shopify_attributes }}>
+                <summary class="panels__summary label">
+                  {{ block.settings.title }}
+                  <span class="panels__sign" aria-hidden="true"></span>
+                </summary>
+                <div class="panels__body rte">{{ block.settings.body }}</div>
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%} The reading half, full width and on its own. {%- endcomment -%}
+  <div class="product__read">
+    {%- if product.description != blank -%}
+      <section class="product__story">
+        <h2 class="section-head__title product__story-title">{{ 'products.about' | t }}</h2>
+        <div class="product__story-body rte">{{ product.description }}</div>
+      </section>
+    {%- endif -%}
+
+    {%- assign details = product.metafields.airball.details.value -%}
+    {%- if details != blank -%}
+      <section class="product__details">
+        <h2 class="section-head__title">{{ 'products.details' | t }}</h2>
+        <dl class="product__spec">
+          {%- for row in details -%}
+            <div class="product__spec-row">
+              <dt class="label product__spec-key">{{ row.label }}</dt>
+              <dd class="product__spec-value">{{ row.value }}</dd>
+            </div>
+          {%- endfor -%}
+        </dl>
+      </section>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .product {
+    padding-block: 12px 96px;
+  }
+
+  @media (min-width: 768px) {
+    .product {
+      padding-block: 20px 128px;
+    }
+  }
+
+  .product__crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: var(--color-ink-mute);
+    margin-bottom: 28px;
+  }
+  .product__crumbs a {
+    text-decoration: none;
+  }
+  .product__crumbs a:hover {
+    color: var(--color-ink);
+  }
+
+  .product__buy {
+    display: grid;
+    gap: 32px;
+  }
+
+  @media (min-width: 768px) {
+    .product__buy {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 56px;
+    }
+
+    /* Safe here, and only here, because this grid holds nothing but the two
+       columns. See the comment at the top of this file. */
+    .product__info {
+      position: sticky;
+      top: 32px;
+      align-self: start;
+    }
+  }
+
+  .product__type {
+    display: block;
+    color: var(--color-ink-mute);
+  }
+
+  .product__title {
+    font-size: clamp(38px, 6vw, 62px);
+    margin-top: 10px;
+  }
+
+  .product__lede {
+    margin-top: 16px;
+    max-width: 44ch;
+    color: var(--color-ink-soft);
+  }
+
+  .product__box {
+    margin-top: 28px;
+  }
+  .product__box-title {
+    color: var(--color-ink-mute);
+  }
+  .product__box-list {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .product__box-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  /* A yellow tick would be a claim. A yellow dot is just a bullet in the
+     brand's colour. */
+  .product__box-item::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-butter);
+  }
+
+  .product__price {
+    margin-top: 32px;
+  }
+  .product__vat {
+    margin-top: 6px;
+    color: var(--color-ink-mute);
+  }
+
+  .product__form {
+    margin: 20px 0 0;
+  }
+
+  .product__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .product__submit {
+    flex: 1 1 200px;
+    width: auto;
+  }
+
+  .product__shipping {
+    margin-top: 12px;
+    color: var(--color-ink-mute);
+  }
+
+  .stepper {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--color-ink);
+  }
+  .stepper__button {
+    background: transparent;
+    border: 0;
+    padding-inline: 16px;
+    cursor: pointer;
+    transition: background-color 200ms var(--ease);
+  }
+  .stepper__button:hover {
+    background: var(--color-butter);
+  }
+  .stepper__button[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .stepper__value {
+    width: 44px;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    text-align: center;
+    /* The spinner arrows would sit on top of our own buttons. */
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+  .stepper__value::-webkit-outer-spin-button,
+  .stepper__value::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  .panels {
+    margin-top: 40px;
+    border-top: 1px solid var(--color-rule);
+  }
+  .panels__item {
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .panels__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 18px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .panels__summary::-webkit-details-marker {
+    display: none;
+  }
+  /* A plus that becomes a minus, drawn rather than typed so it stays centred
+     at any font size. */
+  .panels__sign {
+    position: relative;
+    flex: 0 0 auto;
+    width: 12px;
+    height: 12px;
+  }
+  .panels__sign::before,
+  .panels__sign::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 240ms var(--ease);
+  }
+  .panels__sign::after {
+    transform: rotate(90deg);
+  }
+  .panels__item[open] .panels__sign::after {
+    transform: rotate(0deg);
+  }
+  .panels__body {
+    padding-bottom: 20px;
+    color: var(--color-ink-soft);
+  }
+  .panels__body p {
+    margin-block: 0 12px;
+  }
+  .panels__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .product__read {
+    margin-top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+  }
+
+  .product__story-body {
+    margin-top: 20px;
+    max-width: 62ch;
+    color: var(--color-ink-soft);
+  }
+
+  .product__spec {
+    margin: 24px 0 0;
+    border-top: 1px solid var(--color-rule);
+  }
+  .product__spec-row {
+    display: grid;
+    gap: 4px;
+    padding-block: 14px;
+    border-bottom: 1px solid var(--color-rule-soft);
+  }
+  @media (min-width: 600px) {
+    .product__spec-row {
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+    }
+  }
+  .product__spec-key {
+    color: var(--color-ink-mute);
+  }
+  .product__spec-value {
+    margin: 0;
+    color: var(--color-ink-soft);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main_product.name",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "panel",
+      "name": "t:sections.main_product.blocks.panel.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:sections.main_product.blocks.panel.settings.title.label",
+          "default": "Lieferung"
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "t:sections.main_product.blocks.panel.settings.body.label",
+          "default": "<p>Versand aus Graz nach Österreich, Deutschland, die Schweiz und in die EU.</p>"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

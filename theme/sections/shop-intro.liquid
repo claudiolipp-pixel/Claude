@@ -1,0 +1,80 @@
+{%- comment -%}
+  The opening of the shop: eyebrow, headline, one paragraph.
+
+  Everything here is a setting rather than a translation key, because this is
+  the copy most likely to be rewritten while the shop is running, and rewriting
+  it should not need a developer.
+{%- endcomment -%}
+
+<div class="shop-intro page">
+  {%- if section.settings.eyebrow != blank -%}
+    <span class="label shop-intro__eyebrow">{{ section.settings.eyebrow }}</span>
+  {%- endif -%}
+
+  <h1 class="shop-intro__title">{{ section.settings.title }}</h1>
+
+  {%- if section.settings.intro != blank -%}
+    <div class="shop-intro__body">{{ section.settings.intro }}</div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .shop-intro {
+    padding-top: 40px;
+  }
+
+  @media (min-width: 768px) {
+    .shop-intro {
+      padding-top: 64px;
+    }
+  }
+
+  .shop-intro__eyebrow {
+    display: block;
+    color: var(--color-ink-mute);
+  }
+
+  .shop-intro__title {
+    font-size: var(--text-hero);
+    margin-top: 12px;
+  }
+
+  .shop-intro__body {
+    margin-top: 20px;
+    max-width: 52ch;
+    color: var(--color-ink-soft);
+  }
+
+  .shop-intro__body p {
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.shop_intro.name",
+  "tag": "section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:sections.shop_intro.settings.eyebrow.label",
+      "default": "Shop"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.shop_intro.settings.title.label",
+      "default": "Wähl dein Setup"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "t:sections.shop_intro.settings.intro.label",
+      "default": "<p>Drei Wege auf den Court. Alle drei enthalten den Airballer. Der Unterschied ist, wie schnell er steht und wie du ihn trägst.</p>"
+    }
+  ],
+  "presets": [{ "name": "t:sections.shop_intro.name" }]
+}
+{% endschema %}

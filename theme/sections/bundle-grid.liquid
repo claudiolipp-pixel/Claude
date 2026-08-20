@@ -1,0 +1,118 @@
+{%- comment -%}
+  The three bundles.
+
+  Driven by a collection rather than a hand-picked list, so adding a fourth
+  setup in the admin puts it on the page without touching the theme. The
+  suggested one is marked by a product tag, which is again something you set
+  in the admin and not something I set in code.
+{%- endcomment -%}
+
+{%- liquid
+  assign collection = collections[section.settings.collection]
+  assign shown = collection.products
+-%}
+
+<div class="bundle-grid page">
+  <div class="section-head">
+    <h2 class="section-head__title">{{ section.settings.title }}</h2>
+    {%- if section.settings.note != blank -%}
+      <span class="section-head__note label">{{ section.settings.note }}</span>
+    {%- endif -%}
+  </div>
+
+  {%- if shown.size > 0 -%}
+    <div class="bundle-grid__items">
+      {%- for product in shown limit: section.settings.limit -%}
+        {%- liquid
+          assign suggested = false
+          if section.settings.suggested_tag != blank and product.tags contains section.settings.suggested_tag
+            assign suggested = true
+          endif
+        -%}
+        {% render 'product-card', product: product, suggested: suggested %}
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    {%- comment -%}
+      Shown only in the editor, where an unset collection is a mistake worth
+      naming. On the live storefront an empty section renders nothing rather
+      than an apology.
+    {%- endcomment -%}
+    {%- if request.design_mode -%}
+      <p class="bundle-grid__empty">{{ 'sections.bundle_grid.no_collection' | t }}</p>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .bundle-grid {
+    padding-top: 56px;
+  }
+
+  @media (min-width: 768px) {
+    .bundle-grid {
+      padding-top: 80px;
+    }
+  }
+
+  .bundle-grid__items {
+    display: grid;
+    gap: 20px;
+    margin-top: 28px;
+  }
+
+  @media (min-width: 768px) {
+    .bundle-grid__items {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+  }
+
+  .bundle-grid__empty {
+    margin-top: 28px;
+    color: var(--color-ink-mute);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.bundle_grid.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.bundle_grid.settings.title.label",
+      "default": "Bundles"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "t:sections.bundle_grid.settings.note.label",
+      "default": "Preise inkl. USt."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "t:sections.bundle_grid.settings.collection.label"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "t:sections.bundle_grid.settings.limit.label",
+      "min": 3,
+      "max": 12,
+      "step": 3,
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "suggested_tag",
+      "label": "t:sections.bundle_grid.settings.suggested_tag.label",
+      "info": "t:sections.bundle_grid.settings.suggested_tag.info",
+      "default": "suggested"
+    }
+  ],
+  "presets": [{ "name": "t:sections.bundle_grid.name" }]
+}
+{% endschema %}
