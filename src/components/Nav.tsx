@@ -3,7 +3,7 @@ import type Lenis from 'lenis';
 import { gsap, Observer, EASE } from '@/lib/gsap';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { SOCIAL } from '@/content/site';
-import { SHOP, SHOP_LIVE } from '@/content/shop';
+import { SHOP, SHOP_LIVE, SHOP_OPEN, SHOP_URL } from '@/content/shop';
 import CartButton from '@/components/CartButton';
 import { scrollToAnchor } from '@/hooks/useSmoothScroll';
 import Wordmark from '@/components/Wordmark';
@@ -142,21 +142,24 @@ export default function Nav({ lenis, onOpenContact }: NavProps) {
 
         {/*
           The one yellow button in the bar, and there is only ever room for
-          one. Before launch it collects addresses; once the shop can take
+          one. Before launch it collected addresses; now that the shop can take
           money, asking someone to wait for a thing they could buy is worse
-          than useless, so it becomes the way in. Tied to SHOP_LIVE rather
-          than swapped by hand, so the two can never disagree.
+          than useless, so it is the way in.
+
+          The cart badge belongs to the React shop in this repo, which Shopify
+          replaced, so it only appears with SHOP_LIVE. The Shopify shop keeps
+          its own cart on its own domain, and a count here could only ever be
+          out of date.
         */}
-        {SHOP_LIVE ? (
-          <>
-            <CartButton className="hover:text-butter" />
-            <a
-              href="/shop"
-              className="label bg-butter px-3.5 py-2.5 text-court transition-colors hover:bg-chalk"
-            >
-              {SHOP[lang].strings.navShop}
-            </a>
-          </>
+        {SHOP_LIVE && <CartButton className="hover:text-butter" />}
+
+        {SHOP_OPEN ? (
+          <a
+            href={SHOP_LIVE ? '/shop' : SHOP_URL}
+            className="label bg-butter px-3.5 py-2.5 text-court transition-colors hover:bg-chalk"
+          >
+            {SHOP[lang].strings.navShop}
+          </a>
         ) : (
           <a
             href="#waitlist"

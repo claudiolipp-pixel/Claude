@@ -12,8 +12,15 @@
 import { ATTRIBUTION, type Attribution } from '@/lib/attribution';
 
 export interface WaitlistEntry {
-  firstName: string;
-  lastName: string;
+  /**
+   * Optional, because the compact form beside the shop asks for an address and
+   * nothing else. Someone who has already been offered the shop and still
+   * wants the list is doing us a favour, and a second and third field is the
+   * fastest way to lose them. The Sheet gets empty cells for those, which is
+   * the truth about what was asked.
+   */
+  firstName?: string;
+  lastName?: string;
   email: string;
   lang: string;
   /** Honeypot. Hidden from people, so anything here came from a bot. */

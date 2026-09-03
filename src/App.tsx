@@ -12,7 +12,7 @@ import DetailPanel from '@/components/DetailPanel';
 import ContactPanel from '@/components/ContactPanel';
 import CartDrawer from '@/components/CartDrawer';
 import Ticker from '@/components/Ticker';
-import Waitlist from '@/components/Waitlist';
+import ShopSection from '@/components/ShopSection';
 import Footer from '@/components/Footer';
 import LegalPage from '@/components/LegalPage';
 import { legalKeyForPath } from '@/content/legal';
@@ -115,7 +115,7 @@ function HomePage() {
         </div>
 
         <Ticker />
-        <Waitlist />
+        <ShopSection />
       </main>
 
       <Footer />

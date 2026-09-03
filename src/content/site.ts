@@ -119,6 +119,15 @@ export interface SiteContent {
   detail: { open: string; close: string; specsLabel: string };
   works: Work[];
   ticker: string[];
+  /** The closing section: the shop, with the waitlist kept as a small field. */
+  shopCta: {
+    eyebrow: string;
+    title: string;
+    body: string;
+    cta: string;
+    waitlistLabel: string;
+    waitlistBody: string;
+  };
   waitlist: {
     eyebrow: string;
     title: string;
@@ -336,6 +345,14 @@ const en: SiteContent = {
     },
   ],
   ticker: ['Play. Compete. Connect.', 'Anywhere Is An Arena'],
+  shopCta: {
+    eyebrow: 'Pre-order · Ships from 01.12.2026',
+    title: 'Get your court',
+    body: 'Three setups, one court. Basic, Pro and Premium are open for pre-order now and ship from 01.12.2026. First production run, limited numbers.',
+    cta: 'Open the shop',
+    waitlistLabel: 'Not ordering yet?',
+    waitlistBody: 'Leave your address and we write when there is news worth an email.',
+  },
   waitlist: {
     eyebrow: 'Limited first run · Summer 2026',
     title: 'Join the waitlist',
@@ -345,7 +362,7 @@ const en: SiteContent = {
     placeholder: 'your@email.com',
     cta: 'Join',
     errorName: 'Enter your first and last name',
-    note: "No spam. One mail when it's your turn.",
+    note: 'No spam. Only when there is something to say.',
     successTitle: "You're on the list",
     successBody: "Welcome, Airballer. We'll be in touch before the first units drop.",
     errorInvalid: 'Enter a valid email address',
@@ -536,6 +553,14 @@ const de: SiteContent = {
     },
   ],
   ticker: ['Play. Compete. Connect.', 'Anywhere Is An Arena'],
+  shopCta: {
+    eyebrow: 'Vorbestellung · Versand ab 01.12.2026',
+    title: 'Hol dir deinen Court',
+    body: 'Drei Setups, ein Court. Basic, Pro und Premium sind ab sofort vorbestellbar, Versand ab 01.12.2026. Erste Produktion, begrenzte Stückzahl.',
+    cta: 'Zum Shop',
+    waitlistLabel: 'Noch nicht so weit?',
+    waitlistBody: 'Trag deine Adresse ein, wir schreiben, wenn es etwas gibt, das eine Mail wert ist.',
+  },
   waitlist: {
     eyebrow: 'Limitierte erste Auflage · Sommer 2026',
     title: 'Auf die Warteliste',
@@ -545,7 +570,7 @@ const de: SiteContent = {
     placeholder: 'deine@email.com',
     cta: 'Eintragen',
     errorName: 'Bitte Vor- und Nachname eingeben',
-    note: 'Kein Spam. Eine Mail, wenn du dran bist.',
+    note: 'Kein Spam. Nur, wenn es etwas zu sagen gibt.',
     successTitle: 'Du bist auf der Liste',
     successBody: 'Willkommen, Airballer. Wir melden uns, bevor die ersten Einheiten rausgehen.',
     errorInvalid: 'Bitte gültige E-Mail-Adresse eingeben',

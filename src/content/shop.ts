@@ -35,6 +35,22 @@ import { OUR_PHOTOS, OUR_WIDTHS, type OurPhoto } from '@/content/shop-photos';
 export const SHOP_LIVE = false;
 
 /**
+ * Where the shop actually is, and whether it can take money.
+ *
+ * The shop is a Shopify storefront on its own subdomain, running the AIRBALL
+ * theme, so it looks like this site and behaves like a shop. This site links
+ * out to it rather than rebuilding it.
+ *
+ * These are deliberately separate from SHOP_LIVE above, which asks a different
+ * and by now older question: whether the React shop in this repo answers at
+ * /shop. Shopify took that job, so that one stays false while this one is
+ * true. Merging them would mean the nav could only point at the Shopify shop
+ * by also switching a route back on that nothing maintains.
+ */
+export const SHOP_URL = 'https://shop.airball.at';
+export const SHOP_OPEN = true;
+
+/**
  * Whether the single items are for sale.
  *
  * At launch only the three bundles are. Everyone buying is buying their first
