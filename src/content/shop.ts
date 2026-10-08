@@ -371,7 +371,7 @@ const de: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
     separately: 'einzeln',
     inStock: 'Auf Lager',
     vat: 'Inkl. 20% USt., zzgl. Versand',
-    shipping: 'Versand nach Österreich, Deutschland, Schweiz und in die EU',
+    shipping: 'Versand in ganz Europa',
     includesLabel: 'Enthalten',
     addOnTitle: 'Passt dazu',
     addOnNote: 'Ohne Rucksack lassen sich Court und Pumpe schlecht tragen.',
@@ -398,8 +398,8 @@ const de: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
         body: [
           // TODO(shop): echte Laufzeiten und Versandkosten eintragen, sobald
           // die Zonen in Shopify stehen. Lieferzeit ist Pflichtangabe.
-          'Versand aus Graz nach Österreich, Deutschland, die Schweiz und in die EU.',
-          'Die Schweiz ist Drittland, dort kommen Zoll und Einfuhrumsatzsteuer dazu.',
+          'Versand aus Graz in alle EU-Länder, in die Schweiz, nach Großbritannien und Norwegen.',
+          'Die Schweiz, Großbritannien und Norwegen gehören nicht zur EU. Dort kommen Zoll und Einfuhrumsatzsteuer dazu, die bei der Zustellung bezahlt werden.',
         ],
       },
       {
@@ -420,7 +420,7 @@ const de: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
     soonBody:
       'Der Shop öffnet zum Launch. Trag dich in die Warteliste ein, dann bekommst du eine Nachricht, sobald es losgeht.',
     trust: [
-      { title: 'Versand aus Graz', body: 'In den DACH-Raum und in die EU.' },
+      { title: 'Versand aus Graz', body: 'In alle EU-Länder, in die Schweiz, nach Großbritannien und Norwegen.' },
       { title: '14 Tage Rückgabe', body: 'Ohne Begründung, unbenutzt zurück.' },
       { title: 'Erste Produktion', body: 'Begrenzte Stückzahl, danach Nachschub.' },
     ],
@@ -560,7 +560,7 @@ const en: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
     separately: 'separately',
     inStock: 'In stock',
     vat: 'Includes 20% VAT, plus shipping',
-    shipping: 'Ships to Austria, Germany, Switzerland and the EU',
+    shipping: 'Ships across Europe',
     includesLabel: 'In the box',
     addOnTitle: 'Goes with it',
     addOnNote: 'Without the backpack, the court and the pump are awkward to carry.',
@@ -585,8 +585,8 @@ const en: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
       {
         title: 'Delivery',
         body: [
-          'Ships from Graz to Austria, Germany, Switzerland and the EU.',
-          'Switzerland is outside the EU customs area, so duty and import VAT apply there.',
+          'Ships from Graz to every EU country, Switzerland, the UK and Norway.',
+          'Switzerland, the UK and Norway are outside the EU, so duty and import VAT apply there and are paid on delivery.',
         ],
       },
       {
@@ -605,7 +605,7 @@ const en: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
     soonBody:
       'The shop opens at launch. Join the waitlist and we will write the moment it does.',
     trust: [
-      { title: 'Ships from Graz', body: 'Across Austria, Germany, Switzerland and the EU.' },
+      { title: 'Ships from Graz', body: 'To every EU country, Switzerland, the UK and Norway.' },
       { title: '14 day returns', body: 'No reason needed, unused.' },
       { title: 'First production run', body: 'Limited quantity, then a restock.' },
     ],
