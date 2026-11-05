@@ -78,6 +78,8 @@ export interface LegalContent {
 }
 
 const CONTACT_EMAIL = 'info@airball.at';
+/** The imprint names the same address as the shop and its order mails. */
+const IMPRINT_EMAIL = 'sales@airball.at';
 
 const en: LegalContent = {
   back: 'Back to airball.at',
@@ -93,7 +95,7 @@ const en: LegalContent = {
       },
       {
         heading: 'Contact',
-        body: [`Email: ${CONTACT_EMAIL}`],
+        body: [`Email: ${IMPRINT_EMAIL}`],
       },
       {
         heading: 'Purpose of the business',
@@ -208,7 +210,7 @@ const de: LegalContent = {
       },
       {
         heading: 'Kontakt',
-        body: [`E-Mail: ${CONTACT_EMAIL}`],
+        body: [`E-Mail: ${IMPRINT_EMAIL}`],
       },
       {
         heading: 'Unternehmensgegenstand',
