@@ -59,12 +59,14 @@ export default function LegalPage({ which }: LegalPageProps) {
       <main className="px-5 pb-24 pt-8 md:px-10 md:pb-32 md:pt-12">
         <h1 className="display max-w-[900px] text-[clamp(40px,7vw,84px)]">{doc.title}</h1>
 
-        {/* The provisional status is the first thing on the page rather than a
-            footnote, because a placeholder that reads as final is worse than
-            no page at all. */}
-        <p className="mt-6 max-w-[640px] border-l-4 border-butter bg-butter/25 px-4 py-3">
-          {doc.notice}
-        </p>
+        {/* Anything still missing is the first thing on the page rather than a
+            footnote, because a gap that reads as final is worse than no page
+            at all. A complete document has no band. */}
+        {doc.notice && (
+          <p className="mt-6 max-w-[640px] border-l-4 border-butter bg-butter/25 px-4 py-3">
+            {doc.notice}
+          </p>
+        )}
 
         <p className="label mt-4 text-court/55">{doc.updated}</p>
 

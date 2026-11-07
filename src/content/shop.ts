@@ -412,7 +412,7 @@ const de: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
       {
         title: 'Fragen zum Produkt',
         body: [
-          'Schreib an info@airball.at. Wir antworten, auch auf die Fragen, die vor dem Kauf kommen.',
+          'Schreib an sales@airball.at. Wir antworten, auch auf die Fragen, die vor dem Kauf kommen.',
         ],
       },
     ],
@@ -598,7 +598,7 @@ const en: { strings: ShopStrings; copy: Record<string, ShopProductCopy> } = {
       },
       {
         title: 'Questions about the product',
-        body: ['Write to info@airball.at. We answer, including the questions that come before a purchase.'],
+        body: ['Write to sales@airball.at. We answer, including the questions that come before a purchase.'],
       },
     ],
     soonTitle: 'Not open yet',

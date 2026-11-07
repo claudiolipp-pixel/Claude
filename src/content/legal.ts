@@ -1,27 +1,34 @@
 /**
  * IMPRINT AND PRIVACY COPY.
  *
- * Both are provisional and say so on the page. They are written against what
- * the site actually does today, so they are accurate rather than generic:
+ * The imprint follows the shop's legal notice in Shopify, which is the master
+ * for the company's details. The privacy notice does not: it describes this
+ * site, which does different things from the shop, and it is written against
+ * what the site actually does today:
  *
- *  - the waitlist form posts first name, last name, email and language to a
- *    Google Apps Script that appends a row to a Google Sheet, together with the
- *    campaign tags and referrer captured in attribution.ts,
+ *  - the sign-up form posts an email address and language (first and last
+ *    name too, from the older long form) to a Google Apps Script that appends
+ *    a row to a Google Sheet, together with the campaign tags and referrer
+ *    captured in attribution.ts,
+ *  - those addresses are added to the shop's customer list in Shopify, which
+ *    sends the emails,
  *  - Cloudflare serves the site and keeps request logs,
  *  - Cloudflare Web Analytics counts visits without a cookie or a fingerprint,
  *  - `airball.lang` in localStorage remembers the language choice,
  *  - `airball.cart` in localStorage holds the basket, but only once the shop is
  *    live, which is why that paragraph is conditional,
- *  - fonts are bundled, so no request ever leaves for a third-party CDN,
+ *  - fonts and videos are bundled, so no request leaves for a third party,
+ *  - links to the Shopify shop and to Instagram and LinkedIn load nothing
+ *    until clicked,
  *  - there is no advertising and no cookie of any kind.
  *
  * If any of that changes, this file has to change with it. The line that
  * decides whether a consent banner is needed is whether something is written to
  * or read from the visitor's device. Everything here stays on the right side of
- * it; a pixel, an embedded map or a video would not.
+ * it; a pixel, an embedded map or a video from a third party would not.
  *
- * Anything a lawyer still has to fill in is marked TODO below and shown on the
- * page as a visible gap rather than quietly omitted.
+ * Anything still missing is marked TODO below and shown on the page as a
+ * visible gap rather than quietly omitted.
  */
 
 import type { Lang } from '@/content/site';
@@ -65,8 +72,12 @@ export interface LegalSection {
 
 export interface LegalDocument {
   title: string;
-  /** Shown in a marked band at the top, so nobody mistakes this for final. */
-  notice: string;
+  /**
+   * Shown in a marked band at the top, for anything still missing. Left out
+   * once a document is complete: a standing "provisional" band on a finished
+   * page teaches readers to ignore the band.
+   */
+  notice?: string;
   updated: string;
   sections: LegalSection[];
 }
@@ -77,82 +88,111 @@ export interface LegalContent {
   privacy: LegalDocument;
 }
 
-const CONTACT_EMAIL = 'info@airball.at';
-/** The imprint names the same address as the shop and its order mails. */
-const IMPRINT_EMAIL = 'sales@airball.at';
+/*
+ * The company, as registered. Copied from the shop's legal notice in Shopify,
+ * which is the master, with two corrections made there by hand: the street is
+ * Lange Gasse, as on the shop's own address, and the address to write to is
+ * sales@, the one the shop, its footer and every order mail use.
+ */
+const COMPANY = 'AIRBALL GmbH';
+const ADDRESS_DE = 'Lange Gasse 47/2, 8010 Graz, Österreich';
+const ADDRESS_EN = 'Lange Gasse 47/2, 8010 Graz, Austria';
+const CONTACT_EMAIL = 'sales@airball.at';
+const PHONE = '+43 664 9555 190';
+const REGISTER_NUMBER = 'FN 688642i';
+const SHOP_PRIVACY = 'shop.airball.at/policies/privacy-policy';
 
 const en: LegalContent = {
   back: 'Back to airball.at',
   imprint: {
     title: 'Imprint',
     notice:
-      'This imprint is still being completed. AIRBALL is in the process of being set up as a company, and the registration details below will be filled in as soon as they exist.',
-    updated: 'Last updated: 30 July 2026',
+      'The VAT identification number and the trade licence details are still to be added and will appear here as soon as they are issued.',
+    updated: 'Last updated: 7 November 2026',
     sections: [
       {
-        heading: 'Media owner and publisher',
-        body: ['AIRBALL', 'Graz, Austria'],
+        heading: 'Provider and contact',
+        body: [COMPANY, ADDRESS_EN, `Email: ${CONTACT_EMAIL}`, `Telephone: ${PHONE}`],
       },
       {
-        heading: 'Contact',
-        body: [`Email: ${IMPRINT_EMAIL}`],
-      },
-      {
-        heading: 'Purpose of the business',
-        body: [
-          'Development and sale of AIRBALLER, a portable rebound court, and the organisation of games and events around it.',
-        ],
-      },
-      {
-        heading: 'Still to be added',
-        body: [
-          'The following details are required under the Austrian E-Commerce Act and Media Act and will be published here once the company is registered.',
-        ],
-        // TODO(legal): replace this block with the real details once the
-        // company exists. Do not ship to a wider audience without it.
+        heading: 'Company register',
         items: [
-          'Full legal name and legal form',
-          'Registered address',
-          'Companies register number and register court',
-          'VAT identification number',
-          'Trade authority and applicable trade regulations',
-          'Names of the managing directors',
+          'Legal form: Austrian limited liability company (GmbH)',
+          'Registered office: Graz, Austria',
+          `Company register number: ${REGISTER_NUMBER}`,
+          'Register court: Landesgericht für Zivilrechtssachen Graz (Regional Court for Civil Matters Graz)',
+          // TODO(legal): fill in once issued.
+          'VAT identification number: to be added',
         ],
       },
       {
-        heading: 'Online dispute resolution',
+        heading: 'Managing directors',
+        body: ['Alexander Kager and Claudio Lipp, each authorised to represent the company individually.'],
+      },
+      {
+        heading: 'Trade licence and chamber membership',
+        items: [
+          'Member of the Wirtschaftskammer Steiermark (Styrian Chamber of Commerce)',
+          'Applicable professional rules: Austrian Trade Regulation Act 1994 (GewO), available at ris.bka.gv.at',
+          // TODO(legal): take these three from the GISA extract.
+          'Trade licence, professional association and trade authority: to be added',
+        ],
+      },
+      {
+        heading: 'Corporate purpose',
         body: [
-          'The European Commission provides a platform for online dispute resolution at ec.europa.eu/consumers/odr. We are neither obliged nor willing to take part in dispute resolution proceedings before a consumer arbitration board.',
+          'Development, marketing and distribution of sports and leisure equipment, trading in goods of all kinds, organisation and implementation of sports and leisure events, and the acquisition, administration, marketing and exploitation of trademarks, licences and other intellectual property rights.',
+        ],
+      },
+      {
+        heading: 'Disclosure under § 25 Austrian Media Act',
+        body: [
+          `Media owner: ${COMPANY}, ${ADDRESS_EN}`,
+          'Managing directors: Alexander Kager and Claudio Lipp',
+          'Shareholders: Alexander Kager 55%, Claudio Lipp 35%, Luca Puster 10%',
+          'Editorial policy: information about AIRBALL, the AIRBALLER, the products and services offered, sports and leisure events, the AIRBALL community and product- and sports-related news. The website also presents and promotes the products and services of AIRBALL GmbH.',
+        ],
+      },
+      {
+        heading: 'Copyright and third-party rights',
+        body: [
+          'Content published on this website, including trademarks, logos, texts, photographs, videos, graphics and designs, may be protected by copyright, trademark, design or other intellectual property rights. Any use beyond statutory limitations requires the consent of the relevant rights holder. Unless stated otherwise, rights in content created by AIRBALL or validly transferred to AIRBALL are held by AIRBALL GmbH. Third-party rights remain unaffected.',
+        ],
+      },
+      {
+        heading: 'Consumer dispute resolution',
+        body: [
+          'We are neither obliged nor willing to take part in dispute resolution proceedings before a consumer arbitration board. If something goes wrong, write to us and we will sort it out with you directly.',
         ],
       },
     ],
   },
   privacy: {
     title: 'Privacy',
-    notice:
-      'This is a provisional privacy notice. It describes accurately what the site does today, but it has not yet been reviewed by a lawyer and will be replaced.',
-    updated: 'Last updated: 30 July 2026',
+    updated: 'Last updated: 7 November 2026',
     sections: [
       {
         heading: 'Who is responsible',
         body: [
-          `AIRBALL, Graz, Austria, is the controller for the processing described here. For any question about your data, write to ${CONTACT_EMAIL}.`,
+          `${COMPANY}, ${ADDRESS_EN}, is the controller for the processing described here. For any question about your data, write to ${CONTACT_EMAIL}.`,
+          'This notice covers airball.at. Our online shop at shop.airball.at has its own privacy policy, which is linked further down.',
         ],
       },
       {
-        heading: 'The waitlist form',
+        heading: 'Signing up for news',
         body: [
-          'If you sign up for the waitlist we store the first name, last name and email address you enter, along with the language the site was set to and the time of the signup.',
+          'If you leave your email address on this site, we store it together with the language the site was set to and the time you signed up. If you signed up through the earlier, longer form, we also have the first and last name you entered there.',
           'We also record which link brought you here: the campaign tags in the address, if there were any, and the address of the page you followed a link from, without its query string. This tells us that a signup came from, say, Instagram. It says nothing about who you are, is read only at the moment you submit the form, and is never stored on your device.',
-          'We use this only to tell you when the first AIRBALLERS are available. We do not send anything else, and we do not pass the list to anyone for advertising.',
-          'The legal basis is your consent under Article 6(1)(a) GDPR. You can withdraw it at any time by writing to us, and we will delete your entry.',
+          'We use your address to send you news about AIRBALL by email, such as product launches, dates and offers for the community, and only when there is something worth an email. We do not pass the list to anyone for their own advertising.',
+          `The legal basis is your consent under Article 6(1)(a) GDPR. You can withdraw it at any time, through the unsubscribe link in every email or by writing to ${CONTACT_EMAIL}.`,
         ],
       },
       {
-        heading: 'Where the waitlist is stored',
+        heading: 'Where your signup is stored',
         body: [
-          'Signups are written into a Google Sheet using a Google Apps Script, operated by Google Ireland Limited. Google acts as a processor for us, and data may be transferred to servers in the United States on the basis of the EU Commission adequacy decision for the EU-US Data Privacy Framework.',
-          'We keep an entry until the product launch has happened and you have been notified, or until you ask us to delete it, whichever comes first.',
+          'Signups are written into a Google Sheet using a Google Apps Script, operated by Google Ireland Limited, Dublin, Ireland. Google acts as a processor for us, and data may be transferred to servers in the United States on the basis of the EU Commission adequacy decision for the EU-US Data Privacy Framework.',
+          'To send our emails, we add the addresses to our customer list at Shopify International Limited, Dublin, Ireland, which is also where our shop runs. Shopify acts as a processor for us. Data may be transferred to Canada, for which an adequacy decision of the EU Commission exists, and to the United States on the basis of the EU-US Data Privacy Framework.',
+          'We keep your signup until you unsubscribe or ask us to delete it.',
         ],
       },
       {
@@ -174,7 +214,13 @@ const en: LegalContent = {
         body: [
           'This site sets no cookies. It runs no advertising, no tracking pixels and no cross-site profiling, and it embeds nothing from a third party.',
           ...storage.en,
-          'Fonts are delivered from our own server, so loading the page sends no request to any external font service.',
+          'Fonts and videos are delivered from our own server, so loading the page sends no request to any external service.',
+        ],
+      },
+      {
+        heading: 'Our online shop',
+        body: [
+          `The links to the shop take you to shop.airball.at, which runs on Shopify. They are ordinary links: nothing is loaded from the shop until you click. Everything you do in the shop, from the basket to payment and delivery, is covered by the shop’s own privacy policy at ${SHOP_PRIVACY}.`,
         ],
       },
       {
@@ -186,9 +232,7 @@ const en: LegalContent = {
       {
         heading: 'Your rights',
         body: [
-          'Under the GDPR you have the right to access your data, to have it corrected or deleted, to have its processing restricted, to object to processing, and to receive it in a portable format. To exercise any of these, write to ' +
-            CONTACT_EMAIL +
-            '.',
+          `Under the GDPR you have the right to access your data, to have it corrected or deleted, to have its processing restricted, to object to processing, and to receive it in a portable format. To exercise any of these, write to ${CONTACT_EMAIL}.`,
           'You also have the right to complain to the Austrian Data Protection Authority, Barichgasse 40-42, 1030 Vienna, dsb.gv.at.',
         ],
       },
@@ -201,71 +245,92 @@ const de: LegalContent = {
   imprint: {
     title: 'Impressum',
     notice:
-      'Dieses Impressum ist noch in Arbeit. AIRBALL befindet sich gerade in Gründung, die unten fehlenden Registerdaten werden ergänzt, sobald sie vorliegen.',
-    updated: 'Stand: 30. Juli 2026',
+      'Die UID-Nummer und die Angaben zur Gewerbeberechtigung werden nachgetragen, sobald sie vorliegen.',
+    updated: 'Stand: 7. November 2026',
     sections: [
       {
-        heading: 'Medieninhaber und Herausgeber',
-        body: ['AIRBALL', 'Graz, Österreich'],
+        heading: 'Anbieter und Kontakt',
+        body: [COMPANY, ADDRESS_DE, `E-Mail: ${CONTACT_EMAIL}`, `Telefon: ${PHONE}`],
       },
       {
-        heading: 'Kontakt',
-        body: [`E-Mail: ${IMPRINT_EMAIL}`],
+        heading: 'Firmenbuch',
+        items: [
+          'Rechtsform: Gesellschaft mit beschränkter Haftung',
+          'Sitz: Graz, Österreich',
+          `Firmenbuchnummer: ${REGISTER_NUMBER}`,
+          'Firmenbuchgericht: Landesgericht für Zivilrechtssachen Graz',
+          // TODO(legal): nachtragen, sobald vergeben.
+          'UID-Nummer: wird nachgetragen',
+        ],
+      },
+      {
+        heading: 'Geschäftsführung',
+        body: ['Alexander Kager und Claudio Lipp, jeweils einzelvertretungsbefugt.'],
+      },
+      {
+        heading: 'Gewerbe und Kammerzugehörigkeit',
+        items: [
+          'Mitglied der Wirtschaftskammer Steiermark',
+          'Berufsrecht: Gewerbeordnung 1994 (GewO), abrufbar unter ris.bka.gv.at',
+          // TODO(legal): aus dem GISA-Auszug übernehmen.
+          'Gewerbeberechtigung, Fachorganisation und Gewerbebehörde: werden nachgetragen',
+        ],
       },
       {
         heading: 'Unternehmensgegenstand',
         body: [
-          'Entwicklung und Vertrieb des AIRBALLER, eines tragbaren Rebound-Courts, sowie die Organisation von Spielen und Events rundherum.',
+          'Entwicklung, Vermarktung und Vertrieb von Sport- und Freizeitgeräten, Handel mit Waren aller Art, Organisation und Durchführung von Sport- und Freizeitveranstaltungen sowie Erwerb, Verwaltung, Vermarktung und Verwertung von Marken-, Lizenz- und sonstigen Immaterialgüterrechten.',
         ],
       },
       {
-        heading: 'Wird noch ergänzt',
+        heading: 'Offenlegung nach § 25 Mediengesetz',
         body: [
-          'Die folgenden Angaben sind nach ECG und Mediengesetz verpflichtend und werden hier veröffentlicht, sobald das Unternehmen eingetragen ist.',
-        ],
-        items: [
-          'Vollständiger Firmenwortlaut und Rechtsform',
-          'Firmensitz und Adresse',
-          'Firmenbuchnummer und Firmenbuchgericht',
-          'UID-Nummer',
-          'Gewerbebehörde und anwendbare Gewerbeordnung',
-          'Namen der Geschäftsführung',
+          `Medieninhaber: ${COMPANY}, ${ADDRESS_DE}`,
+          'Geschäftsführer: Alexander Kager und Claudio Lipp',
+          'Gesellschafter: Alexander Kager 55 %, Claudio Lipp 35 %, Luca Puster 10 %',
+          'Grundlegende Richtung: Information über AIRBALL, den AIRBALLER, die angebotenen Produkte und Dienstleistungen, Sport- und Freizeitveranstaltungen, die AIRBALL Community sowie produkt- und sportbezogene Neuigkeiten. Die Website dient außerdem der Präsentation und Förderung der Produkte und Leistungen der AIRBALL GmbH.',
         ],
       },
       {
-        heading: 'Online-Streitbeilegung',
+        heading: 'Urheberrecht und Rechte Dritter',
         body: [
-          'Die Europäische Kommission stellt unter ec.europa.eu/consumers/odr eine Plattform zur Online-Streitbeilegung bereit. Wir sind nicht verpflichtet und nicht bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.',
+          'Die auf dieser Website veröffentlichten Inhalte, insbesondere Marken, Logos, Texte, Fotografien, Videos, Grafiken und Designs, können urheberrechtlich, markenrechtlich, designrechtlich oder durch sonstige Immaterialgüterrechte geschützt sein. Eine Nutzung außerhalb der gesetzlichen Schranken bedarf der Zustimmung des jeweiligen Rechteinhabers. Soweit nicht anders angegeben, liegen die Rechte an von AIRBALL selbst erstellten oder wirksam auf AIRBALL übertragenen Inhalten bei der AIRBALL GmbH. Rechte Dritter bleiben unberührt.',
+        ],
+      },
+      {
+        heading: 'Verbraucherschlichtung',
+        body: [
+          'Wir sind nicht verpflichtet und nicht bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen. Wenn etwas schiefläuft, schreib uns, dann klären wir das direkt mit dir.',
         ],
       },
     ],
   },
   privacy: {
     title: 'Datenschutz',
-    notice:
-      'Das ist eine vorläufige Datenschutzerklärung. Sie beschreibt zutreffend, was die Seite heute tut, ist aber noch nicht juristisch geprüft und wird ersetzt.',
-    updated: 'Stand: 30. Juli 2026',
+    updated: 'Stand: 7. November 2026',
     sections: [
       {
         heading: 'Verantwortlich',
         body: [
-          `Verantwortlich für die hier beschriebene Verarbeitung ist AIRBALL, Graz, Österreich. Bei Fragen zu deinen Daten schreib an ${CONTACT_EMAIL}.`,
+          `Verantwortlich für die hier beschriebene Verarbeitung ist die ${COMPANY}, ${ADDRESS_DE}. Bei Fragen zu deinen Daten schreib an ${CONTACT_EMAIL}.`,
+          'Diese Erklärung gilt für airball.at. Für unseren Onlineshop unter shop.airball.at gilt dessen eigene Datenschutzerklärung, die weiter unten verlinkt ist.',
         ],
       },
       {
-        heading: 'Das Warteliste-Formular',
+        heading: 'Die Anmeldung für Neuigkeiten',
         body: [
-          'Wenn du dich für die Warteliste einträgst, speichern wir Vorname, Nachname und E-Mail-Adresse, dazu die eingestellte Sprache und den Zeitpunkt der Anmeldung.',
+          'Wenn du auf dieser Seite deine E-Mail-Adresse einträgst, speichern wir sie zusammen mit der eingestellten Sprache und dem Zeitpunkt der Anmeldung. Hast du dich über das frühere, ausführlichere Formular eingetragen, haben wir außerdem den Vor- und Nachnamen, den du dort angegeben hast.',
           'Außerdem halten wir fest, über welchen Link du gekommen bist: die Kampagnen-Parameter in der Adresse, falls vorhanden, und die Adresse der Seite, von der aus du den Link angeklickt hast, ohne deren Suchparameter. Damit sehen wir, dass eine Anmeldung zum Beispiel über Instagram kam. Über deine Person sagt das nichts aus, es wird erst im Moment des Absendens ausgelesen und niemals auf deinem Gerät gespeichert.',
-          'Wir verwenden das ausschließlich, um dir Bescheid zu geben, sobald die ersten AIRBALLER verfügbar sind. Wir schicken nichts anderes und geben die Liste nicht für Werbung weiter.',
-          'Rechtsgrundlage ist deine Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO. Du kannst sie jederzeit widerrufen, dann löschen wir deinen Eintrag.',
+          'Wir verwenden deine Adresse, um dir Neuigkeiten zu AIRBALL per E-Mail zu schicken, etwa zum Verkaufsstart, zu Terminen und zu Angeboten für die Community, und nur dann, wenn es etwas gibt, das eine Mail wert ist. Wir geben die Liste nicht an andere für deren Werbung weiter.',
+          `Rechtsgrundlage ist deine Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO. Du kannst sie jederzeit widerrufen, über den Abmeldelink in jeder Mail oder mit einer Nachricht an ${CONTACT_EMAIL}.`,
         ],
       },
       {
-        heading: 'Wo die Warteliste liegt',
+        heading: 'Wo deine Anmeldung gespeichert wird',
         body: [
-          'Die Anmeldungen werden über ein Google Apps Script in ein Google Sheet geschrieben, betrieben von Google Ireland Limited. Google ist dabei unser Auftragsverarbeiter. Eine Übermittlung auf Server in den USA ist möglich, gestützt auf den Angemessenheitsbeschluss der EU-Kommission zum EU-US Data Privacy Framework.',
-          'Wir behalten einen Eintrag, bis der Launch stattgefunden hat und du benachrichtigt wurdest, oder bis du die Löschung verlangst, je nachdem was früher eintritt.',
+          'Die Anmeldungen werden über ein Google Apps Script in ein Google Sheet geschrieben, betrieben von Google Ireland Limited, Dublin, Irland. Google ist dabei unser Auftragsverarbeiter. Eine Übermittlung auf Server in den USA ist möglich, gestützt auf den Angemessenheitsbeschluss der EU-Kommission zum EU-US Data Privacy Framework.',
+          'Für den Versand unserer Mails übernehmen wir die Adressen in unsere Kundenliste bei Shopify International Limited, Dublin, Irland, wo auch unser Shop läuft. Shopify ist dabei unser Auftragsverarbeiter. Eine Übermittlung nach Kanada ist möglich, wofür ein Angemessenheitsbeschluss der EU-Kommission besteht, sowie in die USA, gestützt auf das EU-US Data Privacy Framework.',
+          'Wir speichern deine Anmeldung, bis du dich abmeldest oder die Löschung verlangst.',
         ],
       },
       {
@@ -287,7 +352,13 @@ const de: LegalContent = {
         body: [
           'Diese Seite setzt keine Cookies. Es läuft keine Werbung, kein Tracking-Pixel, keine seitenübergreifende Profilbildung, und es ist nichts von Dritten eingebettet.',
           ...storage.de,
-          'Die Schriften liegen auf unserem eigenen Server. Beim Laden der Seite geht also keine Anfrage an einen externen Schriftdienst.',
+          'Schriften und Videos liegen auf unserem eigenen Server. Beim Laden der Seite geht also keine Anfrage an einen externen Dienst.',
+        ],
+      },
+      {
+        heading: 'Unser Onlineshop',
+        body: [
+          `Die Links zum Shop führen zu shop.airball.at, der mit Shopify betrieben wird. Das sind gewöhnliche Links: Vor dem Klick wird nichts vom Shop geladen. Für alles, was du im Shop tust, vom Warenkorb über die Zahlung bis zur Lieferung, gilt die Datenschutzerklärung des Shops unter ${SHOP_PRIVACY}.`,
         ],
       },
       {
@@ -299,9 +370,7 @@ const de: LegalContent = {
       {
         heading: 'Deine Rechte',
         body: [
-          'Nach der DSGVO hast du das Recht auf Auskunft über deine Daten, auf Berichtigung, auf Löschung, auf Einschränkung der Verarbeitung, auf Widerspruch gegen die Verarbeitung und auf Datenübertragbarkeit. Für all das genügt eine Nachricht an ' +
-            CONTACT_EMAIL +
-            '.',
+          `Nach der DSGVO hast du das Recht auf Auskunft über deine Daten, auf Berichtigung, auf Löschung, auf Einschränkung der Verarbeitung, auf Widerspruch gegen die Verarbeitung und auf Datenübertragbarkeit. Für all das genügt eine Nachricht an ${CONTACT_EMAIL}.`,
           'Außerdem hast du das Recht, dich bei der Österreichischen Datenschutzbehörde zu beschweren, Barichgasse 40-42, 1030 Wien, dsb.gv.at.',
         ],
       },

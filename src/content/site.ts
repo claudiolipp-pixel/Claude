@@ -166,7 +166,7 @@ export const SOCIAL = {
   instagram: 'https://www.instagram.com/airball.at/',
   handle: '@airball.at',
   linkedin: 'https://www.linkedin.com/company/airballers',
-  email: 'info@airball.at',
+  email: 'sales@airball.at',
 } as const;
 
 const en: SiteContent = {
@@ -370,7 +370,7 @@ const en: SiteContent = {
   },
   footer: {
     location: 'Graz, Austria',
-    rights: '© 2026 AIRBALL',
+    rights: '© 2026 AIRBALL GmbH',
     imprint: 'Imprint',
     privacy: 'Privacy',
   },
@@ -578,7 +578,7 @@ const de: SiteContent = {
   },
   footer: {
     location: 'Graz, Österreich',
-    rights: '© 2026 AIRBALL',
+    rights: '© 2026 AIRBALL GmbH',
     imprint: 'Impressum',
     privacy: 'Datenschutz',
   },
