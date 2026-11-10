@@ -346,9 +346,9 @@ const en: SiteContent = {
   ],
   ticker: ['Play. Compete. Connect.', 'Anywhere Is An Arena'],
   shopCta: {
-    eyebrow: 'Pre-order · Ships from 01.12.2026',
+    eyebrow: 'Pre-order · Ships from 15.12.2026',
     title: 'Get your court',
-    body: 'Three setups, one court. Basic, Pro and Premium are open for pre-order now and ship from 01.12.2026. First production run, limited numbers.',
+    body: 'Three setups, one court. Basic, Pro and Premium are open for pre-order now and ship from 15.12.2026. First production run, limited numbers.',
     cta: 'Open the shop',
     waitlistLabel: 'Not ordering yet?',
     waitlistBody: 'Leave your address and we write when there is news worth an email.',
@@ -554,9 +554,9 @@ const de: SiteContent = {
   ],
   ticker: ['Play. Compete. Connect.', 'Anywhere Is An Arena'],
   shopCta: {
-    eyebrow: 'Vorbestellung · Versand ab 01.12.2026',
+    eyebrow: 'Vorbestellung · Versand ab 15.12.2026',
     title: 'Hol dir deinen Court',
-    body: 'Drei Setups, ein Court. Basic, Pro und Premium sind ab sofort vorbestellbar, Versand ab 01.12.2026. Erste Produktion, begrenzte Stückzahl.',
+    body: 'Drei Setups, ein Court. Basic, Pro und Premium sind ab sofort vorbestellbar, Versand ab 15.12.2026. Erste Produktion, begrenzte Stückzahl.',
     cta: 'Zum Shop',
     waitlistLabel: 'Noch nicht so weit?',
     waitlistBody: 'Trag deine Adresse ein, wir schreiben, wenn es etwas gibt, das eine Mail wert ist.',
