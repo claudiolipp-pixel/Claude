@@ -118,38 +118,48 @@ rather than as a live spreadsheet formula.
 
 Card 01 plays `public/media/airballer.mp4`, with `airballer.webm` offered first
 and `airballer-poster.jpg` as the still before playback. All three are the same
-20-second clip (Schladming), 1920×1080 landscape, no sound. The Loader's
+20-second clip (Schladming) in 9:16 portrait, 608×1080, no sound. The Loader's
 landing tile plays the same MP4.
 
-The card crops with `object-fit: cover`, so a landscape clip fills a desktop
-card edge to edge and a phone shows the middle of the frame. Keep the action
-near the centre when choosing a clip.
-
-To replace it, encode the master and drop all three files in:
+The master is landscape, 1920×1080. A fixed centre crop to portrait loses the
+play whenever it happens near an edge, so the crop follows the action instead:
+`scripts/reframe-card-video.py` holds one keyframe per half second or so,
+interpolates them per frame, smooths within each shot but never across a cut,
+and writes an ffmpeg `sendcmd` file that moves the crop window.
 
 ```bash
-VF="hqdn3d=1.5:1.5:6:6"   # takes the edge off the grain, which costs bits
+python3 scripts/reframe-card-video.py          # writes crop.cmd
+VF="sendcmd=f=crop.cmd,crop=608:1080:656:0,hqdn3d=1.5:1.5:6:6"
 ffmpeg -i master.mov -vf "$VF" -c:v libx264 -profile:v high -preset slower \
-  -b:v 2800k -pass 1 -an -f null /dev/null
+  -b:v 1900k -pass 1 -an -f null /dev/null
 ffmpeg -i master.mov -vf "$VF" -c:v libx264 -profile:v high -preset slower \
-  -b:v 2800k -maxrate 4500k -bufsize 9000k -pass 2 \
+  -b:v 1900k -maxrate 3000k -bufsize 6000k -pass 2 \
   -pix_fmt yuv420p -movflags +faststart -an public/media/airballer.mp4
-ffmpeg -i master.mov -vf "$VF" -c:v libvpx-vp9 -b:v 1500k -minrate 750k \
-  -maxrate 2200k -row-mt 1 -tile-columns 2 -speed 4 -pass 1 -an -f null /dev/null
-ffmpeg -i master.mov -vf "$VF" -c:v libvpx-vp9 -b:v 1500k -minrate 750k \
-  -maxrate 2200k -row-mt 1 -tile-columns 2 -speed 1 -pass 2 \
+ffmpeg -i master.mov -vf "$VF" -c:v libvpx-vp9 -b:v 950k -minrate 475k \
+  -maxrate 1400k -row-mt 1 -speed 4 -pass 1 -an -f null /dev/null
+ffmpeg -i master.mov -vf "$VF" -c:v libvpx-vp9 -b:v 950k -minrate 475k \
+  -maxrate 1400k -row-mt 1 -speed 1 -pass 2 \
   -pix_fmt yuv420p -an public/media/airballer.webm
 ffmpeg -i public/media/airballer.mp4 -frames:v 1 -q:v 3 \
   public/media/airballer-poster.jpg
 ```
 
 Two-pass at a fixed bitrate, because this footage is grainy and a quality
-target (`-crf`) let the file grow past 10 MB. At these rates the MP4 is about
-7 MB and the WebM about 4 MB for 20 seconds.
+target (`-crf`) lets the file balloon; the light `hqdn3d` takes the edge off the
+grain. The MP4 comes out at about 4.8 MB and the WebM at about 2.4 MB.
 
 `-movflags +faststart` is not optional: without it the browser has to download
 the whole file before the first frame appears. `-an` drops the sound; the card
-plays muted anyway, and an audio track is only extra bytes.
+plays muted anyway.
+
+A new master needs new keyframes. Make a contact sheet every half second with
+a ten-column grid, note where the play is, and edit the list at the top of the
+script:
+
+```bash
+ffmpeg -i master.mov -vf "fps=2,scale=360:202,drawgrid=w=36:h=202:t=1:c=red,\
+drawtext=text='%{pts\:flt}':x=4:y=4:fontsize=18:fontcolor=yellow" sheet%02d.png
+```
 
 ## Legal pages
 

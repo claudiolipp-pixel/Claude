@@ -149,7 +149,7 @@ export interface SiteContent {
 
 /** Media paths are shared across languages — only the alt text differs. */
 const MEDIA = {
-  /** Card 01. The clip carries the game, so it opens the page. Landscape, 20s, Schladming. */
+  /** Card 01. The clip carries the game, so it opens the page. 20s, Schladming, reframed to 9:16 portrait. */
   gameVideo: '/media/airballer.mp4',
   gameVideoWebm: '/media/airballer.webm',
   /** First frame of the clip, so the card shows the same image before playback. */
