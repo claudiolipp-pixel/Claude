@@ -161,6 +161,29 @@ ffmpeg -i master.mov -vf "fps=2,scale=360:202,drawgrid=w=36:h=202:t=1:c=red,\
 drawtext=text='%{pts\:flt}':x=4:y=4:fontsize=18:fontcolor=yellow" sheet%02d.png
 ```
 
+## Shop withdrawal function
+
+Since 19 June 2026 the shop needs an online way to withdraw from a purchase.
+It lives in the Shopify theme: a "Vertrag hier widerrufen" link in the footer
+of every shop page opens `/pages/widerruf` (template `page.withdrawal`), a
+short form with the button "Widerruf hier bestätigen".
+
+Each withdrawal travels two ways at once. Shopify's contact form always sends
+it to the shop inbox. `scripts/withdrawal-sheet.gs` additionally logs it in a
+Google Sheet and emails the customer the acknowledgement the law requires.
+That second route only runs once the script is deployed:
+
+1. Create a Google Sheet, e.g. "AIRBALL Widerrufe" → **Extensions → Apps
+   Script**, paste `scripts/withdrawal-sheet.gs`, save.
+2. **Deploy → New deployment → Web app**, Execute as **Me**, access
+   **Anyone**. Allow the email permission Google asks for.
+3. Paste the web app URL into the theme editor: page template
+   *withdrawal* → section *Widerruf* → *Adresse des Widerrufs-Skripts*
+   (or into `templates/page.withdrawal.json` as `endpoint`).
+
+Until then the page tells the customer that the confirmation follows by
+email, and it has to be sent by hand.
+
 ## Legal pages
 
 `/imprint` and `/privacy` are real URLs. There is no router: the Worker serves
