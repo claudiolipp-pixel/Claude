@@ -262,7 +262,7 @@ const en: SiteContent = {
       detail: {
         title: 'One court, one backpack',
         lead: 'The portable rebound sport. Real sport that still fits in a backpack. Born in Graz, for the world.',
-        hero: { src: '/media/airballer/court-wide.jpg', alt: 'The AIRBALLER set up on grass in a Graz park' },
+        hero: { src: '/media/airballer/field-rally-wide.jpg', alt: 'A player stretching for the ball over the AIRBALLER on a sports field' },
         sections: [
           {
             heading: 'The Court',
@@ -282,9 +282,9 @@ const en: SiteContent = {
           },
         ],
         gallery: [
-          { src: '/media/airballer/play-01.jpg', alt: 'A player waiting on the AIRBALLER' },
-          { src: '/media/airballer/play-02.jpg', alt: 'A rally in progress' },
-          { src: '/media/airballer/play-03.jpg', alt: 'Striking the ball onto the AIRBALLER' },
+          { src: '/media/airballer/sand-top.jpg', alt: 'The AIRBALLER in the sand, the A mark on its top' },
+          { src: '/media/airballer/uhrturm-court.jpg', alt: 'The AIRBALLER on the grass below the Uhrturm in Graz' },
+          { src: '/media/airballer/grass-court.jpg', alt: 'The AIRBALLER set up on a football pitch' },
         ],
         specs: [
           { label: 'Court', value: 'Ø 100 cm, inflatable' },
@@ -470,7 +470,7 @@ const de: SiteContent = {
       detail: {
         title: 'Ein Court, ein Rucksack',
         lead: 'Der tragbare Rebound-Sport. Echter Sport, der in einen Rucksack passt. Entstanden in Graz, gebaut für überall.',
-        hero: { src: '/media/airballer/court-wide.jpg', alt: 'Der AIRBALLER aufgebaut auf einer Wiese in Graz' },
+        hero: { src: '/media/airballer/field-rally-wide.jpg', alt: 'Eine Spielerin streckt sich auf dem Sportplatz über dem AIRBALLER nach dem Ball' },
         sections: [
           {
             heading: 'Der Court',
@@ -490,9 +490,9 @@ const de: SiteContent = {
           },
         ],
         gallery: [
-          { src: '/media/airballer/play-01.jpg', alt: 'Ein Spieler wartet am AIRBALLER' },
-          { src: '/media/airballer/play-02.jpg', alt: 'Ein Ballwechsel läuft' },
-          { src: '/media/airballer/play-03.jpg', alt: 'Der Ball wird auf den AIRBALLER gespielt' },
+          { src: '/media/airballer/sand-top.jpg', alt: 'Der AIRBALLER im Sand, oben das A-Logo' },
+          { src: '/media/airballer/uhrturm-court.jpg', alt: 'Der AIRBALLER auf der Wiese unter dem Grazer Uhrturm' },
+          { src: '/media/airballer/grass-court.jpg', alt: 'Der AIRBALLER aufgebaut auf einem Fußballplatz' },
         ],
         specs: [
           { label: 'Court', value: 'Ø 100 cm, aufblasbar' },
