@@ -48,6 +48,15 @@ export const SHOP_LIVE = false;
  * by also switching a route back on that nothing maintains.
  */
 export const SHOP_URL = 'https://shop.airball.at';
+
+/**
+ * The shop in the language the visitor is reading this site in. German is the
+ * shop's default and sits at the root; English is Shopify's /en subfolder.
+ * Without this, someone reading the English site landed in the German shop.
+ */
+export function shopUrl(lang: 'de' | 'en'): string {
+  return lang === 'en' ? `${SHOP_URL}/en` : SHOP_URL;
+}
 export const SHOP_OPEN = true;
 
 /**

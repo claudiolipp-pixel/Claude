@@ -1,6 +1,6 @@
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { useMaskReveal, useFadeUp } from '@/hooks/useReveal';
-import { SHOP_OPEN, SHOP_URL } from '@/content/shop';
+import { SHOP_OPEN, shopUrl } from '@/content/shop';
 import Waitlist from '@/components/Waitlist';
 
 /**
@@ -22,7 +22,7 @@ import Waitlist from '@/components/Waitlist';
  * never contradict each other.
  */
 export default function ShopSection() {
-  const { content } = useLanguage();
+  const { content, lang } = useLanguage();
   const headRef = useMaskReveal<HTMLDivElement>();
   const bodyRef = useFadeUp<HTMLDivElement>(0.08);
 
@@ -59,7 +59,7 @@ export default function ShopSection() {
         </p>
 
         <a
-          href={SHOP_URL}
+          href={shopUrl(lang)}
           data-reveal-item
           className="label mt-8 inline-block border border-court bg-court px-8 py-5 font-medium text-butter transition-colors hover:bg-cream hover:text-court"
         >

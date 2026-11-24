@@ -3,7 +3,7 @@ import type Lenis from 'lenis';
 import { gsap, Observer, EASE } from '@/lib/gsap';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { SOCIAL } from '@/content/site';
-import { SHOP, SHOP_LIVE, SHOP_OPEN, SHOP_URL } from '@/content/shop';
+import { SHOP, SHOP_LIVE, SHOP_OPEN, shopUrl } from '@/content/shop';
 import CartButton from '@/components/CartButton';
 import { scrollToAnchor } from '@/hooks/useSmoothScroll';
 import Wordmark from '@/components/Wordmark';
@@ -155,7 +155,7 @@ export default function Nav({ lenis, onOpenContact }: NavProps) {
 
         {SHOP_OPEN ? (
           <a
-            href={SHOP_LIVE ? '/shop' : SHOP_URL}
+            href={SHOP_LIVE ? '/shop' : shopUrl(lang)}
             className="label bg-butter px-3.5 py-2.5 text-court transition-colors hover:bg-chalk"
           >
             {SHOP[lang].strings.navShop}
