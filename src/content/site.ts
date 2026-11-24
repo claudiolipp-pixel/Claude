@@ -154,7 +154,7 @@ const MEDIA = {
   gameVideoWebm: '/media/airballer.webm',
   /** First frame of the clip, so the card shows the same image before playback. */
   gameVideoPoster: '/media/airballer-poster.jpg',
-  /** Card 02. Low-angle receive, ball still in the air. */
+  /** Card 02. From behind, PLAY COMPETE CONNECT on the shirt; focal low so the lettering stays in a wide card. */
   airballerCard: '/media/airballer-card.jpg',
   airballerCardNarrow: '/media/airballer-card-narrow.jpg',
   /** Card 03. */
@@ -249,8 +249,8 @@ const en: SiteContent = {
         type: 'image',
         src: MEDIA.airballerCard,
         srcNarrow: MEDIA.airballerCardNarrow,
-        focal: 'center 12%',
-        alt: 'A player receiving, the ball still in the air above them',
+        focal: 'center 80%',
+        alt: 'A player from behind, PLAY COMPETE CONNECT across the back of the shirt',
       },
       tag: 'The product',
       title: 'The Airballer',
@@ -457,8 +457,8 @@ const de: SiteContent = {
         type: 'image',
         src: MEDIA.airballerCard,
         srcNarrow: MEDIA.airballerCardNarrow,
-        focal: 'center 12%',
-        alt: 'Eine Spielerin in der Annahme, der Ball noch in der Luft',
+        focal: 'center 80%',
+        alt: 'Ein Spieler von hinten, PLAY COMPETE CONNECT auf dem Rücken des Shirts',
       },
       tag: 'Das Produkt',
       title: 'Der Airballer',
