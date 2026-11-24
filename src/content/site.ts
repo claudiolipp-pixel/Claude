@@ -228,11 +228,11 @@ const en: SiteContent = {
             body: 'Choose your mode before the match. Football rules mean feet, chest and head only. Padel rules, played 1v1, give you two touches after receiving. Or full-body mode, where every touch counts.',
           },
         ],
-        hero: { src: '/media/game/rally-wide.jpg', alt: 'Three players mid-rally around the AIRBALLER at dusk' },
+        hero: { src: '/media/game/beach-rally-wide.jpg', alt: 'A serve on a beach court, the ball flying towards the AIRBALLER' },
         gallery: [
-          { src: '/media/game/serve.jpg', alt: 'A player tossing the ball to serve' },
-          { src: '/media/game/rally-01.jpg', alt: 'A rally around the AIRBALLER, ball in the air' },
-          { src: '/media/game/padel.jpg', alt: 'Playing the padel variant with a racket' },
+          { src: '/media/game/dig.jpg', alt: 'A player diving for the ball in the sand beside the AIRBALLER' },
+          { src: '/media/game/football.jpg', alt: 'Football mode: heading the ball over the AIRBALLER' },
+          { src: '/media/game/padel-indoor.jpg', alt: 'Padel mode indoors, the racket low over the AIRBALLER' },
         ],
         specs: [
           { label: 'Format', value: '1v1 or 2v2' },
@@ -436,11 +436,11 @@ const de: SiteContent = {
             body: 'Modus vor dem Match festlegen. Bei Fußball-Regeln zählen nur Fuß, Brust und Kopf. Bei Padel-Regeln hast du im 1v1 zwei Berührungen nach der Annahme. Oder Ganzkörper, da zählt jede Berührung.',
           },
         ],
-        hero: { src: '/media/game/rally-wide.jpg', alt: 'Drei Spieler im Ballwechsel am AIRBALLER in der Abenddämmerung' },
+        hero: { src: '/media/game/beach-rally-wide.jpg', alt: 'Aufschlag auf dem Beachplatz, der Ball fliegt auf den AIRBALLER zu' },
         gallery: [
-          { src: '/media/game/serve.jpg', alt: 'Ein Spieler wirft den Ball zum Aufschlag hoch' },
-          { src: '/media/game/rally-01.jpg', alt: 'Ein Ballwechsel am AIRBALLER, der Ball in der Luft' },
-          { src: '/media/game/padel.jpg', alt: 'Die Padel-Variante mit Schläger' },
+          { src: '/media/game/dig.jpg', alt: 'Eine Spielerin hechtet im Sand neben dem AIRBALLER nach dem Ball' },
+          { src: '/media/game/football.jpg', alt: 'Fußball-Modus: Kopfball über den AIRBALLER' },
+          { src: '/media/game/padel-indoor.jpg', alt: 'Padel-Modus in der Halle, der Schläger knapp über dem AIRBALLER' },
         ],
         specs: [
           { label: 'Format', value: '1v1 oder 2v2' },
