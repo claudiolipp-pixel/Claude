@@ -118,10 +118,19 @@ rather than as a live spreadsheet formula.
 
 Card 01 plays `public/media/airballer.mp4`, with `airballer.webm` offered first
 and `airballer-poster.jpg` as the still before playback. All three are the same
-20-second clip (Schladming) in 9:16 portrait, 608×1080, no sound. The Loader's
-landing tile plays the same MP4.
+54-second montage in 9:16 portrait, 608×1080, no sound: MP4 about 8.7 MB, WebM
+about 5.1 MB. The Loader's landing tile plays the same MP4.
 
-The master is landscape, 1920×1080. A fixed centre crop to portrait loses the
+The current master was shot in portrait (720×1280), so it only needs scaling:
+
+```bash
+VF="scale=608:1080:flags=lanczos,hqdn3d=1:1:4:4"
+# MP4: two-pass at -b:v 1300k -maxrate 2200k; WebM: two-pass at -b:v 750k
+```
+
+with the passes, flags and poster step as in the block below.
+
+A landscape master needs reframing. A fixed centre crop to portrait loses the
 play whenever it happens near an edge, so the crop follows the action instead:
 `scripts/reframe-card-video.py` holds one keyframe per half second or so,
 interpolates them per frame, smooths within each shot but never across a cut,
