@@ -157,7 +157,7 @@ const MEDIA = {
   /** Card 02. From behind, PLAY COMPETE CONNECT on the shirt; focal low so the lettering stays in a wide card. */
   airballerCard: '/media/airballer-card.jpg',
   airballerCardNarrow: '/media/airballer-card-narrow.jpg',
-  /** Card 03. */
+  /** Card 03. Three of the crew on the grass from behind; the phone cut keeps the one on the ball. */
   teamCard: '/media/team-card.jpg',
   teamCardNarrow: '/media/team-card-narrow.jpg',
 } as const;
@@ -296,7 +296,7 @@ const en: SiteContent = {
         type: 'image',
         src: MEDIA.teamCard,
         srcNarrow: MEDIA.teamCardNarrow,
-        alt: 'The AIRBALL crew at an event in Graz',
+        alt: 'Three of the AIRBALL crew resting on the grass in PLAY COMPETE CONNECT shirts, one sitting on a ball',
       },
       tag: 'Join us',
       title: 'From Ballers For Ballers',
@@ -504,7 +504,7 @@ const de: SiteContent = {
         type: 'image',
         src: MEDIA.teamCard,
         srcNarrow: MEDIA.teamCardNarrow,
-        alt: 'Die AIRBALL-Crew bei einem Event in Graz',
+        alt: 'Drei aus der AIRBALL-Crew in PLAY-COMPETE-CONNECT-Shirts auf der Wiese, einer sitzt auf einem Ball',
       },
       tag: 'Mach mit',
       title: 'From Ballers For Ballers',
