@@ -107,12 +107,31 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
 
         {work.detail.hero && (
           <figure className="mt-10 overflow-hidden rounded-xl bg-court md:rounded-2xl" data-panel-item>
-            <img
-              src={work.detail.hero.src}
-              alt={work.detail.hero.alt}
-              className="aspect-[3/2] w-full object-cover"
-              style={work.detail.hero.aspect ? { aspectRatio: work.detail.hero.aspect } : undefined}
-            />
+            {/* A hero can carry its own photo for phones, in the card's way:
+                same query as the `roomy` screen, negated. The phone photo is
+                always 3:2; the wide one may set its own ratio. */}
+            <picture>
+              {work.detail.hero.srcNarrow && (
+                <source
+                  media="not all and (min-width: 768px) and (min-height: 600px)"
+                  srcSet={work.detail.hero.srcNarrow}
+                />
+              )}
+              <img
+                src={work.detail.hero.src}
+                alt={work.detail.hero.alt}
+                className={
+                  work.detail.hero.srcNarrow
+                    ? 'aspect-[3/2] w-full object-cover roomy:[aspect-ratio:var(--hero-aspect,3/2)]'
+                    : 'aspect-[3/2] w-full object-cover [aspect-ratio:var(--hero-aspect,3/2)]'
+                }
+                style={
+                  work.detail.hero.aspect
+                    ? ({ '--hero-aspect': work.detail.hero.aspect } as React.CSSProperties)
+                    : undefined
+                }
+              />
+            </picture>
           </figure>
         )}
 
