@@ -111,6 +111,7 @@ export default function DetailPanel({ work, onClose }: DetailPanelProps) {
               src={work.detail.hero.src}
               alt={work.detail.hero.alt}
               className="aspect-[3/2] w-full object-cover"
+              style={work.detail.hero.aspect ? { aspectRatio: work.detail.hero.aspect } : undefined}
             />
           </figure>
         )}

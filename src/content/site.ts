@@ -27,6 +27,8 @@ export interface DetailSection {
 export interface DetailImage {
   src: string;
   alt: string;
+  /** CSS aspect-ratio for a hero that is not 3:2, e.g. '1 / 1' for a photo that needs its height. */
+  aspect?: string;
 }
 
 export interface Person {
@@ -304,7 +306,7 @@ const en: SiteContent = {
       detail: {
         title: 'From Ballers. For Ballers.',
         lead: 'Airball is a sport. A very portable sport. One that turns any patch of ground into a court and any stranger into an opponent.',
-        hero: { src: '/media/team/founders.jpg', alt: 'The three founders at an AIRBALL event in Graz' },
+        hero: { src: '/media/team/uhrturm.jpg', alt: 'The three founders with the AIRBALLER below the Uhrturm, the clock tower of Graz', aspect: '1 / 1' },
         body: [
           'Our roots are on the pitches of Graz, Austria. The three of us grew up playing football everywhere we were allowed to, and a few places we weren’t. Then we got older, the stadiums got further away and the excuses got easier. So we built the Airballer: real competition that fits in a backpack.',
           'We are the first Airballers. You’re next.',
@@ -512,7 +514,7 @@ const de: SiteContent = {
       detail: {
         title: 'From Ballers. For Ballers.',
         lead: 'Airball ist ein Sport. Ein sehr tragbarer Sport. Einer, der jedes Stück Boden zum Court macht und jeden Fremden zum Gegner.',
-        hero: { src: '/media/team/founders.jpg', alt: 'Die drei Gründer bei einem AIRBALL-Event in Graz' },
+        hero: { src: '/media/team/uhrturm.jpg', alt: 'Die drei Gründer mit dem AIRBALLER unter dem Grazer Uhrturm', aspect: '1 / 1' },
         body: [
           'Unsere Wurzeln liegen auf den Plätzen von Graz. Wir drei sind mit Fußball aufgewachsen und haben überall gespielt, wo man uns ließ, und an ein paar Orten, wo man es nicht tat. Dann wurden wir älter, die Stadien weiter weg und die Ausreden leichter. Also haben wir den Airballer gebaut: echter Wettkampf, der in einen Rucksack passt.',
           'Wir sind die ersten Airballers. Du bist der Nächste.',
